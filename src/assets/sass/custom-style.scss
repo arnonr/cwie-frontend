@@ -1,0 +1,129 @@
+@font-face {
+  font-family: "THSarabunNew";
+  src: url("@/assets/fonts/THSarabunNew.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "THSarabunNew";
+  src: url("@/assets/fonts/THSarabunNew-Bold.ttf") format("truetype");
+  font-weight: 700;
+  font-style: normal;
+}
+
+html,
+body {
+  //   font-size: 20px !important;
+  font-weight: 400;
+  //   font-family: Prompt, Helvetica, "sans-serif";
+  font-family: "Sarabun", Arial, sans-serif; /* ใส่ฟอนต์ที่คุณต้องการ */
+}
+
+.scrolltop {
+  background-color: $success;
+}
+
+.scrolltop:hover {
+  background-color: $success;
+}
+
+@media (min-width: 992px) {
+  [data-kt-app-sidebar-fixed="true"] .app-wrapper:not(.default-layout) {
+    margin-left: 0px;
+  }
+}
+
+@media (min-width: 992px) {
+  [data-kt-app-sidebar-minimize="on"][data-kt-app-sidebar-hoverable="true"]
+    .app-sidebar:not(:hover)
+    .title-sidebar {
+    display: none;
+  }
+}
+
+.vs__dropdown-toggle {
+  border: none !important;
+}
+
+.v-select {
+  margin-top: 0.1em;
+  padding: 0.5em 0.5em;
+}
+
+// .fr-wrapper a[href*="froala.com/wysiwyg-editor"] {
+//   display: none !important;
+// }
+
+.vue-form-wizard .wizard-nav-pills > li.active > a .wizard-icon,
+.vue-form-wizard .wizard-nav-pills > li.active > a:hover .wizard-icon,
+.vue-form-wizard .wizard-nav-pills > li.active > a:focus .wizard-icon {
+  color: #0003 !important;
+}
+
+.dp__main {
+  padding: 0.35em 0em;
+}
+
+.dp__input {
+  border: none !important;
+}
+
+.dp__pointer {
+  border: none;
+}
+
+.custom-underline {
+  //   border-bottom: 1px dotted #808080; /* สีเทาและเป็น dotted */
+  //   padding-bottom: 2px; /* ปรับระยะห่างระหว่างข้อความและเส้น */
+  position: relative;
+  //   text-decoration: none;
+  padding-bottom: 2px; /* ให้มีพื้นที่สำหรับเส้น underline */
+}
+
+.custom-underline::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -2px; /* ปรับระยะห่างระหว่างข้อความและเส้น */
+  width: 100%;
+  border-bottom: 1px dotted #808080; /* สีเทาและเป็น dotted */
+  padding-bottom: 2px; /* ปรับระยะห่างระหว่างข้อความและเส้น */
+}
+
+.text-justify {
+  text-align: justify;
+}
+.table td,
+.table th {
+  vertical-align: middle;
+}
+
+.fr-box .fr-element {
+  font-family: "Sarabun", Arial, sans-serif !important; /* ใส่ฟอนต์ที่คุณต้องการ */
+  font-size: 18px; /* กำหนดขนาดฟอนต์ที่ต้องการ */
+}
+
+div > a[href="https://www.froala.com/wysiwyg-editor?k=u"]
+{
+  opacity: 0;
+  margin-top: -45px !important;
+}
+
+p[data-f-id="pbf"] {
+  display: none !important;
+}
+
+.table-border-black,
+.table-border-black th,
+.table-border-black td,
+.table-border-black thead,
+.table-border-black tbody,
+.table-border-black tfoot {
+  border-color: black !important;
+  border-width: 1px !important; /* ปรับความหนาของเส้นขอบตามต้องการ */
+}
+
+.lh-xl {
+  line-height: 2.5; /* กำหนดค่า line-height ที่คุณต้องการ */
+}
