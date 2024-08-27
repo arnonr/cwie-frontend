@@ -92,6 +92,26 @@ class ApiService {
     return ApiService.vueInstance.axios.put(`${resource}`, params);
   }
 
+  public static putFormData(
+    resource: string,
+    params: any
+  ): Promise<AxiosResponse> {
+    ApiService.setHeader();
+
+    const formData = new FormData();
+    Object.keys(params).forEach((key) => {
+      if (params[key] != undefined) {
+        formData.append(key, params[key]);
+      }
+    });
+
+    return ApiService.vueInstance.axios.post(`${resource}`, formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+  }
+
   /**
    * @description Send the DELETE HTTP request
    * @param resource: string

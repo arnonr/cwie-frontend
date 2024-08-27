@@ -3,7 +3,7 @@
   <div class="mb-7 col-12" :class="colClass">
     <label :for="field" class="required form-label">{{ label }}</label>
     <input
-      v-if="componentType != 'v-select'"
+      v-if="componentType == 'text'"
       :id="field"
       :name="field"
       v-model="value"
@@ -13,6 +13,20 @@
       :disabled="disabled"
       :class="['form-control', { 'is-invalid': errorMessage }]"
     />
+
+    <textarea
+      v-else-if="componentType == 'textArea'"
+      :id="field"
+      :name="field"
+      v-model="value"
+      :type="componentType"
+      :placeholder="placeholder"
+      @blur="onBlur"
+      :disabled="disabled"
+      row="10"
+      :class="['form-control', { 'is-invalid': errorMessage }]"
+    />
+
     <v-select
       v-else
       :id="field"

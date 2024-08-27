@@ -36,13 +36,27 @@
                   @on-change="onTabChange"
                 >
                   <!-- @on-complete="onComplete" -->
-                  <Tab1 :item="item" @on-next="onTabChange" v-if="item" />
+                  <Tab1 :item="item" @on-next="onNextTab" v-if="item" />
 
-                  <!-- <Tab2 :item="item" :budget="budget" :errors="errors" /> -->
-                  <!-- 
-                  <Tab3 :tab_index="tab_index" :item="item" :budget="budget" /> -->
+                  <Tab2
+                    :item="item"
+                    @on-next="onNextTab"
+                    @on-previous="onPreviousTab"
+                    v-if="item"
+                  />
 
+                  <Tab3
+                    :item="item"
+                    @on-finish="onFinishTab"
+                    @on-previous="onPreviousTab"
+                    v-if="item"
+                  />
                   <template #footer="props">
+                    <div class="wizard-footer-left"></div>
+                    <div class="wizard-footer-right"></div>
+                  </template>
+
+                  <!-- <template #footer="props">
                     <div class="wizard-footer-left">
                       <button
                         v-if="props.activeTabIndex > 0"
@@ -55,35 +69,35 @@
                     </div>
 
                     <div class="wizard-footer-right">
-                      <!-- <button
+                      <button
                         v-if="!props.isLastStep"
                         @click.native="props.nextTab()"
                         class="btn btn-primary text-white"
                         :disabled="isLoading"
                       >
                         ถัดไป
-                      </button> -->
+                      </button>
 
-                      <!-- <button
+                      <button
                         v-else
                         @click.native="onComplete(0)"
                         class="btn btn-primary text-white"
                         :disabled="isLoading"
                       >
                         {{ props.isLastStep ? "บันทึก" : "Next" }}
-                      </button> -->
+                      </button>
 
-                      <!-- @click.native="onComplete(1)" -->
-                      <!-- <button
+                      @click.native="onComplete(1)"
+                      <button
                         v-if="props.isLastStep"
                         class="finish-button btn text-white ms-4"
                         style="background-color: green"
                         :disabled="isLoading"
                       >
                         {{ "ส่งข้อมูล" }}
-                      </button> -->
+                      </button>
                     </div>
-                  </template>
+                  </template> -->
                 </form-wizard>
               </div>
               <Preloader
@@ -157,6 +171,7 @@ export default defineComponent({
     const mainModalRef = ref<any>(null);
     const mainModalObj = ref<any>(null);
     const tab_index = ref(0);
+    const formStep = ref(null);
     const onTabChange = (prevIndex: number, nextIndex: number) => {
       tab_index.value = nextIndex;
     };
@@ -185,6 +200,13 @@ export default defineComponent({
           division_detail,
           advisor_detail,
           status_detail,
+          province_id,
+          province_detail,
+          district_id,
+          district_detail,
+          sub_district_id,
+          sub_district_detail,
+          photo_file,
         } = data.data;
 
         let prefix = advisor_detail.prefix ? advisor_detail.prefix : "อ.";
@@ -215,12 +237,23 @@ export default defineComponent({
             : null,
           faculty_name: faculty_detail.name,
           division_name: division_detail.name,
-          address_all: { id: 1, label: "Mr.John Doe" },
-        //   address all
+          address_all: {},
+          photo_file_old: photo_file,
         });
-        
 
-        console.log(item);
+        if (sub_district_id) {
+          item.address_all = {
+            province_id: province_id,
+            provicne_name: province_detail.name_th,
+            district_id: district_id,
+            district_name: district_detail.name_th,
+            sub_district_id: sub_district_id,
+            sub_district_name: sub_district_detail.name_th,
+            post_code: sub_district_detail.zip_code,
+            label: `${sub_district_detail.name_th} > ${district_detail.name_th} > ${province_detail.name_th} > ${sub_district_detail.zip_code}`,
+            // label: "พระบรมมหาราชวัง > เขตพระนคร > กรุงเทพมหานคร > 10200",
+          };
+        }
       } catch (error) {
         console.log(error);
       }
@@ -273,6 +306,19 @@ export default defineComponent({
       emit("close-modal");
     };
 
+    const onNextTab = () => {
+      //   this.$refs.wizard.nextTab();
+      formStep.value.nextTab();
+    };
+    const onPreviousTab = () => {
+      //   this.$refs.wizard.nextTab();
+      formStep.value.prevTab();
+    };
+
+    const onFinishTab = () => {
+      // formStep.value.prevTab();
+    };
+
     // Mounted
     onMounted(async () => {
       mainModalObj.value = new Modal(mainModalRef.value, {});
@@ -305,6 +351,10 @@ export default defineComponent({
       onTabChange,
       //   onComplete,
       onClose,
+      onNextTab,
+      onPreviousTab,
+      onFinishTab,
+      formStep,
     };
   },
 });

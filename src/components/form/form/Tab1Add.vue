@@ -7,6 +7,56 @@
           <span>หมายเหตุ : โปรดระบุข้อมูลให้ครบถ้วน</span>
         </div>
 
+        <div class="col-12 col-lg-3 mb-10">
+          <div style="cursor: pointer">
+            <img
+              v-if="previewPhoto"
+              :src="previewPhoto"
+              class="mt-5"
+              style="width: 200px"
+              @click="openFileInput"
+            />
+            <img
+              v-if="previewPhoto == null && item.photo_file_old != null"
+              :src="item.photo_file_old"
+              alt=""
+              class="mt-5"
+              style="width: 200px"
+              @click="openFileInput"
+            />
+
+            <img
+              v-if="previewPhoto == null && item.photo_file_old == null"
+              src="/media/avatars/blank.png"
+              alt=""
+              class="mt-5"
+              style="width: 200px"
+              @click="openFileInput"
+            />
+          </div>
+        </div>
+        <div class="col-12 col-lg-9">
+          <div class="mb-7 col-12 col-lg-12 mt-lg-10">
+            <label for="photo_file" class="required form-label"
+              >อัพโหลดรูปภาพนักศึกษา <br />ขนาด 1x1.5 นิ้ว <br />ไฟล์รูปภาพ PNG,
+              JPG</label
+            >
+            <input
+              type="file"
+              id="formFile"
+              name="photo_file"
+              accept="image/*"
+              @change="onPhotoFileChange"
+              ref="photoFile"
+              style="display: none"
+              :class="['form-control', { 'is-invalid': '' }]"
+            />
+            <!-- <span v-if="errorMessage" class="invalid-feedback">{{
+            errorMessage
+          }}</span> -->
+          </div>
+        </div>
+
         <CustomField
           v-for="field in fields"
           :key="field.name"
@@ -25,6 +75,23 @@
 
         <CustomField
           v-for="field in fields2"
+          :key="field.name"
+          :label="field.label"
+          :field="field.model"
+          :component-type="field.type"
+          :colClass="field.colClass"
+          :disabled="field.disabled"
+          :options="field.options"
+          :select_label="field.select_label"
+        />
+
+        <div class="separator separator-dashed mb-7"></div>
+        <div class="col-12 mb-6">
+          <h3>ผู้ที่ติดต่อได้</h3>
+        </div>
+
+        <CustomField
+          v-for="field in fields3"
           :key="field.name"
           :label="field.label"
           :field="field.model"
@@ -101,16 +168,13 @@ export default defineComponent({
     const { item } = toRefs(props);
     const userData = JSON.parse(localStorage.getItem("userData") || "{}");
     const isLoading = ref(true);
+    const photoFile = ref<any>(null);
+    const previewPhoto = ref<any>(null);
 
     const instance = getCurrentInstance();
     const dayjs = instance?.appContext.config.globalProperties.$dayjs;
 
     const selectOptions = ref({
-      province_alls: <any>[
-        { name: "ประเภท 1", id: 1 },
-        { name: "ประเภท 2", id: 2 },
-        { name: "ประเภท 3", id: 3 },
-      ],
       address_alls: <any>[],
       advisors: <any>[],
     });
@@ -241,6 +305,63 @@ export default defineComponent({
       },
     ]);
 
+    const fields3 = ref([
+      {
+        name: "contact1_name",
+        label: "ชื่อผู้ที่ติดต่อได้ คนที่ 1",
+        model: "contact1_name",
+        type: "text",
+        placeholder: "",
+        colClass: "col-lg-6",
+        disabled: false,
+      },
+      {
+        name: "contact1_relation",
+        label: "ความสัมพันธ์",
+        model: "contact1_relation",
+        type: "text",
+        placeholder: "",
+        colClass: "col-lg-3",
+        disabled: false,
+      },
+      {
+        name: "contact1_phone",
+        label: "เบอรโทรศัพท์",
+        model: "contact1_phone",
+        type: "text",
+        placeholder: "",
+        colClass: "col-lg-3",
+        disabled: false,
+      },
+      {
+        name: "contact2_name",
+        label: "ชื่อผู้ที่ติดต่อได้ คนที่ 2",
+        model: "contact2_name",
+        type: "text",
+        placeholder: "",
+        colClass: "col-lg-6",
+        disabled: false,
+      },
+      {
+        name: "contact2_relation",
+        label: "ความสัมพันธ์",
+        model: "contact2_relation",
+        type: "text",
+        placeholder: "",
+        colClass: "col-lg-3",
+        disabled: false,
+      },
+      {
+        name: "contact2_phone",
+        label: "เบอรโทรศัพท์",
+        model: "contact2_phone",
+        type: "text",
+        placeholder: "",
+        colClass: "col-lg-3",
+        disabled: false,
+      },
+    ]);
+
     const validationSchema = Yup.object().shape({
       prefix: Yup.string().required().label("คำนำหน้า"),
       firstname: Yup.string().required().label("ชื่อ"),
@@ -264,22 +385,48 @@ export default defineComponent({
         .typeError("ตัวเลขเท่านั้น")
         .required()
         .label("เกรดเฉลี่ยสะสม"),
-      //   address_all: Yup.object()
-      //     .required()
-      //     .label("จังหวัด/อำเภอ/ตำบล/รหัสไปรษณีย์"),
+      address_all: Yup.object()
+        .required()
+        .label("จังหวัด/อำเภอ/ตำบล/รหัสไปรษณีย์"),
+      contact1_name: Yup.string()
+        .required()
+        .label("ชื่อผู้ที่ติดต่อได้ คนที่ 1"),
+      contact1_relation: Yup.string().required().label("ความสัมพันธ์"),
+      contact1_phone: Yup.string().required().label("เบอร์โทรศัพท์"),
+      contact2_name: Yup.string()
+        .required()
+        .label("ชื่อผู้ที่ติดต่อได้ คนที่ 2"),
+      contact2_relation: Yup.string().required().label("ความสัมพันธ์"),
+      contact2_phone: Yup.string().required().label("เบอร์โทรศัพท์"),
+      photo_file: Yup.mixed().nullable().label("รูปภาพนักศึกษา"),
     });
 
     // Event
+    const openFileInput = () => {
+      photoFile.value.click();
+    };
+
+    const onPhotoFileChange = (event: any) => {
+      props.item.photo_file = event.target.files[0];
+      if (props.item.photo_file) {
+        previewPhoto.value = URL.createObjectURL(props.item.photo_file);
+      } else {
+        previewPhoto.value = null;
+      }
+    };
+
     const { handleSubmit, setValues } = useForm({
       validationSchema: validationSchema,
       initialValues: props.item,
     });
 
     const onSubmit = handleSubmit(async (values) => {
-      console.log("Form Submitted", values);
-      Object.assign(props.item, values);
-      //   console.log('Model Updated', props.model);
-
+      const { photo_file, ...otherValues } = values;
+      Object.assign(props.item, otherValues);
+      if (photo_file instanceof File) {
+        props.item.photo_file = photo_file;
+      }
+      
       const {
         prefix,
         firstname,
@@ -290,8 +437,16 @@ export default defineComponent({
         address,
         phone,
         email,
-        // address_all
+        address_all,
+        contact1_name,
+        contact1_relation,
+        contact1_phone,
+        contact2_name,
+        contact2_relation,
+        contact2_phone,
       } = item.value;
+
+      const { province_id, district_id, sub_district_id } = address_all;
 
       let data_send = {
         prefix,
@@ -303,22 +458,33 @@ export default defineComponent({
         address,
         phone,
         email,
-        // address_all,
+        province_id,
+        district_id,
+        sub_district_id,
+        contact1_name,
+        contact1_relation,
+        contact1_phone,
+        contact2_name,
+        contact2_relation,
+        contact2_phone,
+        photo_file:
+          props.item.photo_file.length != 0 ? props.item.photo_file : undefined,
       };
 
-      await ApiService.post(`student-profile/${item.value.id}`, {
+      await ApiService.putFormData(`student-profile/${item.value.id}`, {
         ...data_send,
       })
-        .then(({ data }) => {
-          if (data.msg != "success") {
+        .then(({ data, status }) => {
+          if (status != 200) {
             throw new Error("ERROR");
           }
+          emit("on-next");
         })
         .catch(({ response }) => {
           console.log(response);
         });
 
-      //   emit("on-next");
+      //
     });
 
     // const resetToInitial = () => {
@@ -344,7 +510,7 @@ export default defineComponent({
       );
 
       selectOptions.value.address_alls = await fetchAddressAlls({});
-
+      item.value.photo_file = [];
       isLoading.value = false;
     });
 
@@ -363,8 +529,13 @@ export default defineComponent({
       onSubmit,
       fields,
       fields2,
+      fields3,
       item,
       isLoading,
+      openFileInput,
+      photoFile,
+      previewPhoto,
+      onPhotoFileChange,
     };
   },
 });
