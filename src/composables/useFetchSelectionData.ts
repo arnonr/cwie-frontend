@@ -7,3 +7,10 @@ export const fetchTeachers = async (params: any) => {
 
   return data.data;
 };
+
+export const fetchAddressAlls = async (params: any) => {
+  const { data } = await ApiService.query("province/thailand", {
+    params: params,
+  });
+  return data.addresses;
+};

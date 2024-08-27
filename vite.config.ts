@@ -14,8 +14,8 @@ export default defineConfig({
       //   "~bootstrap": path.resolve(__dirname, "node_modules/bootstrap"),
     },
   },
-    base: "/",
-//   base: "/rp/",
+  base: "/",
+  //   base: "/rp/",
   build: {
     chunkSizeWarningLimit: 3000,
   },
@@ -26,5 +26,8 @@ export default defineConfig({
       "pdfmake/build/pdfmake",
       "pdfmake/build/vfs_fonts",
     ],
+  },
+  define: {
+    __VUE_PROD_HYDRATION_MISMATCH_DETAILS__: false, // กำหนดค่านี้เพื่อปรับปรุงการ tree-shaking ใน production
   },
 });

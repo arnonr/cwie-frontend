@@ -187,6 +187,8 @@ export default defineComponent({
           status_detail,
         } = data.data;
 
+        let prefix = advisor_detail.prefix ? advisor_detail.prefix : "อ.";
+
         Object.assign(item, {
           ...data.data,
           faculty_id: faculty_id
@@ -202,8 +204,9 @@ export default defineComponent({
             ? {
                 id: advisor_id,
                 name:
-                  advisor_detail.prefix +
+                  prefix +
                   advisor_detail.firstname +
+                  " " +
                   advisor_detail.surname,
               }
             : null,
@@ -212,9 +215,12 @@ export default defineComponent({
             : null,
           faculty_name: faculty_detail.name,
           division_name: division_detail.name,
+          address_all: { id: 1, label: "Mr.John Doe" },
+        //   address all
         });
+        
 
-        console.log(item.advisor_id)
+        console.log(item);
       } catch (error) {
         console.log(error);
       }

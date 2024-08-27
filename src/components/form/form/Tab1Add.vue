@@ -1,7 +1,7 @@
 <template>
   <tab-content title="ลำดับที่ 1">
     <form @submit.prevent="onSubmit">
-      <div class="row" v-if="item.id">
+      <div class="row" v-if="item.id && isLoading == false">
         <div class="col-12 mb-6">
           <h3>ข้อมูลทั่วไป</h3>
           <span>หมายเหตุ : โปรดระบุข้อมูลให้ครบถ้วน</span>
@@ -31,6 +31,8 @@
           :component-type="field.type"
           :colClass="field.colClass"
           :disabled="field.disabled"
+          :options="field.options"
+          :select_label="field.select_label"
         />
       </div>
 
@@ -60,7 +62,6 @@
 import {
   defineComponent,
   ref,
-  reactive,
   onMounted,
   toRefs,
   onBeforeUnmount,
@@ -76,7 +77,10 @@ import * as Yup from "yup";
 // Import FormWizard
 import { TabContent } from "vue3-form-wizard";
 // Use Composables
-import { fetchTeachers } from "@/composables/useFetchSelectionData";
+import {
+  fetchTeachers,
+  fetchAddressAlls,
+} from "@/composables/useFetchSelectionData";
 // Components
 import CustomField from "@/Components/field/CustomField.vue";
 
@@ -107,6 +111,7 @@ export default defineComponent({
         { name: "ประเภท 2", id: 2 },
         { name: "ประเภท 3", id: 3 },
       ],
+      address_alls: <any>[],
       advisors: <any>[],
     });
 
@@ -195,7 +200,7 @@ export default defineComponent({
       },
     ]);
 
-    const fields2 = [
+    const fields2 = ref([
       {
         name: "address",
         label: "ที่อยู่ปัจจุบัน เช่น บ้านเลขที่ หมู่บ้าน ซอย ถนน",
@@ -227,13 +232,14 @@ export default defineComponent({
         name: "address_all",
         label: "จังหวัด/อำเภอ/ตำบล/รหัสไปรษณีย์",
         model: "address_all",
+        select_label: "label",
         type: "v-select",
-        options: [],
+        options: computed(() => selectOptions.value.address_alls),
         placeholder: "",
         colClass: "col-lg-12",
         disabled: false,
       },
-    ];
+    ]);
 
     const validationSchema = Yup.object().shape({
       prefix: Yup.string().required().label("คำนำหน้า"),
@@ -269,48 +275,48 @@ export default defineComponent({
       initialValues: props.item,
     });
 
-    const onSubmit = handleSubmit((values) => {
+    const onSubmit = handleSubmit(async (values) => {
       console.log("Form Submitted", values);
-      //   Object.assign(props.model, values);
+      Object.assign(props.item, values);
       //   console.log('Model Updated', props.model);
 
-      //   const {
-      //     prefix,
-      //     firstname,
-      //     surname,
-      //     class_year,
-      //     advisor_id,
-      //     gpa,
-      //     address,
-      //     phone,
-      //     email,
-      //     // address_all
-      //   } = item.value;
+      const {
+        prefix,
+        firstname,
+        surname,
+        class_year,
+        advisor_id,
+        gpa,
+        address,
+        phone,
+        email,
+        // address_all
+      } = item.value;
 
-      //   let data_send = {
-      //     prefix,
-      //     firstname,
-      //     surname,
-      //     class_year,
-      //     advisor_id: advisor_id?.id,
-      //     gpa,
-      //     address,
-      //     phone,
-      //     email,
-      //     // address_all,
-      //   };
+      let data_send = {
+        prefix,
+        firstname,
+        surname,
+        class_year,
+        advisor_id: advisor_id?.id,
+        gpa,
+        address,
+        phone,
+        email,
+        // address_all,
+      };
 
-      //   console.log(item);
-
-      //   await ApiService.put(`student-profile/${item.value.id}`, { ...data_send })
-      //     .then(({ data }) => {
-      //       if (data.msg != "success") {
-      //         throw new Error("ERROR");
-      //       }
-      //     })
-      //     .catch(({ response }) => {
-      //       console.log(response);
-      //     });
+      await ApiService.post(`student-profile/${item.value.id}`, {
+        ...data_send,
+      })
+        .then(({ data }) => {
+          if (data.msg != "success") {
+            throw new Error("ERROR");
+          }
+        })
+        .catch(({ response }) => {
+          console.log(response);
+        });
 
       //   emit("on-next");
     });
@@ -336,6 +342,9 @@ export default defineComponent({
           return { id: x.id, name: x.fullname };
         }
       );
+
+      selectOptions.value.address_alls = await fetchAddressAlls({});
+
       isLoading.value = false;
     });
 
@@ -355,6 +364,7 @@ export default defineComponent({
       fields,
       fields2,
       item,
+      isLoading,
     };
   },
 });

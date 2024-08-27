@@ -13,7 +13,6 @@
       :disabled="disabled"
       :class="['form-control', { 'is-invalid': errorMessage }]"
     />
-
     <v-select
       v-else
       :id="field"
@@ -22,7 +21,7 @@
       :placeholder="placeholder"
       @blur="onBlur"
       :disabled="disabled"
-      label="name"
+      :label="select_label"
       :options="options"
       :clearable="true"
       :class="['form-control', { 'is-invalid': errorMessage }]"
@@ -74,6 +73,10 @@ export default {
     disabled: {
       type: Boolean,
       default: false,
+    },
+    select_label: {
+      type: String,
+      default: "name",
     },
   },
   setup(props) {
