@@ -15,7 +15,6 @@
           :component-type="field.type"
           :colClass="field.colClass"
           :disabled="field.disabled"
-          :options="field.options"
         />
 
         <div class="row">
@@ -33,7 +32,7 @@
               ref="submitButtonRef"
               type="submit"
               id="kt_modal_new_address_submit"
-              class="btn btn-primary"
+              class="btn btn-success"
             >
               <span class="indicator-label"> ถัดไป </span>
               <span class="indicator-progress">

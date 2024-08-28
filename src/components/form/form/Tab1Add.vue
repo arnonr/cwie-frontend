@@ -26,8 +26,8 @@
             />
 
             <img
-              v-if="previewPhoto == null && item.photo_file_old == null"
               src="/media/avatars/blank.png"
+              v-if="previewPhoto == null && item.photo_file_old == null"
               alt=""
               class="mt-5"
               style="width: 200px"
@@ -98,9 +98,9 @@
           :component-type="field.type"
           :colClass="field.colClass"
           :disabled="field.disabled"
-          :options="field.options"
-          :select_label="field.select_label"
         />
+        <!-- :options="field.options"
+          :select_label="field.select_label" -->
       </div>
 
       <div class="row">
@@ -109,7 +109,7 @@
             ref="submitButtonRef"
             type="submit"
             id="kt_modal_new_address_submit"
-            class="btn btn-primary"
+            class="btn btn-success"
           >
             <span class="indicator-label"> ถัดไป </span>
             <span class="indicator-progress">
@@ -150,6 +150,7 @@ import {
 } from "@/composables/useFetchSelectionData";
 // Components
 import CustomField from "@/Components/field/CustomField.vue";
+import useToast from "@/composables/useToast";
 
 export default defineComponent({
   name: "student-profile-form-tab1",
@@ -422,11 +423,20 @@ export default defineComponent({
 
     const onSubmit = handleSubmit(async (values) => {
       const { photo_file, ...otherValues } = values;
+
       Object.assign(props.item, otherValues);
       if (photo_file instanceof File) {
         props.item.photo_file = photo_file;
       }
-      
+
+      if (
+        item.value.photo_file_old == null &&
+        props.item.photo_file.length == 0
+      ) {
+        useToast("รูปภาพ จำเป็นต้องอัพโหลด", "error");
+        return;
+      }
+
       const {
         prefix,
         firstname,

@@ -171,7 +171,7 @@ export default defineComponent({
     const mainModalRef = ref<any>(null);
     const mainModalObj = ref<any>(null);
     const tab_index = ref(0);
-    const formStep = ref(null);
+    const formStep = ref<any>(null);
     const onTabChange = (prevIndex: number, nextIndex: number) => {
       tab_index.value = nextIndex;
     };
@@ -264,39 +264,6 @@ export default defineComponent({
     //     console.log(type)
     // };
 
-    const onSubmit = async () => {
-      let data_item: any = {
-        title_th: item.title_th,
-        title_en: item.title_en,
-        abstract: item.abstract,
-        keyword: item.keyword,
-        department_id: item.department_id?.id,
-        paper_type_id: item.paper_type_id?.id,
-        paper_kind_id: item.paper_kind_id?.id,
-        history: item.history,
-        objective: item.objective,
-        scope: item.scope,
-        review_literature: item.review_literature,
-        method: item.method,
-        benefit: item.benefit,
-        location: item.location,
-        references: item.references,
-        user_id: userData.id,
-      };
-
-      await ApiService.put("student-profile/" + item.id, data_item)
-        .then(({ data }) => {
-          if (data.msg != "success") {
-            throw new Error("ERROR");
-          }
-
-          item.id = data.id;
-        })
-        .catch(({ response }) => {
-          console.log(response);
-        });
-    };
-
     // UI Event
     const onClose = ({ reload = false }: { reload?: boolean }) => {
       mainModalObj.value.hide();
@@ -307,16 +274,16 @@ export default defineComponent({
     };
 
     const onNextTab = () => {
-      //   this.$refs.wizard.nextTab();
       formStep.value.nextTab();
     };
     const onPreviousTab = () => {
-      //   this.$refs.wizard.nextTab();
       formStep.value.prevTab();
     };
 
     const onFinishTab = () => {
-      // formStep.value.prevTab();
+      emit("reload");
+      emit("close-modal");
+      useToast("อัพเดทข้อมูลส่วนตัวเสร็จสิ้น", "success");
     };
 
     // Mounted

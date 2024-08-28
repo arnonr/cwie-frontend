@@ -17,6 +17,7 @@
               <button
                 class="btn btn-outline btn-outline-primary me-2 pe-sm-3 ps-sm-5"
                 @click="onEditStudentProfileModal"
+                :disabled="student_profile_item.status_id == 1 ? false : true"
               >
                 <i class="fa fa-edit"></i>
                 <span class="d-none d-lg-inline-block">กรอกข้อมูลส่วนตัว</span>
@@ -37,6 +38,7 @@
           <button
             class="btn btn-outline btn-outline-primary me-2 pe-sm-3 ps-sm-5"
             @click="onAddFormModal"
+            :disabled="student_profile_item.status_id == 1 ? false : true"
           >
             <i class="bi bi-file-earmark-plus-fill fs-4"></i>
             <span class="d-none d-lg-inline-block ms-2">กรอกใบสมัคร</span>
@@ -246,6 +248,21 @@ export default defineComponent({
       );
 
       student_profile_item.value = data.data;
+
+      let prefix: any = "";
+      if (student_profile_item.value.advisor_detail.firstname) {
+        prefix =
+          student_profile_item.value.advisor_detail.prefix != null
+            ? student_profile_item.value.advisor_detail.prefix
+            : "อ.";
+      }
+
+      student_profile_item.value.advisor_fullname =
+        prefix +
+        student_profile_item.value.advisor_detail?.firstname +
+        " " +
+        student_profile_item.value.advisor_detail?.surname;
+
       isLoading.value = false;
     };
 

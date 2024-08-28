@@ -6,20 +6,38 @@
           <h3>ข้อมูลเอกสาร</h3>
           <span>หมายเหตุ : โปรดระบุข้อมูลให้ครบถ้วน</span>
         </div>
-
-        <CustomField
-          v-for="field in fields"
-          :key="field.name"
-          :label="field.label"
-          :field="field.model"
-          :component-type="field.type"
-          :colClass="field.colClass"
-          :disabled="field.disabled"
-          :options="field.options"
-        />
+        <div
+          class="mb-7 col-12 col-lg-12"
+          v-for="(d, idx) in documents"
+          :key="d.document_type_id"
+        >
+          <label for="" class="required form-label">{{
+            d.document_name
+          }}</label>
+          <div class="row">
+            <div class="col-10 col-lg-10">
+              <input
+                type="file"
+                @change="handleFileChange($event, idx)"
+                :class="['form-control', { 'is-invalid': d.errors }]"
+              />
+            </div>
+            <div class="col-2 col-lg-2">
+              <a
+                v-if="d.document_file_old"
+                :href="d.document_file_old"
+                target="_blank"
+                class="btn btn-info ms-2"
+              >
+                <i class="fa fa-download"></i>
+              </a>
+            </div>
+          </div>
+          <span v-if="d.errors" class="text-danger">{{ d.errors }}</span>
+        </div>
 
         <div class="row">
-          <div class="d-flex justify-content-between w-100">
+          <div class="d-flex justify-content-between w-100 mt-10">
             <button type="button" class="btn btn-info" @click="onPrevious()">
               <span class="indicator-label"> ย้อนกลับ </span>
               <span class="indicator-progress">
@@ -33,9 +51,9 @@
               ref="submitButtonRef"
               type="submit"
               id="kt_modal_new_address_submit"
-              class="btn btn-primary"
+              class="btn btn-success"
             >
-              <span class="indicator-label"> ถัดไป </span>
+              <span class="indicator-label"> บันทึก </span>
               <span class="indicator-progress">
                 Please wait...
                 <span
@@ -57,22 +75,16 @@ import {
   onMounted,
   toRefs,
   onBeforeUnmount,
-  getCurrentInstance,
-  computed,
-  watch,
+  reactive,
 } from "vue";
 
 import ApiService from "@/core/services/ApiService";
+import useToast from "@/composables/useToast";
 // Vee validate
 import { useForm } from "vee-validate";
 import * as Yup from "yup";
 // Import FormWizard
 import { TabContent } from "vue3-form-wizard";
-// Use Composables
-import {
-  fetchTeachers,
-  fetchAddressAlls,
-} from "@/composables/useFetchSelectionData";
 // Components
 import CustomField from "@/Components/field/CustomField.vue";
 
@@ -91,168 +103,151 @@ export default defineComponent({
   setup(props, { emit }) {
     // Variable
     const { item } = toRefs(props);
-    const userData = JSON.parse(localStorage.getItem("userData") || "{}");
     const isLoading = ref(true);
-
-    const instance = getCurrentInstance();
-    const dayjs = instance?.appContext.config.globalProperties.$dayjs;
-
     const selectOptions = ref({
-      address_alls: <any>[],
-      advisors: <any>[],
+      document_types: [],
     });
-
-    const fields = ref([
-      {
-        name: "blood_group",
-        label: "กลุ่มเลือด",
-        model: "blood_group",
-        type: "text",
-        placeholder: "",
-        colClass: "col-lg-3",
-        disabled: false,
-      },
-      {
-        name: "height",
-        label: "ส่วนสูง (ซม.)",
-        model: "height",
-        type: "text",
-        placeholder: "",
-        colClass: "col-lg-3",
-        disabled: false,
-      },
-      {
-        name: "weight",
-        label: "น้ำหนัก (กก.)",
-        model: "weight",
-        type: "text",
-        placeholder: "",
-        colClass: "col-lg-3",
-        disabled: false,
-      },
-      {
-        name: "emergency_phone",
-        label: "เบอร์โทรศัพท์ฉุกเฉิน",
-        model: "emergency_phone",
-        type: "text",
-        placeholder: "",
-        colClass: "col-lg-3",
-        disabled: false,
-      },
-      {
-        name: "congenital_disease",
-        label: "โรคประจำตัว (กรณีไม่มีข้อมูลให้ทำการใช้เครื่องหมาย '-')",
-        model: "congenital_disease",
-        type: "textArea",
-        placeholder: "",
-        colClass: "col-lg-12",
-        disabled: false,
-      },
-      {
-        name: "drug_allergy",
-        label: "ประวัติการแพ้ยา (กรณีไม่มีข้อมูลให้ทำการใช้เครื่องหมาย '-')",
-        model: "drug_allergy",
-        type: "textArea",
-        placeholder: "",
-        colClass: "col-lg-12",
-        disabled: false,
-      },
-    ]);
+    const documents = ref<any>([]);
 
     const validationSchema = Yup.object().shape({
-      blood_group: Yup.string().required().label("กลุ่มเลือด"),
-      height: Yup.number()
-        .typeError("ตัวเลขเท่านั้น")
-        .required()
-        .label("ส่วนสูง"),
-      weight: Yup.number()
-        .typeError("ตัวเลขเท่านั้น")
-        .required()
-        .label("น้ำหนัก"),
-      emergency_phone: Yup.string()
-        .matches(/^[0-9]{10}$/, "เบอร์โทรศัพท์ฉุกเฉิน")
-        .required()
-        .label("โทรศัพท์มือถือ"),
-      congenital_disease: Yup.string().required().label("โรคประจำตัว"),
-      drug_allergy: Yup.string().required().label("ประวัติการแพ้ยา"),
+      //   document_1: Yup.mixed().required().label("ใบเกรด"),
+      //   document_2: Yup.mixed().required().label("Resume"),
     });
 
-    // Event
-    const { handleSubmit, setValues } = useForm({
-      validationSchema: validationSchema,
-      initialValues: props.item,
-    });
+    // fetch
+    const fetchDocumentTypes = async () => {
+      try {
+        const { data } = await ApiService.query("document-type/", {
+          params: {
+            is_active: true,
+          },
+        });
+        selectOptions.value.document_types = data.data;
+        documents.value = selectOptions.value.document_types.map((d: any) => {
+          return reactive({
+            id: null,
+            document_file: null,
+            document_file_old: ref(null),
+            document_type_id: d.id,
+            document_name: d.name,
+            student_id: item.value.id,
+            errors: "",
+          });
+        });
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    fetchDocumentTypes();
 
-    const onSubmit = handleSubmit(async (values) => {
-      console.log("Form Submitted", values);
-      Object.assign(props.item, values);
-      const {
-        blood_group,
-        height,
-        weight,
-        emergency_phone,
-        congenital_disease,
-        drug_allergy,
-      } = item.value;
-
-      let data_send = {
-        blood_group,
-        height,
-        weight,
-        emergency_phone,
-        congenital_disease,
-        drug_allergy,
-      };
-
-      await ApiService.post(`student-profile/${item.value.id}`, {
-        ...data_send,
-      })
-        .then(({ data }) => {
-          if (data.msg != "success") {
-            throw new Error("ERROR");
-          }
-
-          emit("on-next");
-        })
-        .catch(({ response }) => {
-          console.log(response);
+    const fetchDocuments = async () => {
+      try {
+        const { data } = await ApiService.query("document/", {
+          params: {
+            student_id: item.value.id,
+            is_active: true,
+          },
         });
 
-      //
-    });
+        documents.value = documents.value.map((d: any) => {
+          let index = data.data.find((e: any) => {
+            return d.document_type_id == e.document_type_id;
+          });
+          if (index) {
+            d.id = index.id;
+            d.document_file_old = index.document_file;
+            d.document_file = [];
+          }
+
+          return d;
+        });
+
+        console.log(documents.value);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    // Event
+    const onSubmit = async () => {
+      let check = true;
+      documents.value.forEach((el: any) => {
+        if (el.document_file == null && el.document_file_old == null) {
+          el.errors = el.document_name + " is a required field";
+          check = false;
+        }
+      });
+
+      if (!check) {
+        return;
+      }
+      try {
+        for (let index = 0; index < documents.value.length; index++) {
+          let data_send = {
+            document_name: documents.value[index].document_name,
+            document_file:
+              documents.value[index].document_file.length != 0
+                ? documents.value[index].document_file
+                : undefined,
+            student_id: documents.value[index].student_id,
+            document_type_id: documents.value[index].document_type_id,
+          };
+
+          if (documents.value[index].document_file.length != 0) {
+            let url =
+              documents.value[index].id != null
+                ? `document/${documents.value[index].id}`
+                : "document";
+            await ApiService.putFormData(url, {
+              ...data_send,
+            })
+              .then(({ data, status }) => {
+                if (status != 200) {
+                  throw new Error("ERROR");
+                }
+              })
+              .catch(({ response }) => {
+                console.log(response);
+              });
+          }
+        }
+
+        emit("on-finish");
+      } catch (error) {
+        console.log(error);
+      }
+    };
 
     const onPrevious = () => {
       emit("on-previous");
     };
 
-    // const resetToInitial = () => {
-    //   setValues(props.model);
-    // };
+    const handleFileChange = (event: any, idx: any) => {
+      const file = event.target.files[0];
+      if (file) {
+        documents.value[idx].errors = "";
+        documents.value[idx].document_file = file;
+      }
+    };
 
     // Mounted
     onMounted(async () => {
       isLoading.value = true;
+      await fetchDocuments();
 
       isLoading.value = false;
     });
 
     onBeforeUnmount(() => {});
 
-    // watch(
-    //   () => props.item,
-    //   (newValue) => {
-    //     setValues(newValue);
-    //   }
-    // );
-
     // Return
     return {
-      selectOptions,
       onSubmit,
-      fields,
       item,
       isLoading,
       onPrevious,
+      documents,
+      handleFileChange,
     };
   },
 });

@@ -30,7 +30,7 @@
           <div class="content-detail row">
             <div class="col-md-6">
               <span>อาจารย์ที่ปรึกษา : </span>
-              <span>{{ item.advisor?.firstname }}</span>
+              <span>{{ item.advisor_fullname }}</span>
             </div>
             <div class="col-md-6">
               <span>เกรดเฉลี่ย : </span>
@@ -51,15 +51,19 @@
             </div>
             <div class="col-md-4">
               <span>จังหวัด : </span>
-              <span>{{ item.province?.name_th }}</span>
+              <span>{{ item.province_detail?.name_th }}</span>
             </div>
             <div class="col-md-4">
               <span>อำเภอ : </span>
-              <span>{{ item.district?.name_th }}</span>
+              <span>{{ item.district_detail?.name_th }}</span>
             </div>
             <div class="col-md-4">
               <span>ตำบล : </span>
-              <span>{{ item.sub_district?.name_th }}</span>
+              <span>{{ item.sub_district_detail?.name_th }}</span>
+            </div>
+            <div class="col-md-4">
+              <span>รหัสไปรษณีย์ : </span>
+              <span> {{ item.sub_district_detail?.zip_code }}</span>
             </div>
             <div class="col-md-4">
               <span>เบอร์โทรศัพท์ : </span>
