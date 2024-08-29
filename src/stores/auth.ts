@@ -28,7 +28,6 @@ export const useAuthStore = defineStore("auth", () => {
     user.value = authUser;
     errors.value = {};
     JwtService.saveToken(user.value.token);
-    console.log(user.value);
     isAdmin.value = user.value.level == 1 ? true : false;
     // JwtService.saveToken(user.value.api_token);
   }

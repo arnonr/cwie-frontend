@@ -162,7 +162,6 @@ export default defineComponent({
           return d;
         });
 
-        console.log(documents.value);
       } catch (error) {
         console.log(error);
       }

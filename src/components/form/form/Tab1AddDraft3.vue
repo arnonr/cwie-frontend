@@ -415,7 +415,6 @@ export default defineComponent({
       );
       isLoading.value = false;
 
-      console.log(item.value);
     });
 
     onBeforeUnmount(() => {});

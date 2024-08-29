@@ -76,7 +76,9 @@
                     >ประวัติการ Comment</a
                   >
                 </li>
-                <li v-if="it.form_status_id == 1 || it.form_status_id == 3">
+                <!-- <li v-if="it.form_status_id == 1 || it.form_status_id == 3"> -->
+
+                <li v-if="it.form_status_id == 1 || it.form_status_id == 2">
                   <a
                     class="dropdown-item cursor-pointer"
                     @click="
@@ -176,7 +178,6 @@ export default defineComponent({
     let { statuses } = useStatusData();
     const userData = JSON.parse(localStorage.getItem("userData") || "{}");
 
-    console.log(paginationData.value);
 
     const headerColumn = [
       { column_name: "sended_at", title: "วันที่ส่งใบสมัคร", sort: true },

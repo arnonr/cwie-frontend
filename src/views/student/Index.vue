@@ -17,7 +17,12 @@
               <button
                 class="btn btn-outline btn-outline-primary me-2 pe-sm-3 ps-sm-5"
                 @click="onEditStudentProfileModal"
-                :disabled="student_profile_item.status_id == 1 ? false : true"
+                :disabled="
+                  student_profile_item.status_id == 1 ||
+                  student_profile_item.status_id == 2
+                    ? false
+                    : true
+                "
               >
                 <i class="fa fa-edit"></i>
                 <span class="d-none d-lg-inline-block">กรอกข้อมูลส่วนตัว</span>
@@ -101,13 +106,6 @@
               </li>
             </ul>
           </div>
-
-          <!-- <button
-            class="btn btn-outline btn-outline-danger me-2 pe-sm-3 ps-sm-5"
-          >
-            <i class="bi bi-file-earmark-plus-fill fs-4"></i>
-            <span class="d-none d-lg-inline-block ms-2">ยกเลิกใบสมัคร</span>
-          </button> -->
         </div>
       </div>
       <div
@@ -124,7 +122,7 @@
           @update:perPage="paginationData.perPage = $event"
           @sort="(key: any) => {
             sortedItems(key)}"
-          @edit="(it: any) => {onFormDetailModal(it.id)}"
+          @edit="(it: any) => {onEditFormModal(it)}"
           @detail="(it: any) => {onFormDetailModal(it) }"
           @cancel="(it: any) => {onFormCancel(it) }"
           @history-reject="(it: any) =>{ onHistoryRejectModal(it)}"
@@ -177,14 +175,30 @@
         />
       </div>
 
-      <!-- Detail Form Modal -->
-      <div id="detail-form-modal">
-        <DetailFormPage
-          v-if="openDetailFormModal == true"
-          :id="item.id"
+      <!-- Edit Form Modal -->
+      <div id="edit-form-modal">
+        <AddFormPage
+          v-if="openEditFormModal == true"
+          :student_profile="student_profile_item"
+          @reload="fetchStudentProfile()"
           @close-modal="
             () => {
-              openDetailFormModal = false;
+              openAddFormModal = false;
+            }
+          "
+        />
+      </div>
+
+      <!-- Detail Form Modal -->
+      <div id="detail-form-modal">
+        <EditFormPage
+          v-if="openEditFormModal == true"
+          :student_profile="student_profile_item"
+          :id="item.id"
+          @reload="fetchStudentProfile()"
+          @close-modal="
+            () => {
+              openEditFormModal = false;
             }
           "
         />
@@ -222,6 +236,7 @@ import Preloader from "@/components/preloader/Preloader.vue";
 import DetailPage from "@/views/paper/DetailModal.vue";
 import EditStudentProfilePage from "@/views/student/Edit.vue";
 import AddFormPage from "@/views/form/Add.vue";
+import EditFormPage from "@/views/form/Edit.vue";
 import DetailFormPage from "@/views/form/Detail.vue";
 import HistoryRejectPage from "@/views/form/HistoryRejectModal.vue"; // ประวัติการแก้ไข
 
@@ -237,6 +252,7 @@ export default defineComponent({
     EditStudentProfilePage,
     HistoryRejectPage,
     AddFormPage,
+    EditFormPage,
     DetailFormPage,
   },
   setup() {
@@ -316,7 +332,6 @@ export default defineComponent({
         });
 
         documents.value = data.data;
-        console.log(documents.value);
       } catch (error) {
         console.log(error);
       }
@@ -341,8 +356,8 @@ export default defineComponent({
       isLoading.value = true;
       const params = {
         student_id: userData.student_profile.id,
-        orderBy: 'id',
-        order: 'desc',
+        orderBy: "id",
+        order: "desc",
       };
 
       const { data } = await ApiService.query("form", {

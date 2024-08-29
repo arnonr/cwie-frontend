@@ -210,7 +210,6 @@ export default defineComponent({
     // Variable
     const { item } = toRefs(props);
 
-    console.log(item.value);
     const instance = getCurrentInstance();
     const dayjs = instance?.appContext.config.globalProperties.$dayjs;
 
@@ -398,7 +397,6 @@ export default defineComponent({
 
     // Event
     const onSubmit = async () => {
-      console.log("FREEDOM");
       //   nextTab emit ไปที่ parent
       emit("on-next");
     };
