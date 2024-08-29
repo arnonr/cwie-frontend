@@ -177,20 +177,6 @@
 
       <!-- Edit Form Modal -->
       <div id="edit-form-modal">
-        <AddFormPage
-          v-if="openEditFormModal == true"
-          :student_profile="student_profile_item"
-          @reload="fetchStudentProfile()"
-          @close-modal="
-            () => {
-              openAddFormModal = false;
-            }
-          "
-        />
-      </div>
-
-      <!-- Detail Form Modal -->
-      <div id="detail-form-modal">
         <EditFormPage
           v-if="openEditFormModal == true"
           :student_profile="student_profile_item"
@@ -199,6 +185,21 @@
           @close-modal="
             () => {
               openEditFormModal = false;
+            }
+          "
+        />
+      </div>
+
+      <!-- Detail Form Modal -->
+      <div id="detail-form-modal">
+        <DetailFormPage
+          v-if="openDetailFormModal == true"
+          :student_profile="student_profile_item"
+          :id="item.id"
+          @reload="fetchStudentProfile()"
+          @close-modal="
+            () => {
+              openDetailFormModal = false;
             }
           "
         />
