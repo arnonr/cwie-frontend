@@ -126,7 +126,8 @@
             sortedItems(key)}"
           @edit="(it: any) => {onFormDetailModal(it.id)}"
           @detail="(it: any) => {onFormDetailModal(it) }"
-          @history-detail="(it: any) =>{ onHistoryRejectModal(it)}"
+          @cancel="(it: any) => {onFormCancel(it) }"
+          @history-reject="(it: any) =>{ onHistoryRejectModal(it)}"
         />
       </div>
       <!-- <div class="card-body d-lg-none">
@@ -188,6 +189,19 @@
           "
         />
       </div>
+
+      <!-- History Reject Modal -->
+      <div id="history-reject-modal">
+        <HistoryRejectPage
+          v-if="openHistoryRejectModal == true"
+          :id="item.id"
+          @close-modal="
+            () => {
+              openHistoryRejectModal = false;
+            }
+          "
+        />
+      </div>
     </div>
   </div>
 </template>
@@ -209,7 +223,7 @@ import DetailPage from "@/views/paper/DetailModal.vue";
 import EditStudentProfilePage from "@/views/student/Edit.vue";
 import AddFormPage from "@/views/form/Add.vue";
 import DetailFormPage from "@/views/form/Detail.vue";
-import HistoryRejectPage from "@/views/paper/HistoryDetailModal.vue"; // ประวัติการแก้ไข
+import HistoryRejectPage from "@/views/form/HistoryRejectModal.vue"; // ประวัติการแก้ไข
 
 export default defineComponent({
   name: "student",
@@ -445,6 +459,29 @@ export default defineComponent({
       openHistoryRejectModal.value = true;
     };
 
+    const onFormCancel = async (it: any) => {
+      await ApiService.delete("form/cancel/" + it.id);
+
+      await ApiService.post(
+        `student-profile/${student_profile_item.value.id}`,
+        {
+          status_id: 1,
+        }
+      )
+        .then(({ status }) => {
+          if (status != 200) {
+            throw new Error("ERROR");
+          }
+        })
+        .catch(({ response }) => {
+          console.log(response);
+        });
+
+      useToast("ยกเลิกใบสมัครเสร็จสิ้น", "success");
+
+      //
+    };
+
     // Mounted
     onMounted(() => {
       fetchStudentProfile();
@@ -484,6 +521,7 @@ export default defineComponent({
       onAddFormModal,
       onFormDetailModal,
       onEditFormModal,
+      onFormCancel,
     };
   },
 });

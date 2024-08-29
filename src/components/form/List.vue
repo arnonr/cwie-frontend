@@ -76,10 +76,9 @@
                     >ประวัติการ Comment</a
                   >
                 </li>
-                <li>
+                <li v-if="it.form_status_id == 1 || it.form_status_id == 3">
                   <a
                     class="dropdown-item cursor-pointer"
-                    v-if="it.form_status_id == 1 || it.form_status_id == 2"
                     @click="
                       handleEdit({
                         id: it.id,
@@ -91,9 +90,9 @@
                 <li>
                   <a
                     class="dropdown-item cursor-pointer"
-                    v-if="it.form_status_id == 1 || it.form_status_id == 2"
+                    v-if="it.form_status_id < 8 && it.form_status_id != 99"
                     @click="
-                      handleEdit({
+                      handleCancel({
                         id: it.id,
                       })
                     "
@@ -137,6 +136,8 @@ import dayjs from "dayjs";
 import "dayjs/locale/th";
 import buddhistEra from "dayjs/plugin/buddhistEra";
 dayjs.extend(buddhistEra);
+
+import Swal from "sweetalert2/dist/sweetalert2.js";
 
 // Import Pagination
 import BlogPagination from "@/components/common/pagination/BlogPagination.vue";
@@ -206,7 +207,27 @@ export default defineComponent({
     };
 
     const handleHistoryDetail = (item: any) => {
-      emit("history-detail", item);
+      emit("history-reject", item);
+    };
+    const handleCancel = (item: any) => {
+      Swal.fire({
+        title: "ยืนยันการยกเลิกใบสมัคร",
+        text: "เมื่อยกเลิกใบสมัครจะไม่สามารถกลับมาแก้ไขได้",
+        icon: "warning",
+        buttonsStyling: false,
+        showCancelButton: true,
+        confirmButtonText: "ยืนยัน",
+        cancelButtonText: "ยกเลิก",
+        heightAuto: false,
+        customClass: {
+          confirmButton: "btn btn-success",
+          cancelButton: "btn btn-info",
+        },
+      }).then(async (result: any) => {
+        if (result.isConfirmed) {
+          emit("cancel", item);
+        }
+      });
     };
 
     const convertStatus = (status: any) => {
@@ -237,6 +258,7 @@ export default defineComponent({
       handleDetail,
       handleEdit,
       handleHistoryDetail,
+      handleCancel,
       convertDate: useDateData().convertDate,
       convertStatus,
       updateCurrentPage,
