@@ -149,30 +149,22 @@
       <div class="tab-pane fade" id="tab3">
         <div>
           <div class="header-detail my-6">
-            <h6><i class="fas fa-certificate"></i> ประกาศนียบัตร</h6>
-          </div>
-          <div class="content-detail row">
-            <div class="col-md-12">
-              <span>1. </span>
-              <span>{{ item.blood_group }}</span>
-            </div>
-          </div>
-          <div class="separator separator-dotted my-2"></div>
-          <div class="header-detail my-6">
             <h6><i class="fas fa-file-alt"></i> เอกสาร</h6>
           </div>
           <div class="content-detail row">
-            <div class="col-md-12 p-2">
-              <span>ใบเกรด : </span>
-              <button class="btn btn-sm btn-outline btn-outline-primary">
+            <div
+              class="col-md-12 p-2"
+              v-for="d in documents"
+              :key="d.document_type_id"
+            >
+              <span>{{ d.document_name }}: </span>
+              <a
+                class="btn btn-sm btn-outline btn-outline-primary"
+                target="_blank"
+                :href="d.document_file"
+              >
                 <i class="fa fa-file"></i> Preview
-              </button>
-            </div>
-            <div class="col-md-12">
-              <span class="me-2">เรซูเม่ : </span>
-              <button class="btn btn-sm btn-outline btn-outline-primary">
-                <i class="fa fa-file"></i> Preview
-              </button>
+              </a>
             </div>
             <div class="separator separator-dotted my-2"></div>
           </div>
@@ -189,6 +181,7 @@ export default defineComponent({
   name: "student-profile-card",
   props: {
     item: { type: Object },
+    documents: { type: Object },
   },
   components: {},
 });

@@ -14,3 +14,19 @@ export const fetchAddressAlls = async (params: any) => {
   });
   return data.addresses;
 };
+
+export const fetchCompanies = async (params: any) => {
+  const { data } = await ApiService.query("company", {
+    params: params,
+  });
+
+  return data.data;
+};
+
+export const fetchSemesters = async (params: any) => {
+  const { data } = await ApiService.query("semester", {
+    params: params,
+  });
+
+  return data.data;
+};

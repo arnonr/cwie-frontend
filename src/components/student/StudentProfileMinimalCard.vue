@@ -1,8 +1,8 @@
 <template>
   <div class="card shadow-sm my-5">
     <div class="card-body mx-md-0 mx-5" v-if="item != undefined">
-      <div class="col-md-12 px-1 mx-auto">
-        <img src="" alt="" />
+      <div class="col-md-12 px-1 mx-auto mb-1 mb-5">
+        <img :src="item.photo_file" alt="" class="w-100" />
       </div>
       <div class="col-md-12 px-1">
         <span class="fw-bold">ชื่อ-นามสกุล : </span>
@@ -38,7 +38,7 @@
         <span
           class="badge p-2 text-white"
           :style="`background-color: ${item.status_detail?.color};`"
-          >{{ item.status_detail?.name}}</span
+          >{{ item.status_detail?.name }}</span
         >
         <div class="separator separator-dotted my-2"></div>
       </div>

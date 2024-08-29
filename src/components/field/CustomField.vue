@@ -18,7 +18,7 @@
       v-else-if="componentType == 'textArea'"
       :id="field"
       :name="field"
-      v-model="value"
+      v-model="typedValue"
       :type="componentType"
       :placeholder="placeholder"
       @blur="onBlur"
@@ -26,6 +26,37 @@
       row="10"
       :class="['form-control', { 'is-invalid': errorMessage }]"
     />
+
+    <!-- <textarea
+      :id="field"
+      :name="field"
+      v-model="typedValue"
+      :type="componentType"
+      :placeholder="placeholder"
+      @blur="onBlur"
+      :disabled="disabled"
+      row="10"
+      :class="['form-control', { 'is-invalid': errorMessage }]"
+    /> -->
+
+    <VueDatePicker
+      v-else-if="componentType == 'datepicker'"
+      v-model="typedValue"
+      :enable-time-picker="false"
+      :placeholder="placeholder"
+      :locale="'th'"
+      auto-apply
+      :class="['form-control', { 'is-invalid': errorMessage }]"
+      :format="format"
+    >
+      <template #year-overlay-value="{ text }">
+        {{ parseInt(text) + 543 }}
+      </template>
+
+      <template #year="{ value }">
+        {{ value + 543 }}
+      </template>
+    </VueDatePicker>
 
     <v-select
       v-else
@@ -45,15 +76,24 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import { useField } from "vee-validate";
 // Import Vue-select
 import vSelect from "vue-select";
 import "vue-select/dist/vue-select.css";
+// Import Datepicker
+import VueDatePicker from "@vuepic/vue-datepicker";
+import "@vuepic/vue-datepicker/dist/main.css";
+// Import Dayjs
+import dayjs from "dayjs";
+import "dayjs/locale/th";
+import buddhistEra from "dayjs/plugin/buddhistEra";
+dayjs.extend(buddhistEra);
 
 export default {
   components: {
     vSelect,
+    VueDatePicker,
   },
   props: {
     componentType: {
@@ -96,6 +136,20 @@ export default {
   setup(props) {
     const { value, errorMessage, handleBlur } = useField(props.field);
 
+    const format = (date: any) => {
+      const day = dayjs(date).locale("th").format("DD");
+      const month = dayjs(date).locale("th").format("MMM");
+      const year = date.getFullYear() + 543;
+      return `${day} ${month} ${year}`;
+    };
+
+    const typedValue = value as unknown as
+      | string
+      | number
+      | string[]
+      | null
+      | undefined;
+
     const onBlur = () => {
       handleBlur();
     };
@@ -104,6 +158,8 @@ export default {
       value,
       errorMessage,
       onBlur,
+      typedValue,
+      format,
     };
   },
 };

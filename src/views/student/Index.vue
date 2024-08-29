@@ -25,7 +25,10 @@
             </div>
           </div>
           <div class="card-body" style="padding-top: 0rem">
-            <StudentProfileCardComponent :item="student_profile_item" />
+            <StudentProfileCardComponent
+              :item="student_profile_item"
+              :documents="documents"
+            />
           </div>
         </div>
       </div>
@@ -99,16 +102,18 @@
             </ul>
           </div>
 
-          <button
+          <!-- <button
             class="btn btn-outline btn-outline-danger me-2 pe-sm-3 ps-sm-5"
-            @click="goToAddPage"
           >
             <i class="bi bi-file-earmark-plus-fill fs-4"></i>
             <span class="d-none d-lg-inline-block ms-2">ยกเลิกใบสมัคร</span>
-          </button>
+          </button> -->
         </div>
       </div>
-      <div class="card-body table-responsive d-none d-lg-block">
+      <div
+        class="card-body table-responsive d-none d-lg-block"
+        style="min-height: 300px"
+      >
         <Preloader :isLoading="isLoading" :position="'absolute'" />
         <ListComponent
           :items="items"
@@ -119,12 +124,12 @@
           @update:perPage="paginationData.perPage = $event"
           @sort="(key: any) => {
             sortedItems(key)}"
-          @edit="(it: any) => {goToEditPage(it.id)}"
-          @detail="(it: any) => {onDetailModal(it) }"
-          @history-detail="(it: any) =>{ onHistoryDetailModal(it)}"
+          @edit="(it: any) => {onFormDetailModal(it.id)}"
+          @detail="(it: any) => {onFormDetailModal(it) }"
+          @history-detail="(it: any) =>{ onHistoryRejectModal(it)}"
         />
       </div>
-      <div class="card-body d-lg-none">
+      <!-- <div class="card-body d-lg-none">
         <CardListComponent
           :items="items"
           :paginationData="paginationData"
@@ -134,11 +139,11 @@
           @update:perPage="paginationData.perPage = $event"
           @sort="(key: any) => {
             sortedItems(key)}"
-          @edit="(it: any) => {goToEditPage(it.id)}"
-          @detail="(it: any) => {onDetailModal(it) }"
-          @history-detail="(it: any) =>{ onHistoryDetailModal(it)}"
+          @edit="(it: any) => {goToFormEditPage(it.id)}"
+          @detail="(it: any) => {onFormDetailModal(it) }"
+          @history-detail="(it: any) =>{ onHistoryRejectModal(it)}"
         />
-      </div>
+      </div> -->
     </div>
 
     <!-- Modal -->
@@ -157,18 +162,32 @@
         />
       </div>
 
-      <!-- Modal Detail ดูข้อมูล -->
-      <!-- <div id="detail-modal">
-        <DetailPage
-          v-if="openDetailModal == true"
-          :paper_id="item.id"
+      <!-- Add Form Modal -->
+      <div id="add-form-modal">
+        <AddFormPage
+          v-if="openAddFormModal == true"
+          :student_profile="student_profile_item"
+          @reload="fetchStudentProfile()"
           @close-modal="
             () => {
-              openDetailModal = false;
+              openAddFormModal = false;
             }
           "
         />
-      </div> -->
+      </div>
+
+      <!-- Detail Form Modal -->
+      <div id="detail-form-modal">
+        <DetailFormPage
+          v-if="openDetailFormModal == true"
+          :id="item.id"
+          @close-modal="
+            () => {
+              openDetailFormModal = false;
+            }
+          "
+        />
+      </div>
     </div>
   </div>
 </template>
@@ -188,6 +207,8 @@ import Preloader from "@/components/preloader/Preloader.vue";
 // Modal
 import DetailPage from "@/views/paper/DetailModal.vue";
 import EditStudentProfilePage from "@/views/student/Edit.vue";
+import AddFormPage from "@/views/form/Add.vue";
+import DetailFormPage from "@/views/form/Detail.vue";
 import HistoryRejectPage from "@/views/paper/HistoryDetailModal.vue"; // ประวัติการแก้ไข
 
 export default defineComponent({
@@ -201,6 +222,8 @@ export default defineComponent({
     DetailPage,
     EditStudentProfilePage,
     HistoryRejectPage,
+    AddFormPage,
+    DetailFormPage,
   },
   setup() {
     // UI Variable
@@ -230,14 +253,15 @@ export default defineComponent({
     const openDetailFormModal = ref(false);
     const openEditFormModal = ref(false);
     const openHistoryRejectModal = ref(false);
+    const openAddFormModal = ref(false);
 
     // Variable
     const userData = JSON.parse(localStorage.getItem("userData") || "{}");
     const student_profile_item = ref<any>({});
     const items = reactive<any>([]); // form items
     const item = reactive<any>({}); // form item
-    // const edit_student_profile_item = ref<any>({});
-    // const edit_item = ref<any>({}); // form item
+    const documents = ref([]);
+    const document_types = ref([]);
 
     // Fetch Data
     const fetchStudentProfile = async () => {
@@ -250,21 +274,54 @@ export default defineComponent({
       student_profile_item.value = data.data;
 
       let prefix: any = "";
-      if (student_profile_item.value.advisor_detail.firstname) {
+      student_profile_item.value.advisor_fullname = "";
+      if (student_profile_item.value.advisor_detail) {
         prefix =
           student_profile_item.value.advisor_detail.prefix != null
             ? student_profile_item.value.advisor_detail.prefix
             : "อ.";
+
+        student_profile_item.value.advisor_fullname =
+          prefix +
+          student_profile_item.value.advisor_detail?.firstname +
+          " " +
+          student_profile_item.value.advisor_detail?.surname;
       }
 
-      student_profile_item.value.advisor_fullname =
-        prefix +
-        student_profile_item.value.advisor_detail?.firstname +
-        " " +
-        student_profile_item.value.advisor_detail?.surname;
-
+      await fetchDocuments();
       isLoading.value = false;
     };
+
+    const fetchDocuments = async () => {
+      try {
+        const { data } = await ApiService.query("document/", {
+          params: {
+            student_id: student_profile_item.value.id,
+            is_active: true,
+          },
+        });
+
+        documents.value = data.data;
+        console.log(documents.value);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    const fetchDocumentTypes = async () => {
+      try {
+        const { data } = await ApiService.query("document-type/", {
+          params: {
+            is_active: true,
+          },
+        });
+
+        document_types.value = data.data;
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    fetchDocumentTypes();
 
     const fetchItems = async () => {
       isLoading.value = true;
@@ -272,7 +329,7 @@ export default defineComponent({
         student_id: userData.student_profile.id,
       };
 
-      const { data } = await ApiService.query("student-profile", {
+      const { data } = await ApiService.query("form", {
         params: params,
       });
 
@@ -281,32 +338,111 @@ export default defineComponent({
       paginationData.totalPage = data.totalPage;
       paginationData.totalItems = data.totalData;
       paginationData.currentPage = data.currentPage;
+
       isLoading.value = false;
     };
 
     // Modal action
-    const onDetailModal = (it: any) => {
-      Object.assign(item, it);
-      openDetailFormModal.value = true;
-    };
 
     const onEditStudentProfileModal = () => {
       openEditStudentProfileModal.value = true;
     };
 
-    const onHistoryRejectModal = (it: any) => {
-      Object.assign(item, it);
-      openHistoryRejectModal.value = true;
+    const onCheckStudentProfile = () => {
+      let res = true;
+      const {
+        advisor_id,
+        prefix,
+        firstname,
+        surname,
+        class_year,
+        gpa,
+        address,
+        province_id,
+        district_id,
+        sub_district_id,
+        email,
+        phone,
+        contact1_name,
+        contact1_phone,
+        contact1_relation,
+        contact2_name,
+        contact2_phone,
+        contact2_relation,
+        blood_group,
+        height,
+        weight,
+        emergency_phone,
+        congenital_disease,
+        drug_allergy,
+      } = student_profile_item.value;
+
+      if (
+        [
+          advisor_id,
+          prefix,
+          firstname,
+          surname,
+          class_year,
+          gpa,
+          address,
+          province_id,
+          district_id,
+          sub_district_id,
+          email,
+          phone,
+          contact1_name,
+          contact1_phone,
+          contact1_relation,
+          contact2_name,
+          contact2_phone,
+          contact2_relation,
+          blood_group,
+          height,
+          weight,
+          emergency_phone,
+          congenital_disease,
+          drug_allergy,
+        ].some((value) => !value)
+      ) {
+        return false;
+      }
+
+      document_types.value.forEach((el: any) => {
+        let check_doc = documents.value.find((x: any) => {
+          return x.document_type_id == el.id;
+        });
+        if (!check_doc) {
+          res = false;
+        }
+      });
+
+      return res;
     };
 
     const onAddFormModal = (it: any) => {
+      let check = onCheckStudentProfile();
+      if (!check) {
+        useToast("โปรดระบุข้อมูลส่วนตัวให้ครบถ้วน", "error");
+        return;
+      }
       Object.assign(item, it);
-      openEditFormModal.value = true;
+      openAddFormModal.value = true;
     };
 
     const onEditFormModal = (it: any) => {
       Object.assign(item, it);
       openEditFormModal.value = true;
+    };
+
+    const onFormDetailModal = (it: any) => {
+      Object.assign(item, it);
+      openDetailFormModal.value = true;
+    };
+
+    const onHistoryRejectModal = (it: any) => {
+      Object.assign(item, it);
+      openHistoryRejectModal.value = true;
     };
 
     // Mounted
@@ -328,23 +464,25 @@ export default defineComponent({
       student_profile_item,
       items,
       item,
+      documents,
       paginationData,
       sortKey,
       sortOrder,
       sortedItems,
       isLoading,
       openEditStudentProfileModal,
-      openDetailFormModal,
       openEditFormModal,
       openHistoryRejectModal,
+      openAddFormModal,
+      openDetailFormModal,
       //   Fetch
       fetchStudentProfile,
       fetchItems,
       //   Event
-      onDetailModal,
       onEditStudentProfileModal,
       onHistoryRejectModal,
       onAddFormModal,
+      onFormDetailModal,
       onEditFormModal,
     };
   },

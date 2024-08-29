@@ -20,20 +20,22 @@
       <tbody v-if="items.length != 0">
         <tr v-for="(it, idx) in items" :key="idx">
           <td class="text-center">
-            {{ convertDate(it.sended_at) }}
+            {{ convertDate(it.send_at) }}
           </td>
-          <td class="text-center">{{ it.rp_no }}</td>
+          <td>{{ it.semester_detail.term + "/" + it.semester_detail.year }}</td>
 
-          <td>{{ it.title_th }}</td>
-          <td>{{ it.department?.name }}</td>
-          <td class="text-center">{{ it.paper_type?.name }}</td>
+          <td>{{ it.company_detail.name }}</td>
+          <td class="text-center">
+            {{ convertDate(it.start_date) }}
+          </td>
+          <td class="text-center">
+            {{ convertDate(it.end_date) }}
+          </td>
           <td class="text-center">
             <span
               class="badge p-2 text-white"
-              :style="`background-color: ${
-                convertStatus(it.status_id).bg_color
-              };`"
-              >{{ convertStatus(it.status_id).name_th }}</span
+              :style="`background-color: ${it.form_status_detail.color};`"
+              >{{ it.form_status_detail.name }}</span
             >
           </td>
 
@@ -58,13 +60,12 @@
                     @click="
                       handleDetail({
                         id: it.id,
-                        complainant_id: it.complainant_id,
                       })
                     "
                     >รายละเอียด</a
                   >
                 </li>
-                <li v-if="it.status_id > 1">
+                <li v-if="it.form_status_id > 1">
                   <a
                     class="dropdown-item cursor-pointer"
                     @click="
@@ -72,20 +73,32 @@
                         id: it.id,
                       })
                     "
-                    >ประวัติการดำเนินการ/รายละเอียดที่ต้องแก้ไข</a
+                    >ประวัติการ Comment</a
                   >
                 </li>
                 <li>
                   <a
                     class="dropdown-item cursor-pointer"
-                    v-if="it.status_id == 1 || it.status_id == 3"
+                    v-if="it.form_status_id == 1 || it.form_status_id == 2"
                     @click="
                       handleEdit({
                         id: it.id,
                       })
                     "
-                    >แก้ไขข้อมูล </a
-                  >
+                    >แก้ไขใบสมัคร
+                  </a>
+                </li>
+                <li>
+                  <a
+                    class="dropdown-item cursor-pointer"
+                    v-if="it.form_status_id == 1 || it.form_status_id == 2"
+                    @click="
+                      handleEdit({
+                        id: it.id,
+                      })
+                    "
+                    >ยกเลิกใบสมัคร
+                  </a>
                 </li>
               </ul>
             </div>
@@ -162,13 +175,19 @@ export default defineComponent({
     let { statuses } = useStatusData();
     const userData = JSON.parse(localStorage.getItem("userData") || "{}");
 
+    console.log(paginationData.value);
+
     const headerColumn = [
-      { column_name: "sended_at", title: "วันที่เสนอ", sort: true },
-      { column_name: "rp_no", title: "รหัสโครงการ", sort: true },
-      { column_name: "title_th", title: "ชื่อโครงการ (TH)", sort: true },
-      { column_name: "department_id", title: "หน่วยงาน", sort: true },
-      { column_name: "paper_type_id", title: "ประเภททุนวิจัย", sort: true },
-      { column_name: "status_id", title: "สถานะ", sort: true },
+      { column_name: "sended_at", title: "วันที่ส่งใบสมัคร", sort: true },
+      { column_name: "semester_id", title: "ปีการศึกษา", sort: true },
+      {
+        column_name: "company_detail.name",
+        title: "ชื่อสถานประกอบการ",
+        sort: true,
+      },
+      { column_name: "start_date", title: "วันเริ่ม", sort: true },
+      { column_name: "end_date", title: "วันสิ้นสุด", sort: true },
+      { column_name: "form_status_id", title: "สถานะ", sort: true },
       { column_name: "manage", title: "จัดการข้อมูล", sort: false },
     ];
 

@@ -209,7 +209,11 @@ export default defineComponent({
           photo_file,
         } = data.data;
 
-        let prefix = advisor_detail.prefix ? advisor_detail.prefix : "อ.";
+        let prefix = "";
+        if (advisor_id)  {
+            prefix = advisor_detail.prefix ? advisor_detail.prefix : "อ.";
+        }
+          
 
         Object.assign(item, {
           ...data.data,
