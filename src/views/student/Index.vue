@@ -341,6 +341,8 @@ export default defineComponent({
       isLoading.value = true;
       const params = {
         student_id: userData.student_profile.id,
+        orderBy: 'id',
+        order: 'desc',
       };
 
       const { data } = await ApiService.query("form", {

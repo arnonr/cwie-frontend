@@ -44,7 +44,7 @@
               </template>
               <div class="col-12 col-lg-12">
                 <div>นามบัตรผู้ประสานงาน :</div>
-                <img :src="item['namecard_file']" alt="" />
+                <img :src="item['namecard_file']" alt="" style="width:50%"/>
                 <div
                   class="separator separator-dashed my-4 d-block d-md-none"
                 ></div>

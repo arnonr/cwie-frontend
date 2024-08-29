@@ -5,6 +5,8 @@
     ref="mainModalRef"
     id="main-modal"
     aria-hidden="true"
+    data-bs-backdrop="static"
+    data-bs-keyboard="false"
   >
     <div class="modal-dialog modal-dialog-centered modal-xl">
       <div class="modal-content">
@@ -22,17 +24,46 @@
         <div class="modal-body" v-if="!isLoading">
           <form @submit.prevent="onSubmit">
             <div class="row">
-              <CustomField
-                v-for="field in fields"
-                :key="field.name"
-                :label="field.label"
-                :select_label="field.select_label"
-                :field="field.model"
-                :component-type="field.type"
-                :colClass="field.colClass"
-                :disabled="field.disabled"
-                :options="field.options"
-              />
+              <template v-for="field in fields" :key="field.name">
+                <CustomField
+                  :label="field.label"
+                  :select_label="field.select_label"
+                  :field="field.model"
+                  :component-type="field.type"
+                  :colClass="field.colClass"
+                  :disabled="field.disabled"
+                  :options="field.options"
+                />
+                <div class="mb-10" v-if="field.name == 'company_id'">
+                  <div class="row">
+                    <div class="col-12 col-lg-6">
+                      <label for="">ที่ตั้ง</label>
+                      <input
+                        type="text"
+                        class="form-control"
+                        disabled
+                        v-model="company_address"
+                      />
+                    </div>
+                    <div class="col-12 col-lg-6">
+                      <label for="">จังหวัด/อำเภอ/ตำบล/ไปรษณีย์</label>
+                      <input
+                        type="text"
+                        class="form-control"
+                        disabled
+                        :value="company_address_all"
+                      />
+                    </div>
+                  </div>
+                  <button
+                    class="btn btn-info mt-6"
+                    @click="onAddCompany"
+                    type="button"
+                  >
+                    ไม่พบสถานประกอบการ คลิกปุ่ม
+                  </button>
+                </div>
+              </template>
             </div>
 
             <div class="row">
@@ -114,6 +145,20 @@
         </div>
       </div>
     </div>
+
+    <!-- Company Modal -->
+    <div id="add-company-modal">
+      <AddCompanyPage
+        v-if="openAddCompanyModal == true"
+        @close-modal="
+          () => {
+            openAddCompanyModal = false;
+            mainModalRef.style.height = '';
+            fetchCompanies2();
+          }
+        "
+      />
+    </div>
   </div>
 </template>
 
@@ -126,6 +171,7 @@ import {
   onBeforeUnmount,
   getCurrentInstance,
   computed,
+  watch,
 } from "vue";
 
 import ApiService from "@/core/services/ApiService";
@@ -146,10 +192,13 @@ import {
 import CustomField from "@/Components/field/CustomField.vue";
 import useToast from "@/composables/useToast";
 
+import AddCompanyPage from "@/views/company/Add.vue";
+
 export default defineComponent({
   name: "add-form",
   components: {
     CustomField,
+    AddCompanyPage,
   },
   props: {
     student_profile: {
@@ -161,6 +210,7 @@ export default defineComponent({
     // UI
     const mainModalRef = ref<any>(null);
     const mainModalObj = ref<any>(null);
+    const openAddCompanyModal = ref<any>(false);
 
     // Variable
     const { student_profile } = toRefs(props);
@@ -168,6 +218,9 @@ export default defineComponent({
     const isLoading = ref(true);
     const photoFile = ref<any>(null);
     const previewPhoto = ref<any>(null);
+
+    const company_address = ref("");
+    const company_address_all = ref("");
     const item = ref<any>({
       semester_id: null,
       start_date: null,
@@ -357,7 +410,7 @@ export default defineComponent({
       }
     };
 
-    const { handleSubmit, setValues } = useForm({
+    const { handleSubmit, setValues, values } = useForm({
       validationSchema: validationSchema,
       initialValues: item.value,
     });
@@ -465,12 +518,23 @@ export default defineComponent({
       //
     });
 
+    const onAddCompany = () => {
+      mainModalRef.value.style.height = "0px";
+      openAddCompanyModal.value = true;
+    };
+
     const onClose = ({ reload = false }: { reload?: boolean }) => {
       mainModalObj.value.hide();
       if (reload === true) {
         emit("reload");
       }
       emit("close-modal");
+    };
+
+    const fetchCompanies2 = async () => {
+      selectOptions.value.companies = await fetchCompanies({
+        is_active: true,
+      });
     };
 
     // Mounted
@@ -512,13 +576,7 @@ export default defineComponent({
         }),
       });
 
-      selectOptions.value.companies = await fetchCompanies({
-        is_active: true,
-        // selectField: JSON.stringify({
-        //   id: true,
-        //   name: true,
-        // }),
-      });
+      await fetchCompanies2();
 
       selectOptions.value.address_alls = await fetchAddressAlls({});
       //   item.value.namecard_file = [];
@@ -527,11 +585,23 @@ export default defineComponent({
 
     onBeforeUnmount(() => {});
 
+    watch(
+      () => values.company_id,
+      (newVal, oldVal) => {
+        console.log("company_id changed in useForm from", oldVal, "to", newVal);
+
+        company_address.value = newVal.address;
+        company_address_all.value = `${newVal.sub_district_detail.name_th} > ${newVal.district_detail.name_th} > ${newVal.province_detail.name_th} > ${newVal.sub_district_detail.zip_code} `;
+        // ทำสิ่งที่คุณต้องการเมื่อ company_id เปลี่ยนแปลงใน useForm
+      }
+    );
+
     // Return
     return {
       selectOptions,
       mainModalRef,
       onSubmit,
+      onAddCompany,
       fields,
       item,
       isLoading,
@@ -540,6 +610,11 @@ export default defineComponent({
       previewPhoto,
       onPhotoFileChange,
       onClose,
+      openAddCompanyModal,
+      fetchCompanies2,
+      values,
+      company_address,
+      company_address_all,
     };
   },
 });
