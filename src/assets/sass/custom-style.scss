@@ -139,3 +139,8 @@ p[data-f-id="pbf"] {
 .backdrop-grey {
   background-color: rgba(0, 0, 0, 0.5); /* สีเทาเข้ม */
 }
+
+.table-bordered th,
+.table-bordered td {
+  border: 1px solid black !important; /* เพิ่มเส้นขอบสีดำ */
+}

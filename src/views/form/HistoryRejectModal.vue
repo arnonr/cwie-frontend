@@ -28,6 +28,7 @@
               <thead class="bg-primary">
                 <tr>
                   <th class="text-center">วันที่</th>
+                  <th class="text-center">เรื่อง</th>
                   <th class="text-center">ผู้ Comment</th>
                   <th class="text-center">รายละเอียด</th>
                 </tr>
@@ -38,7 +39,10 @@
                     {{ convertDate(it.created_at) }}
                   </td>
                   <td class="text-center">
-                    {{ it.user_id }}
+                    {{ it.reject_status_detail.name }}
+                  </td>
+                  <td class="text-center">
+                    {{ it.user_detail.name }}
                   </td>
                   <td class="text-center">{{ it.comment }}</td>
                 </tr>

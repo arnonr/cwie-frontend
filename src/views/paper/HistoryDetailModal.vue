@@ -25,7 +25,7 @@
               v-if="item"
               class="table table-bordered table-striped bg-sky"
             >
-              <thead class="bg-warning">
+              <thead class="bg-primary">
                 <tr>
                   <th class="text-center">วันที่</th>
                   <th class="text-center">การดำเนินการ</th>
@@ -49,7 +49,7 @@
           <h3 class="mt-6 mb-6">รายละเอียดที่ต้องแก้ไข</h3>
           <div class="row">
             <table class="table table-bordered table-striped bg-sky">
-              <thead class="bg-warning">
+              <thead class="bg-primary">
                 <tr>
                   <th class="text-center">วันที่</th>
                   <th class="text-center">สถานะ</th>

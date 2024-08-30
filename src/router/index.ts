@@ -55,6 +55,18 @@ const routes: Array<RouteRecordRaw> = [
           pageTitle: "โครงการ CWIE",
         },
       },
+      //
+
+      {
+        path: "/advisor/student",
+        name: "advisor-student",
+        component: () => import("@/views/advisor/student/Index.vue"),
+        meta: {
+          pageTitle: "รายการนักศึกษา",
+        },
+      },
+
+      //
       {
         path: "/paper",
         name: "paper",

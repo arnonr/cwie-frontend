@@ -23,14 +23,19 @@
             {{ convertDate(it.send_at) }}
           </td>
           <td>{{ it.semester_detail.term + "/" + it.semester_detail.year }}</td>
-
+          <td>{{ it.student_detail.student_code }}</td>
+          <td>
+            {{
+              it.student_detail.prefix +
+              " " +
+              it.student_detail.firstname +
+              " " +
+              it.student_detail.surname
+            }}
+          </td>
+          <td>{{ it.student_detail.class_year }}</td>
           <td>{{ it.company_detail.name }}</td>
-          <td class="text-center">
-            {{ convertDate(it.start_date) }}
-          </td>
-          <td class="text-center">
-            {{ convertDate(it.end_date) }}
-          </td>
+          <td>{{ it.company_detail.province_id }}</td>
           <td class="text-center">
             <span
               class="badge p-2 text-white"
@@ -62,7 +67,7 @@
                         id: it.id,
                       })
                     "
-                    >รายละเอียด</a
+                    >ดูรายละเอียดเพื่ออนุมัติ</a
                   >
                 </li>
                 <li v-if="it.form_status_id > 1">
@@ -76,9 +81,7 @@
                     >ประวัติการ Comment</a
                   >
                 </li>
-                <!-- <li v-if="it.form_status_id == 1 || it.form_status_id == 3"> -->
-
-                <li v-if="it.form_status_id == 1 || it.form_status_id == 2">
+                <!-- <li v-if="it.form_status_id == 1 || it.form_status_id == 2">
                   <a
                     class="dropdown-item cursor-pointer"
                     @click="
@@ -100,7 +103,7 @@
                     "
                     >ยกเลิกใบสมัคร
                   </a>
-                </li>
+                </li> -->
               </ul>
             </div>
           </td>
@@ -178,17 +181,18 @@ export default defineComponent({
     let { statuses } = useStatusData();
     const userData = JSON.parse(localStorage.getItem("userData") || "{}");
 
-
     const headerColumn = [
       { column_name: "sended_at", title: "วันที่ส่งใบสมัคร", sort: true },
       { column_name: "semester_id", title: "ปีการศึกษา", sort: true },
+      { column_name: "student_code", title: "รหัสนักศึกษา", sort: true },
+      { column_name: "fullname", title: "ชื่อ-นามสกุล", sort: true },
+      { column_name: "class_year", title: "ชั้นปี", sort: true },
       {
         column_name: "company_detail.name",
         title: "ชื่อสถานประกอบการ",
         sort: true,
       },
-      { column_name: "start_date", title: "วันเริ่ม", sort: true },
-      { column_name: "end_date", title: "วันสิ้นสุด", sort: true },
+      { column_name: "province_id", title: "จังหวัด", sort: true },
       { column_name: "form_status_id", title: "สถานะ", sort: true },
       { column_name: "manage", title: "จัดการข้อมูล", sort: false },
     ];

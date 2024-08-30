@@ -1,7 +1,7 @@
 <template>
   <div>
     <table class="table table-bordered table-striped fs-8" style="width: 100%">
-      <thead class="bg-warning">
+      <thead class="bg-primary">
         <tr>
           <th
             class="text-center text-white cursor-pointer"

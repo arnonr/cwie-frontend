@@ -99,7 +99,7 @@
                         >
                           <!-- ตารางปกติสำหรับหน้าจอขนาดใหญ่ (ไม่เปลี่ยนแปลง) -->
                           <table class="table table-bordered table-striped">
-                            <thead class="bg-warning">
+                            <thead class="bg-primary">
                               <tr>
                                 <th
                                   class="text-center text-white"
@@ -191,7 +191,7 @@
                       <div class="row">
                         <div class="col-md-12 table-responsive">
                           <table class="table table-bordered table-striped">
-                            <thead class="bg-warning">
+                            <thead class="bg-primary">
                               <tr>
                                 <th
                                   class="text-center text-white"

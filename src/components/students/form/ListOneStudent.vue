@@ -76,11 +76,16 @@
                     >ประวัติการ Comment</a
                   >
                 </li>
-                <!-- <li v-if="it.form_status_id == 1 || it.form_status_id == 3"> -->
 
                 <li v-if="it.form_status_id == 1 || it.form_status_id == 2">
                   <a
                     class="dropdown-item cursor-pointer"
+                    v-if="
+                      userData.group_id == 1 ||
+                      userData.group_id == 2 ||
+                      userData.group_id == 3 ||
+                      userData.group_id == 4
+                    "
                     @click="
                       handleEdit({
                         id: it.id,
@@ -92,7 +97,12 @@
                 <li>
                   <a
                     class="dropdown-item cursor-pointer"
-                    v-if="it.form_status_id < 8 && it.form_status_id != 99"
+                    v-if="
+                      userData.group_id == 1 ||
+                      userData.group_id == 2 ||
+                      userData.group_id == 3 ||
+                      userData.group_id == 4
+                    "
                     @click="
                       handleCancel({
                         id: it.id,
@@ -177,7 +187,6 @@ export default defineComponent({
     const internalPerPage = ref(paginationData.value.perPage);
     let { statuses } = useStatusData();
     const userData = JSON.parse(localStorage.getItem("userData") || "{}");
-
 
     const headerColumn = [
       { column_name: "sended_at", title: "วันที่ส่งใบสมัคร", sort: true },
