@@ -9,7 +9,7 @@
           aria-expanded="false"
           aria-controls="collapseOne"
         >
-          <i class="fa fa-search pe-2"></i> ค้นหาเรื่องร้องเรียน
+          <i class="fa fa-search pe-2"></i> ค้นหาใบสมัคร
         </h6>
         <div
           id="collapseOne"

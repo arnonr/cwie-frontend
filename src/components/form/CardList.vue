@@ -89,16 +89,16 @@
                   >
                 </li>
 
-                <li v-if="it.form_status_id == 1 || it.form_status_id == 2">
-                  <a
-                    class="dropdown-item cursor-pointer"
-                    v-if="
+                <li v-if="it.form_status_id == 1 || it.form_status_id == 3">
+                  <!-- v-if="
                       (userData.group_id == 1 ||
                         userData.group_id == 2 ||
                         userData.group_id == 3 ||
-                        userData.group_id == 4) &&
+                        userData.group_id == 4) && 
                       it.form_status_id != 99
-                    "
+                    " -->
+                  <a
+                    class="dropdown-item cursor-pointer"
                     @click="
                       handleEdit({
                         id: it.id,

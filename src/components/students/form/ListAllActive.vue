@@ -70,7 +70,7 @@
                     >ดูรายละเอียดเพื่ออนุมัติ</a
                   >
                 </li>
-                <li v-if="it.form_status_id > 1">
+                <!-- <li v-if="it.form_status_id > 1">
                   <a
                     class="dropdown-item cursor-pointer"
                     @click="
@@ -80,7 +80,7 @@
                     "
                     >ประวัติการ Comment</a
                   >
-                </li>
+                </li> -->
                 <!-- <li v-if="it.form_status_id == 1 || it.form_status_id == 2">
                   <a
                     class="dropdown-item cursor-pointer"

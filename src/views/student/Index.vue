@@ -170,6 +170,7 @@
           @reload="fetchStudentProfile()"
           @close-modal="
             () => {
+              fetchItems();
               openAddFormModal = false;
             }
           "
@@ -185,6 +186,7 @@
           @reload="fetchStudentProfile()"
           @close-modal="
             () => {
+              fetchItems();
               openEditFormModal = false;
             }
           "

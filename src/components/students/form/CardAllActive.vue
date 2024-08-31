@@ -84,7 +84,7 @@
                     >ดูรายละเอียดเพื่ออนุมัติ</a
                   >
                 </li>
-                <li v-if="it.form_status_id > 1">
+                <!-- <li v-if="it.form_status_id > 1">
                   <a
                     class="dropdown-item cursor-pointer"
                     @click="
@@ -94,6 +94,42 @@
                     "
                     >ประวัติการ Comment</a
                   >
+                </li> -->
+                <li v-if="it.form_status_id == 1 || it.form_status_id == 2">
+                  <a
+                    class="dropdown-item cursor-pointer"
+                    v-if="
+                      (userData.group_id == 1 ||
+                        userData.group_id == 2 ||
+                        userData.group_id == 3 ||
+                        userData.group_id == 4) &&
+                      it.form_status_id != 99
+                    "
+                    @click="
+                      handleEdit({
+                        id: it.id,
+                      })
+                    "
+                    >แก้ไขใบสมัคร
+                  </a>
+                </li>
+                <li>
+                  <a
+                    class="dropdown-item cursor-pointer"
+                    v-if="
+                      (userData.group_id == 1 ||
+                        userData.group_id == 2 ||
+                        userData.group_id == 3 ||
+                        userData.group_id == 4) &&
+                      it.form_status_id != 99
+                    "
+                    @click="
+                      handleCancel({
+                        id: it.id,
+                      })
+                    "
+                    >ยกเลิกใบสมัคร
+                  </a>
                 </li>
               </ul>
             </div>
@@ -138,7 +174,7 @@ import useDateData from "@/composables/useDateData";
 import { fetchAddressAlls } from "@/composables/useFetchSelectionData";
 
 export default defineComponent({
-    name: "staff-card-list-form",
+  name: "staff-card-list-form",
   components: {
     BlogPagination,
   },

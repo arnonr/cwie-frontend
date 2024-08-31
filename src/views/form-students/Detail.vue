@@ -82,6 +82,19 @@
                     >
                   </button>
 
+                  <button
+                    class="btn btn-outline btn-outline-success me-2 pe-sm-3 ps-sm-5"
+                    @click="
+                      onApproveFormModal(student_profile_item.status_id, 2)
+                    "
+                    v-if="student_profile_item.status_id == 4"
+                  >
+                    <i class="bi bi-file-earmark-plus-fill fs-4"></i>
+                    <span class="d-none d-lg-inline-block ms-2"
+                      >ประธานอาจารย์นิเทศพิจารณาอนุมัติ</span
+                    >
+                  </button>
+
                   <!-- <div class="dropdown">
             <button
               class="btn btn-outline btn-outline-success me-2 pe-sm-3 ps-sm-5 dropdown-toggle"
@@ -200,6 +213,7 @@
                   @reload="fetchStudentProfile()"
                   @close-modal="
                     () => {
+                      fetchItems();
                       openAddFormModal = false;
                     }
                   "
@@ -215,6 +229,7 @@
                   @reload="fetchStudentProfile()"
                   @close-modal="
                     () => {
+                      fetchItems();
                       openEditFormModal = false;
                     }
                   "
@@ -257,6 +272,8 @@
                   :reject_status_id="reject_status_id"
                   @close-modal="
                     () => {
+                      fetchStudentProfile();
+                      fetchItems();
                       openApproveModal = false;
                     }
                   "

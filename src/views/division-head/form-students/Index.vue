@@ -18,9 +18,9 @@
       <div class="card-header bg-white">
         <h4 class="card-title">ใบสมัครโครงการ CWIE</h4>
         <div class="card-toolbar">
-          <!-- buttons -->
+          <!-- :class="['btn-primary': 'd']" -->
           <button
-            class="btn btn-info btn-outline-info btn-sm fs-7"
+            class="btn btn-outline btn-outline-info btn-sm fs-7"
             @click="onchangeCurrentStatus('total')"
           >
             ทั้งหมด ({{ items_status.total.length }})
@@ -38,6 +38,7 @@
           >
             อนุมัติเสร็จสิ้น ({{ items_status.success.length }})
           </button>
+          <!-- buttons -->
         </div>
       </div>
       <div
@@ -148,7 +149,7 @@ export default defineComponent({
       total: [],
       wating: [],
       success: [],
-    });
+    }); // form item
     const search = reactive<any>({
       semester_id: null,
       faculty_id: null,
@@ -192,7 +193,7 @@ export default defineComponent({
 
       items.forEach((x: any) => {
         items_status.value.total.push(x);
-        if (x.form_status_id == 2) {
+        if (x.form_status_id == 4) {
           items_status.value.wating.push(x);
         } else {
           items_status.value.success.push(x);
@@ -203,14 +204,13 @@ export default defineComponent({
     };
 
     // Modal action
+
     const onFormDetailModal = (it: any) => {
       Object.assign(item, it);
       openDetailFormModal.value = true;
     };
 
-    const onClear = () => {
-      //   console.log(search);
-    };
+    const onClear = () => {};
 
     const onchangeCurrentStatus = (cas: string) => {
       current_active_status.value = cas;

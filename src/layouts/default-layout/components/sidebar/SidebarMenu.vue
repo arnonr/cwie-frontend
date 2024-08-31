@@ -31,7 +31,11 @@
             <template v-if="menuItem.heading">
               <div
                 class="menu-item"
-                v-if="menuItem.route == '/student' || userData.level == 1"
+                v-if="
+                  menuItem.route == '/student' ||
+                  menuItem.route == '/advisor/student' ||
+                  userData.level == 1
+                "
               >
                 <router-link
                   v-if="menuItem.route"
@@ -39,7 +43,7 @@
                   active-class="active"
                   :to="menuItem.route"
                 >
-                <!-- :to="{ path: '/your-path', replace: true }" -->
+                  <!-- :to="{ path: '/your-path', replace: true }" -->
                   <span
                     v-if="menuItem.keenthemesIcon || menuItem.bootstrapIcon"
                     class="menu-icon"

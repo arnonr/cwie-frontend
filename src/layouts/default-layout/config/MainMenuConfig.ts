@@ -10,6 +10,28 @@ const MainMenuConfig: Array<MenuItem> = [
         bootstrapIcon: "bi-file-earmark-text",
       },
       {
+        sectionTitle: "อาจารย์ที่ปรึกษา",
+        route: "/advisor",
+        bootstrapIcon: "bi-file-earmark-text",
+        sub: [
+          {
+            heading: "รายการใบสมัคร",
+            route: "/advisor/student",
+          },
+        ],
+      },
+      {
+        sectionTitle: "ประธานอาจารย์นิเทศ",
+        route: "/division-head",
+        bootstrapIcon: "bi-file-earmark-text",
+        sub: [
+          {
+            heading: "รายการใบสมัคร",
+            route: "/division-head/student",
+          },
+        ],
+      },
+      {
         heading: "รายการโครงการวิจัย",
         route: "/admin-paper",
         keenthemesIcon: "element-11",

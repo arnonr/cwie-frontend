@@ -130,7 +130,7 @@ export default defineComponent({
       {
         name: "comment",
         label: "หมายเหตุ",
-        model: "address",
+        model: "comment",
         type: "textArea",
         placeholder: "",
         colClass: "col-lg-12",
@@ -152,6 +152,7 @@ export default defineComponent({
     const onSubmit = handleSubmit(async (values) => {
       approve_item.value = { ...values };
       console.log("Form Submitted:", values);
+
 
       if (approve_item.value.approve_status_id.id === 1) {
         form_status_id.value =

@@ -413,12 +413,6 @@ export default defineComponent({
           data.data.semester_detail.term + "/" + data.data.semester_detail.year,
       };
 
-      item.value.semester_id = {
-        id: data.data.semester_id,
-        name:
-          data.data.semester_detail.term + "/" + data.data.semester_detail.year,
-      };
-
       item.value.division_head_id = {
         id: data.data.division_head_id,
         fullname:
@@ -445,6 +439,8 @@ export default defineComponent({
       company_address.value = data.data.company_detail.address;
 
       item.value.namecard_file_old = data.data.namecard_file;
+
+      item.value.namecard_file = [];
 
       resetToInitial();
 
@@ -483,6 +479,7 @@ export default defineComponent({
         item.value.namecard_file = namecard_file;
       }
 
+      console.log(item.value);
       if (
         item.value.namecard_file_old == null &&
         item.value.namecard_file.length == 0
@@ -525,11 +522,17 @@ export default defineComponent({
             : undefined,
         send_at: dayjs().format("YYYY-MM-DD"),
         student_id: student_profile.value.id,
-        form_status_id: item.value.reject_status_detail.form_status_id,
+        form_status_id:
+          item.value.form_status_id == 3
+            ? item.value.reject_status_detail.form_status_id
+            : item.value.form_status_id,
+        reject_status_id: null,
       };
 
+      //   reject_status_detail
+
       //   form_status_id: item.value.reject_status_detail.form_status_id,
-      
+
       //   form_status_id ต้องย้อนกลับไปที่เดิม
       Swal.fire({
         title: "ยืนยันการแก้ไขใบสมัครโครงการสหกิจศึกษา",

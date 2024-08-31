@@ -5,6 +5,8 @@
     ref="mainModalRef"
     id="main-modal"
     aria-hidden="true"
+    data-bs-backdrop="static"
+    data-bs-keyboard="false"
   >
     <div class="modal-dialog modal-dialog-centered modal-xl">
       <div class="modal-content">
@@ -44,7 +46,7 @@
               </template>
               <div class="col-12 col-lg-12">
                 <div>นามบัตรผู้ประสานงาน :</div>
-                <img :src="item['namecard_file']" alt="" style="width:50%"/>
+                <img :src="item['namecard_file']" alt="" style="width: 50%" />
                 <div
                   class="separator separator-dashed my-4 d-block d-md-none"
                 ></div>

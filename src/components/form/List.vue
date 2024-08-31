@@ -79,7 +79,7 @@
                 </li>
                 <!-- <li v-if="it.form_status_id == 1 || it.form_status_id == 3"> -->
 
-                <li v-if="it.form_status_id == 1 || it.form_status_id == 2">
+                <li v-if="it.form_status_id == 1 || it.form_status_id == 3">
                   <a
                     class="dropdown-item cursor-pointer"
                     @click="
