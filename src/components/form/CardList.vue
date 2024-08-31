@@ -8,23 +8,50 @@
       >
         <div
           class="card h-100 border border-dotted"
-          :class="`border-${convertStatus(it.status_id).bg_bs_color}`"
+          :style="`border-color: ${it.form_status_detail.color} !important;`"
         >
           <div class="card-body p-5">
-            <h6 class="card-title">{{ it.title_th }}</h6>
-            <h6 class="card-subtitle mb-2 text-muted">{{ it.rp_no }}</h6>
-            <p class="card-text">
-              <strong>วันที่เสนอ:</strong> {{ convertDate(it.sended_at) }}<br />
-              <strong>หน่วยงาน:</strong> {{ it.department?.name }}<br />
-              <strong>ประเภททุนวิจัย:</strong> {{ it.paper_type?.name }}
-            </p>
+            <h6 class="card-title">
+              {{ it.student_detail.student_code }}
+            </h6>
+
+            <div class="mb-2">
+              <span class="fw-bold">วันที่ส่งใบสมัคร : </span>
+              <span> {{ convertDate(it.send_at) }}</span>
+            </div>
+
+            <div class="mb-2">
+              <span class="fw-bold">ปีการศึกษา : </span>
+              <span>
+                {{
+                  it.semester_detail.term + "/" + it.semester_detail.year
+                }}</span
+              >
+            </div>
+            <div class="mb-2">
+              <span class="fw-bold">สถานประกอบการ : </span>
+              <span>{{ it.company_detail.name }}</span>
+            </div>
+
+            <div class="mb-2">
+              <span class="fw-bold">จังหวัด : </span>
+              <span>{{
+                convertAddress(it.company_detail.sub_district_id)
+              }}</span>
+            </div>
+
+            <div class="mb-2">
+              <span class="fw-bold">วันที่ปฏิบัติสหกิจศึกษา : </span>
+              <span>
+                {{ convertDate(it.start_date) }} -
+                {{ convertDate(it.end_date) }}</span
+              >
+            </div>
             <div class="mb-2">
               <span
                 class="badge p-2 text-white"
-                :style="`background-color: ${
-                  convertStatus(it.status_id).bg_color
-                };`"
-                >{{ convertStatus(it.status_id).name_th }}</span
+                :style="`background-color: ${it.form_status_detail.color};`"
+                >{{ it.form_status_detail.name }}</span
               >
             </div>
             <div class="dropdown">
@@ -45,27 +72,57 @@
                     @click="
                       handleDetail({
                         id: it.id,
-                        complainant_id: it.complainant_id,
                       })
                     "
+                    >รายละเอียด</a
                   >
-                    รายละเอียด
-                  </a>
                 </li>
-                <li v-if="it.status_id > 1">
+                <li v-if="it.form_status_id > 1">
                   <a
                     class="dropdown-item cursor-pointer"
-                    @click="handleHistoryDetail({ id: it.id })"
+                    @click="
+                      handleHistoryDetail({
+                        id: it.id,
+                      })
+                    "
+                    >ประวัติการ Comment</a
                   >
-                    ประวัติการดำเนินการ/รายละเอียดที่ต้องแก้ไข
-                  </a>
                 </li>
-                <li v-if="it.status_id == 1 || it.status_id == 3">
+
+                <li v-if="it.form_status_id == 1 || it.form_status_id == 2">
                   <a
                     class="dropdown-item cursor-pointer"
-                    @click="handleEdit({ id: it.id })"
-                  >
-                    แก้ไขข้อมูล
+                    v-if="
+                      (userData.group_id == 1 ||
+                        userData.group_id == 2 ||
+                        userData.group_id == 3 ||
+                        userData.group_id == 4) &&
+                      it.form_status_id != 99
+                    "
+                    @click="
+                      handleEdit({
+                        id: it.id,
+                      })
+                    "
+                    >แก้ไขใบสมัคร
+                  </a>
+                </li>
+                <li>
+                  <a
+                    class="dropdown-item cursor-pointer"
+                    v-if="
+                      (userData.group_id == 1 ||
+                        userData.group_id == 2 ||
+                        userData.group_id == 3 ||
+                        userData.group_id == 4) &&
+                      it.form_status_id != 99
+                    "
+                    @click="
+                      handleCancel({
+                        id: it.id,
+                      })
+                    "
+                    >ยกเลิกใบสมัคร
                   </a>
                 </li>
               </ul>
@@ -103,14 +160,16 @@ import "dayjs/locale/th";
 import buddhistEra from "dayjs/plugin/buddhistEra";
 dayjs.extend(buddhistEra);
 
+import Swal from "sweetalert2/dist/sweetalert2.js";
+
 // Import Pagination
 import BlogPagination from "@/components/common/pagination/BlogPagination.vue";
 // Composable
-import useStatusData from "@/composables/useStatusData";
 import useDateData from "@/composables/useDateData";
+import { fetchAddressAlls } from "@/composables/useFetchSelectionData";
 
 export default defineComponent({
-  name: "list-paper",
+  name: "list-form",
   components: {
     BlogPagination,
   },
@@ -137,18 +196,31 @@ export default defineComponent({
     const { paginationData } = toRefs(props);
     const internalCurrentPage = ref(paginationData.value.currentPage);
     const internalPerPage = ref(paginationData.value.perPage);
-    let { statuses } = useStatusData();
     const userData = JSON.parse(localStorage.getItem("userData") || "{}");
 
     const headerColumn = [
-      { column_name: "sended_at", title: "วันที่เสนอ", sort: true },
-      { column_name: "rp_no", title: "รหัสโครงการ", sort: true },
-      { column_name: "title_th", title: "ชื่อโครงการ (TH)", sort: true },
-      { column_name: "department_id", title: "หน่วยงาน", sort: true },
-      { column_name: "paper_type_id", title: "ประเภททุนวิจัย", sort: true },
-      { column_name: "status_id", title: "สถานะ", sort: true },
+      { column_name: "sended_at", title: "วันที่ส่งใบสมัคร", sort: true },
+      { column_name: "semester_id", title: "ปีการศึกษา", sort: true },
+      {
+        column_name: "company_detail.name",
+        title: "ชื่อสถานประกอบการ",
+        sort: true,
+      },
+      { column_name: "province_id", title: "จังหวัด", sort: true },
+      { column_name: "start_date", title: "วันเริ่ม", sort: true },
+      { column_name: "end_date", title: "วันสิ้นสุด", sort: true },
+      { column_name: "form_status_id", title: "สถานะ", sort: true },
       { column_name: "manage", title: "จัดการข้อมูล", sort: false },
     ];
+
+    const selectOptions = ref({
+      address_alls: <any>[],
+    });
+
+    const fetchAddress = async () => {
+      selectOptions.value.address_alls = await fetchAddressAlls({});
+    };
+    fetchAddress();
 
     // fetch
 
@@ -165,16 +237,34 @@ export default defineComponent({
     };
 
     const handleHistoryDetail = (item: any) => {
-      emit("history-detail", item);
+      emit("history-reject", item);
+    };
+    const handleCancel = (item: any) => {
+      Swal.fire({
+        title: "ยืนยันการยกเลิกใบสมัคร",
+        text: "เมื่อยกเลิกใบสมัครจะไม่สามารถกลับมาแก้ไขได้",
+        icon: "warning",
+        buttonsStyling: false,
+        showCancelButton: true,
+        confirmButtonText: "ยืนยัน",
+        cancelButtonText: "ยกเลิก",
+        heightAuto: false,
+        customClass: {
+          confirmButton: "btn btn-success",
+          cancelButton: "btn btn-info",
+        },
+      }).then(async (result: any) => {
+        if (result.isConfirmed) {
+          emit("cancel", item);
+        }
+      });
     };
 
-    const convertStatus = (status: any) => {
-      const findStatus = statuses.find((x: any) => x.id === status);
-      return {
-        name_th: findStatus.name_th,
-        bg_color: findStatus.bg_color,
-        bg_bs_color: findStatus.bg_bs_color,
-      };
+    const convertAddress = (sub_district_id: any) => {
+      let ad = selectOptions.value.address_alls.find((x: any) => {
+        return x.sub_district_id == sub_district_id;
+      });
+      return ad?.province;
     };
 
     const updateCurrentPage = (newPage: any) => {
@@ -197,14 +287,15 @@ export default defineComponent({
       handleDetail,
       handleEdit,
       handleHistoryDetail,
+      handleCancel,
       convertDate: useDateData().convertDate,
-      convertStatus,
       updateCurrentPage,
       updatePerPage,
       getSortIcon,
       handleSort,
       headerColumn,
       userData,
+      convertAddress,
     };
   },
 });

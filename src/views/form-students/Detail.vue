@@ -13,7 +13,7 @@
     <div class="modal-dialog modal-dialog-centered modal-xl">
       <div class="modal-content">
         <div class="modal-header" v-if="!isLoading">
-          <h3 class="modal-title">พิจารณาอนุมัติ</h3>
+          <h3 class="modal-title">ข้อมูลนักศึกษา</h3>
           <button
             @click="onClose({ reload: false })"
             type="button"
@@ -158,21 +158,22 @@
                   @history-reject="(it: any) =>{ onHistoryRejectModal(it)}"
                 />
               </div>
-              <!-- <div class="card-body d-lg-none">
-          <CardListComponent
-            :items="items"
-            :paginationData="paginationData"
-            :sortKey="sortKey"
-            :sortOrder="sortOrder"
-            @update:currentPage="paginationData.currentPage = $event"
-            @update:perPage="paginationData.perPage = $event"
-            @sort="(key: any) => {
+              <div class="card-body d-lg-none">
+                <CardListComponent
+                  :items="items"
+                  :paginationData="paginationData"
+                  :sortKey="sortKey"
+                  :sortOrder="sortOrder"
+                  @update:currentPage="paginationData.currentPage = $event"
+                  @update:perPage="paginationData.perPage = $event"
+                  @sort="(key: any) => {
               sortedItems(key)}"
-            @edit="(it: any) => {goToFormEditPage(it.id)}"
-            @detail="(it: any) => {onFormDetailModal(it) }"
-            @history-detail="(it: any) =>{ onHistoryRejectModal(it)}"
-          />
-        </div> -->
+                  @edit="(it: any) => {onEditFormModal(it)}"
+                  @detail="(it: any) => {onFormDetailModal(it) }"
+                  @cancel="(it: any) => {onFormCancel(it) }"
+                  @history-reject="(it: any) =>{ onHistoryRejectModal(it)}"
+                />
+              </div>
             </div>
 
             <!-- Modal -->
@@ -287,16 +288,16 @@ import useToast from "@/composables/useToast";
 import StudentProfileMinimalCardComponent from "@/components/student/StudentProfileMinimalCard.vue";
 import StudentProfileCardComponent from "@/components/student/StudentProfileCard.vue";
 import ListComponent from "@/components/students/form/ListOneStudent.vue";
-import CardListComponent from "@/components/form/CardList.vue";
+import CardListComponent from "@/components/students/form/CardListOneStudent.vue";
 import Preloader from "@/components/preloader/Preloader.vue";
 // Modal
 import DetailPage from "@/views/paper/DetailModal.vue";
-import EditStudentProfilePage from "@/views/student/Edit.vue";
+import EditStudentProfilePage from "@/views/student/EditProfile.vue";
 import AddFormPage from "@/views/form/Add.vue";
 import EditFormPage from "@/views/form/Edit.vue";
 import DetailFormPage from "@/views/form/Detail.vue";
 import HistoryRejectPage from "@/views/form/HistoryRejectModal.vue"; // ประวัติการแก้ไข
-import ApproveModalPage from "@/views/students/ApproveModal.vue"; // ประวัติการแก้ไข
+import ApproveModalPage from "@/views/form-students/ApproveModal.vue"; // ประวัติการแก้ไข
 
 export default defineComponent({
   name: "student",

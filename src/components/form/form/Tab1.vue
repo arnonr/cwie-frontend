@@ -1,325 +1,554 @@
 <template>
-  <tab-content :title="`ลำดับที่ 1`" :before-change="onTab1Validate">
-    <div class="row">
-      <div class="mb-7 col-12 col-lg-12">
-        <label for="paper_type_id" class="required form-label"
-          >ประเภทงานวิจัย</label
-        >
-        <v-select
-          name="paper_type_id"
-          label="name"
-          placeholder="ประเภทงานวิจัย"
-          :options="selectOptions.paper_types"
-          class="form-control"
-          :clearable="false"
-          v-model="item.paper_type_id"
-        >
-        </v-select>
-      </div>
+  <tab-content title="ลำดับที่ 1">
+    <form @submit.prevent="onSubmit">
+      <div class="row" v-if="item.id && isLoading == false">
+        <div class="col-12 mb-6">
+          <h3>ข้อมูลทั่วไป</h3>
+          <span>หมายเหตุ : โปรดระบุข้อมูลให้ครบถ้วน</span>
+        </div>
 
-      <div class="mb-7 col-12 col-lg-12">
-        <label for="paper_type_id" class="required form-label"
-          >ลักษณะงานวิจัย</label
-        >
-        <v-select
-          name="paper_kind_id"
-          label="name"
-          placeholder="ลักษณะงานวิจัย"
-          :options="selectOptions.paper_kinds"
-          class="form-control"
-          :clearable="false"
-          v-model="item.paper_kind_id"
-        >
-        </v-select>
-      </div>
+        <div class="col-12 col-lg-3 mb-10">
+          <div style="cursor: pointer">
+            <img
+              v-if="previewPhoto"
+              :src="previewPhoto"
+              class="mt-5"
+              style="width: 200px"
+              @click="openFileInput"
+            />
+            <img
+              v-if="previewPhoto == null && item.photo_file_old != null"
+              :src="item.photo_file_old"
+              alt=""
+              class="mt-5"
+              style="width: 200px"
+              @click="openFileInput"
+            />
 
-      <div class="mb-7 col-12 col-lg-12">
-        <label for="title_th" class="required form-label"
-          >ชื่อโครงการ ภาษาไทย</label
-        >
-        <input
-          type="text"
-          class="form-control"
-          :placeholder="`ชื่อโครงการ ภาษาไทย`"
-          :aria-label="`ชื่อโครงการ ภาษาไทย`"
-          v-model="item.title_th"
+            <img
+              src="/media/avatars/blank.png"
+              v-if="previewPhoto == null && item.photo_file_old == null"
+              alt=""
+              class="mt-5"
+              style="width: 200px"
+              @click="openFileInput"
+            />
+          </div>
+        </div>
+        <div class="col-12 col-lg-9">
+          <div class="mb-7 col-12 col-lg-12 mt-lg-10">
+            <label for="photo_file" class="required form-label"
+              >อัพโหลดรูปภาพนักศึกษา <br />ขนาด 1x1.5 นิ้ว <br />ไฟล์รูปภาพ PNG,
+              JPG</label
+            >
+            <input
+              type="file"
+              id="formFile"
+              name="photo_file"
+              accept="image/*"
+              @change="onPhotoFileChange"
+              ref="photoFile"
+              style="display: none"
+              :class="['form-control', { 'is-invalid': '' }]"
+            />
+            <!-- <span v-if="errorMessage" class="invalid-feedback">{{
+            errorMessage
+          }}</span> -->
+          </div>
+        </div>
+
+        <CustomField
+          v-for="field in fields"
+          :key="field.name"
+          :label="field.label"
+          :field="field.model"
+          :component-type="field.type"
+          :colClass="field.colClass"
+          :disabled="field.disabled"
+          :options="field.options"
         />
-      </div>
 
-      <div class="mb-7 col-12 col-lg-12">
-        <label for="title_en" class="required form-label"
-          >ชื่อโครงการ ภาษาอังกฤษ</label
-        >
-        <input
-          type="text"
-          class="form-control"
-          :placeholder="`ชื่อโครงการ ภาษาอังกฤษ`"
-          :aria-label="`ชื่อโครงการ ภาษาอังกฤษ`"
-          v-model="item.title_en"
+        <div class="separator separator-dashed mb-7"></div>
+        <div class="col-12 mb-6">
+          <h3>ที่อยู่</h3>
+        </div>
+
+        <CustomField
+          v-for="field in fields2"
+          :key="field.name"
+          :label="field.label"
+          :field="field.model"
+          :component-type="field.type"
+          :colClass="field.colClass"
+          :disabled="field.disabled"
+          :options="field.options"
+          :select_label="field.select_label"
         />
-      </div>
 
-      <div class="mb-7 col-12 col-lg-12">
-        <label for="abstract" class="required form-label"
-          >บทคัดย่อ (Abstract)</label
-        >
+        <div class="separator separator-dashed mb-7"></div>
+        <div class="col-12 mb-6">
+          <h3>ผู้ที่ติดต่อได้</h3>
+        </div>
 
-        <froala
-          :tag="'textarea'"
-          :config="froalaConfig.abstract"
-          v-model="item.abstract"
-        ></froala>
-      </div>
-
-      <div class="mb-7 col-12 col-lg-12">
-        <label for="keyword" class="form-label">Keyword</label>
-        <vue3-tags-input
-          :tags="tags"
-          placeholder=""
-          @on-tags-changed="handleChangeTag"
+        <CustomField
+          v-for="field in fields3"
+          :key="field.name"
+          :label="field.label"
+          :field="field.model"
+          :component-type="field.type"
+          :colClass="field.colClass"
+          :disabled="field.disabled"
         />
+        <!-- :options="field.options"
+          :select_label="field.select_label" -->
       </div>
 
-      <div class="mb-7 col-12 col-lg-12">
-        <label for="department_id" class="required form-label">ภาควิชา</label>
-        <v-select
-          name="department_id"
-          label="name"
-          placeholder="ภาควิชา"
-          :options="selectOptions.departments"
-          class="form-control"
-          :clearable="false"
-          v-model="item.department_id"
-        >
-        </v-select>
+      <div class="row">
+        <div class="d-flex justify-content-end w-100">
+          <button
+            ref="submitButtonRef"
+            type="submit"
+            id="kt_modal_new_address_submit"
+            class="btn btn-success"
+          >
+            <span class="indicator-label"> ถัดไป </span>
+            <span class="indicator-progress">
+              Please wait...
+              <span
+                class="spinner-border spinner-border-sm align-middle ms-2"
+              ></span>
+            </span>
+          </button>
+        </div>
       </div>
-
-      <div class="mb-7 col-12 col-lg-12">
-        <label for="history" class="required form-label"
-          >ความเป็นมาและความสำคัญของปัญหาการวิจัยที่ทำ</label
-        >
-        <froala
-          :tag="'textarea'"
-          :config="froalaConfig.history"
-          v-model="item.history"
-        ></froala>
-      </div>
-
-      <div class="mb-7 col-12 col-lg-12">
-        <label for="objective" class="required form-label"
-          >วัตถุประสงค์ของโครงการวิจัย</label
-        >
-
-        <froala
-          :tag="'textarea'"
-          :config="froalaConfig.objective"
-          v-model="item.objective"
-        ></froala>
-      </div>
-
-      <div class="mb-7 col-12 col-lg-12">
-        <label for="scope" class="required form-label">ขอบเขตของการวิจัย</label>
-        <froala
-          :tag="'textarea'"
-          :config="froalaConfig.scope"
-          v-model="item.scope"
-        ></froala>
-      </div>
-
-      <div class="mb-7 col-12 col-lg-12">
-        <label for="review_literature" class="required form-label"
-          >ผลงานวิจัยที่เกี่ยวข้อง (Review Literature)
-          ระบุความเกี่ยวเนื่องสัมพันธ์หรือความแตกต่างของโครงการวิจัยเรื่องนี้กับโครงการวิจัยอื่นทั้งในประเทศและต่างประเทศที่ได้มีการวิจัยไว้แล้ว
-          รวมถึงรายละเอียดผลการวิจัยที่เกี่ยวข้อง
-          ต้องเขียนแสดงรายละเอียดจากผลการวิจัยเรื่องนั้นๆ
-          ไม่ใช่การเขียนเอกสารอ้างอิงหรือบรรณานุกรม</label
-        >
-        <froala
-          :tag="'textarea'"
-          :config="froalaConfig.review_literature"
-          v-model="item.review_literature"
-        ></froala>
-      </div>
-
-      <div class="mb-7 col-12 col-lg-12">
-        <label for="method" class="required form-label"
-          >ระเบียบวิธีวิจัย ให้อธิบายขั้นตอนในการดำเนินการทดลอง หรือทดสอบ
-          โดยอธิบาย วิธีวิเคราะห์ข้อมูล อย่างละเอียด</label
-        >
-        <froala
-          :tag="'textarea'"
-          :config="froalaConfig.method"
-          v-model="item.method"
-        ></froala>
-      </div>
-
-      <div class="mb-7 col-12 col-lg-12">
-        <label for="benefit" class="required form-label"
-          >ประโยชน์ที่คาดว่าจะได้รับ</label
-        >
-        <froala
-          :tag="'textarea'"
-          :config="froalaConfig.benefit"
-          v-model="item.benefit"
-        ></froala>
-      </div>
-
-      <div class="mb-7 col-12 col-lg-12">
-        <label for="location" class="required form-label"
-          >สถานที่ทำการทดลอง และ/หรือเก็บข้อมูล</label
-        >
-        <froala
-          :tag="'textarea'"
-          :config="froalaConfig.location"
-          v-model="item.location"
-        ></froala>
-      </div>
-    </div>
+    </form>
   </tab-content>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, onMounted, toRefs, onBeforeUnmount } from "vue";
+import {
+  defineComponent,
+  ref,
+  onMounted,
+  toRefs,
+  onBeforeUnmount,
+  getCurrentInstance,
+  computed,
+  watch,
+} from "vue";
+
 import ApiService from "@/core/services/ApiService";
-// Import Vue-select
-import vSelect from "vue-select";
-import "vue-select/dist/vue-select.css";
-// Import Datepicker
-import VueDatePicker from "@vuepic/vue-datepicker";
-import "@vuepic/vue-datepicker/dist/main.css";
-// Import Dayjs
-import dayjs from "dayjs";
-import "dayjs/locale/th";
-import buddhistEra from "dayjs/plugin/buddhistEra";
-import utc from "dayjs/plugin/utc";
-import timezone from "dayjs/plugin/timezone";
-dayjs.extend(buddhistEra);
-dayjs.extend(utc);
-dayjs.extend(timezone);
+// Vee validate
+import { useForm } from "vee-validate";
+import * as Yup from "yup";
 // Import FormWizard
 import { TabContent } from "vue3-form-wizard";
-// Vue3 Tags
-import Vue3TagsInput from "vue3-tags-input";
-// import "@wiris/mathtype-froala3/wiris.js"
-
 // Use Composables
-import useMasterData from "@/composables/useMasterData";
-import useFroalaConfigData from "@/composables/useFroalaConfigData";
+import {
+  fetchTeachers,
+  fetchAddressAlls,
+} from "@/composables/useFetchSelectionData";
+// Components
+import CustomField from "@/Components/field/CustomField.vue";
+import useToast from "@/composables/useToast";
 
 export default defineComponent({
-  name: "paper-form-tab1",
+  name: "student-profile-form-tab1",
+  components: {
+    TabContent,
+    CustomField,
+  },
   props: {
     item: {
       type: Object,
       required: true,
     },
   },
-  components: {
-    vSelect,
-    VueDatePicker,
-    dayjs,
-    TabContent,
-    Vue3TagsInput,
-  },
   setup(props, { emit }) {
     // Variable
     const { item } = toRefs(props);
-    const tags = ref<string[]>([]);
+    const userData = JSON.parse(localStorage.getItem("userData") || "{}");
+    const isLoading = ref(true);
+    const photoFile = ref<any>(null);
+    const previewPhoto = ref<any>(null);
 
-    let froalaConfig: any = {
-      abstract: useFroalaConfigData().froala_config,
-      history: useFroalaConfigData().froala_config,
-      objective: useFroalaConfigData().froala_config,
-      review_literature: useFroalaConfigData().froala_config,
-      method: useFroalaConfigData().froala_config,
-      benefit: useFroalaConfigData().froala_config,
-      location: useFroalaConfigData().froala_config,
-      scope: useFroalaConfigData().froala_config,
-    };
-
-    let textEditor = [
-      "abstract",
-      "history",
-      "objective",
-      "review_literature",
-      "method",
-      "benefit",
-      "location",
-      "scope",
-    ];
-
-    textEditor.forEach((x: any) => {
-      froalaConfig[x]["events"] = {
-        keyup: function (inputEvent: any) {
-          item.value[x] = this.html.get();
-        },
-        click: function (clickEvent: any) {
-          item.value[x] = this.html.get();
-        },
-        "commands.after": function (cmd: any, param1: any, param2: any) {
-          item.value[x] = this.html.get();
-        },
-        "paste.after": function (pasteEvent: any) {
-          item.value[x] = this.html.get();
-        },
-        initialized: function () {
-          this.html.insert(item.value[x]);
-        },
-      };
-    });
+    const instance = getCurrentInstance();
+    const dayjs = instance?.appContext.config.globalProperties.$dayjs;
 
     const selectOptions = ref({
-      departments: <any>[],
-      paper_types: <any>[],
-      paper_kinds: <any>[],
+      address_alls: <any>[],
+      advisors: <any>[],
+    });
+
+    const fields = ref([
+      {
+        name: "student_code",
+        label: "รหัสนักศึกษา",
+        model: "student_code",
+        type: "text",
+        placeholder: "",
+        colClass: "col-lg-3",
+        disabled: true,
+      },
+      {
+        name: "prefix",
+        label: "คำนำหน้า (นาย, นาง, นางสาว)",
+        model: "prefix",
+        type: "text",
+        placeholder: "",
+        colClass: "col-lg-3",
+        disabled: false,
+      },
+      {
+        name: "firstname",
+        label: "ชื่อ",
+        model: "firstname",
+        type: "text",
+        placeholder: "",
+        colClass: "col-lg-3",
+        disabled: false,
+      },
+      {
+        name: "surname",
+        label: "นามสกุล",
+        model: "surname",
+        type: "text",
+        placeholder: "",
+        colClass: "col-lg-3",
+        disabled: false,
+      },
+      {
+        name: "faculty_name",
+        label: "คณะ",
+        model: "faculty_name",
+        type: "text",
+        placeholder: "",
+        colClass: "col-lg-6",
+        disabled: true,
+      },
+      {
+        name: "division_name",
+        label: "สาขาวิชา",
+        model: "division_name",
+        type: "text",
+        placeholder: "",
+        colClass: "col-lg-6",
+        disabled: true,
+      },
+      {
+        name: "class_year",
+        label: "ชั้นปีที่ (1-8)",
+        model: "class_year",
+        type: "text",
+        placeholder: "",
+        colClass: "col-lg-2",
+        disabled: false,
+      },
+      {
+        name: "advisor_id",
+        label: "อาจารย์ที่ปรึกษา",
+        model: "advisor_id",
+        type: "v-select",
+        options: computed(() => selectOptions.value.advisors),
+        placeholder: "",
+        colClass: "col-lg-8",
+        disabled: false,
+      },
+      {
+        name: "gpa",
+        label: "เกรดเฉลี่ยสะสม",
+        model: "gpa",
+        type: "text",
+        placeholder: "",
+        colClass: "col-lg-2",
+        disabled: false,
+      },
+    ]);
+
+    const fields2 = ref([
+      {
+        name: "address",
+        label: "ที่อยู่ปัจจุบัน เช่น บ้านเลขที่ หมู่บ้าน ซอย ถนน",
+        model: "address",
+        type: "textArea",
+        placeholder: "",
+        colClass: "col-lg-12",
+        disabled: false,
+      },
+      {
+        name: "phone",
+        label: "โทรศัพท์มือถือ",
+        model: "phone",
+        type: "text",
+        placeholder: "",
+        colClass: "col-lg-6",
+        disabled: false,
+      },
+      {
+        name: "email",
+        label: "อีเมล",
+        model: "email",
+        type: "text",
+        placeholder: "",
+        colClass: "col-lg-6",
+        disabled: false,
+      },
+      {
+        name: "address_all",
+        label: "จังหวัด/อำเภอ/ตำบล/รหัสไปรษณีย์",
+        model: "address_all",
+        select_label: "label",
+        type: "v-select",
+        options: computed(() => selectOptions.value.address_alls),
+        placeholder: "",
+        colClass: "col-lg-12",
+        disabled: false,
+      },
+    ]);
+
+    const fields3 = ref([
+      {
+        name: "contact1_name",
+        label: "ชื่อผู้ที่ติดต่อได้ คนที่ 1",
+        model: "contact1_name",
+        type: "text",
+        placeholder: "",
+        colClass: "col-lg-6",
+        disabled: false,
+      },
+      {
+        name: "contact1_relation",
+        label: "ความสัมพันธ์",
+        model: "contact1_relation",
+        type: "text",
+        placeholder: "",
+        colClass: "col-lg-3",
+        disabled: false,
+      },
+      {
+        name: "contact1_phone",
+        label: "เบอรโทรศัพท์",
+        model: "contact1_phone",
+        type: "text",
+        placeholder: "",
+        colClass: "col-lg-3",
+        disabled: false,
+      },
+      {
+        name: "contact2_name",
+        label: "ชื่อผู้ที่ติดต่อได้ คนที่ 2",
+        model: "contact2_name",
+        type: "text",
+        placeholder: "",
+        colClass: "col-lg-6",
+        disabled: false,
+      },
+      {
+        name: "contact2_relation",
+        label: "ความสัมพันธ์",
+        model: "contact2_relation",
+        type: "text",
+        placeholder: "",
+        colClass: "col-lg-3",
+        disabled: false,
+      },
+      {
+        name: "contact2_phone",
+        label: "เบอรโทรศัพท์",
+        model: "contact2_phone",
+        type: "text",
+        placeholder: "",
+        colClass: "col-lg-3",
+        disabled: false,
+      },
+    ]);
+
+    const validationSchema = Yup.object().shape({
+      prefix: Yup.string().required().label("คำนำหน้า"),
+      firstname: Yup.string().required().label("ชื่อ"),
+      surname: Yup.string().required().label("นามสกุล"),
+      class_year: Yup.number()
+        .typeError("ตัวเลข 1-8 เท่านั้น")
+        .max(8, "ตัวเลข 1-8 เท่านั้น")
+        .required()
+        .label("ชั้นปี"),
+      advisor_id: Yup.object().required().label("อาจารย์ที่ปรึกษา"),
+      address: Yup.string().required().label("ที่อยู่ปัจจุบัน"),
+      phone: Yup.string()
+        .matches(/^[0-9]{10}$/, "หมายเลขโทรศัพท์มือถือไม่ถูกต้อง")
+        .required()
+        .label("โทรศัพท์มือถือ"),
+      email: Yup.string()
+        .email("รูปแบบอีเมลไม่ถูกต้อง")
+        .required()
+        .label("อีเมล"),
+      gpa: Yup.number()
+        .typeError("ตัวเลขเท่านั้น")
+        .required()
+        .label("เกรดเฉลี่ยสะสม"),
+      address_all: Yup.object()
+        .required()
+        .label("จังหวัด/อำเภอ/ตำบล/รหัสไปรษณีย์"),
+      contact1_name: Yup.string()
+        .required()
+        .label("ชื่อผู้ที่ติดต่อได้ คนที่ 1"),
+      contact1_relation: Yup.string().required().label("ความสัมพันธ์"),
+      contact1_phone: Yup.string().required().label("เบอร์โทรศัพท์"),
+      contact2_name: Yup.string()
+        .required()
+        .label("ชื่อผู้ที่ติดต่อได้ คนที่ 2"),
+      contact2_relation: Yup.string().required().label("ความสัมพันธ์"),
+      contact2_phone: Yup.string().required().label("เบอร์โทรศัพท์"),
+      photo_file: Yup.mixed().nullable().label("รูปภาพนักศึกษา"),
     });
 
     // Event
-    const onTab1Validate = async () => {
-      return true;
+    const openFileInput = () => {
+      photoFile.value.click();
     };
 
-    const handleChangeTag = (tags: any) => {
-      tags.value = tags;
-      item.value.keyword = tags.value.join(",");
+    const onPhotoFileChange = (event: any) => {
+      props.item.photo_file = event.target.files[0];
+      if (props.item.photo_file) {
+        previewPhoto.value = URL.createObjectURL(props.item.photo_file);
+      } else {
+        previewPhoto.value = null;
+      }
     };
+
+    const { handleSubmit, setValues } = useForm({
+      validationSchema: validationSchema,
+      initialValues: props.item,
+    });
+
+    const onSubmit = handleSubmit(async (values) => {
+      const { photo_file, ...otherValues } = values;
+
+      Object.assign(props.item, otherValues);
+      if (photo_file instanceof File) {
+        props.item.photo_file = photo_file;
+      }
+
+      if (
+        item.value.photo_file_old == null &&
+        props.item.photo_file.length == 0
+      ) {
+        useToast("รูปภาพ จำเป็นต้องอัพโหลด", "error");
+        return;
+      }
+
+      const {
+        prefix,
+        firstname,
+        surname,
+        class_year,
+        advisor_id,
+        gpa,
+        address,
+        phone,
+        email,
+        address_all,
+        contact1_name,
+        contact1_relation,
+        contact1_phone,
+        contact2_name,
+        contact2_relation,
+        contact2_phone,
+      } = item.value;
+
+      const { province_id, district_id, sub_district_id } = address_all;
+
+      let data_send = {
+        prefix,
+        firstname,
+        surname,
+        class_year,
+        advisor_id: advisor_id?.id,
+        gpa,
+        address,
+        phone,
+        email,
+        province_id,
+        district_id,
+        sub_district_id,
+        contact1_name,
+        contact1_relation,
+        contact1_phone,
+        contact2_name,
+        contact2_relation,
+        contact2_phone,
+        photo_file:
+          props.item.photo_file.length != 0 ? props.item.photo_file : undefined,
+      };
+
+      await ApiService.putFormData(`student-profile/${item.value.id}`, {
+        ...data_send,
+      })
+        .then(({ data, status }) => {
+          if (status != 200) {
+            throw new Error("ERROR");
+          }
+          emit("on-next");
+        })
+        .catch(({ response }) => {
+          console.log(response);
+        });
+
+      //
+    });
+
+    // const resetToInitial = () => {
+    //   setValues(props.model);
+    // };
 
     // Mounted
     onMounted(async () => {
-      selectOptions.value.departments = await useMasterData().fetchDepartments({
-        is_active: 1,
-        perPage: 500,
+      isLoading.value = true;
+      selectOptions.value.advisors = await fetchTeachers({
+        department_id: userData.student_profile.department_id,
+        is_active: true,
+        selectField: JSON.stringify({
+          id: true,
+          fullname: true,
+        }),
       });
 
-      selectOptions.value.paper_types = await useMasterData().fetchPaperTypes({
-        is_active: 1,
-        perPage: 500,
-      });
+      selectOptions.value.advisors = selectOptions.value.advisors.map(
+        (x: any) => {
+          return { id: x.id, name: x.fullname };
+        }
+      );
 
-      selectOptions.value.paper_kinds = await useMasterData().fetchPaperKinds({
-        is_active: 1,
-        perPage: 500,
-      });
-
-      if (item.value.keyword != null && item.value.keyword != "") {
-        tags.value = [];
-      } else {
-        tags.value = item.value.keyword.split(",");
-      }
+      selectOptions.value.address_alls = await fetchAddressAlls({});
+      item.value.photo_file = [];
+      isLoading.value = false;
     });
 
     onBeforeUnmount(() => {});
 
+    // watch(
+    //   () => props.item,
+    //   (newValue) => {
+    //     setValues(newValue);
+    //   }
+    // );
+
     // Return
     return {
       selectOptions,
-      tags,
-      handleChangeTag,
-      onTab1Validate,
-      froalaConfig,
+      onSubmit,
+      fields,
+      fields2,
+      fields3,
+      item,
+      isLoading,
+      openFileInput,
+      photoFile,
+      previewPhoto,
+      onPhotoFileChange,
     };
   },
 });
 </script>
 
-<style></style>
+<style scoped></style>

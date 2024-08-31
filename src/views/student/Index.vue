@@ -128,7 +128,7 @@
           @history-reject="(it: any) =>{ onHistoryRejectModal(it)}"
         />
       </div>
-      <!-- <div class="card-body d-lg-none">
+      <div class="card-body d-lg-none">
         <CardListComponent
           :items="items"
           :paginationData="paginationData"
@@ -138,11 +138,12 @@
           @update:perPage="paginationData.perPage = $event"
           @sort="(key: any) => {
             sortedItems(key)}"
-          @edit="(it: any) => {goToFormEditPage(it.id)}"
+          @edit="(it: any) => {onEditFormModal(it)}"
           @detail="(it: any) => {onFormDetailModal(it) }"
-          @history-detail="(it: any) =>{ onHistoryRejectModal(it)}"
+          @cancel="(it: any) => {onFormCancel(it) }"
+          @history-reject="(it: any) =>{ onHistoryRejectModal(it)}"
         />
-      </div> -->
+      </div>
     </div>
 
     <!-- Modal -->
@@ -235,7 +236,7 @@ import CardListComponent from "@/components/form/CardList.vue";
 import Preloader from "@/components/preloader/Preloader.vue";
 // Modal
 import DetailPage from "@/views/paper/DetailModal.vue";
-import EditStudentProfilePage from "@/views/student/Edit.vue";
+import EditStudentProfilePage from "@/views/student/EditProfile.vue";
 import AddFormPage from "@/views/form/Add.vue";
 import EditFormPage from "@/views/form/Edit.vue";
 import DetailFormPage from "@/views/form/Detail.vue";

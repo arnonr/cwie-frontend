@@ -25,6 +25,9 @@
           <td>{{ it.semester_detail.term + "/" + it.semester_detail.year }}</td>
 
           <td>{{ it.company_detail.name }}</td>
+
+          <td>{{ convertAddress(it.company_detail.sub_district_id) }}</td>
+
           <td class="text-center">
             {{ convertDate(it.start_date) }}
           </td>
@@ -81,10 +84,11 @@
                   <a
                     class="dropdown-item cursor-pointer"
                     v-if="
-                      userData.group_id == 1 ||
-                      userData.group_id == 2 ||
-                      userData.group_id == 3 ||
-                      userData.group_id == 4
+                      (userData.group_id == 1 ||
+                        userData.group_id == 2 ||
+                        userData.group_id == 3 ||
+                        userData.group_id == 4) &&
+                      it.form_status_id != 99
                     "
                     @click="
                       handleEdit({
@@ -98,10 +102,11 @@
                   <a
                     class="dropdown-item cursor-pointer"
                     v-if="
-                      userData.group_id == 1 ||
-                      userData.group_id == 2 ||
-                      userData.group_id == 3 ||
-                      userData.group_id == 4
+                      (userData.group_id == 1 ||
+                        userData.group_id == 2 ||
+                        userData.group_id == 3 ||
+                        userData.group_id == 4) &&
+                      it.form_status_id != 99
                     "
                     @click="
                       handleCancel({
@@ -154,11 +159,11 @@ import Swal from "sweetalert2/dist/sweetalert2.js";
 // Import Pagination
 import BlogPagination from "@/components/common/pagination/BlogPagination.vue";
 // Composable
-import useStatusData from "@/composables/useStatusData";
 import useDateData from "@/composables/useDateData";
+import { fetchAddressAlls } from "@/composables/useFetchSelectionData";
 
 export default defineComponent({
-  name: "list-paper",
+  name: "list-one-student",
   components: {
     BlogPagination,
   },
@@ -185,7 +190,6 @@ export default defineComponent({
     const { paginationData } = toRefs(props);
     const internalCurrentPage = ref(paginationData.value.currentPage);
     const internalPerPage = ref(paginationData.value.perPage);
-    let { statuses } = useStatusData();
     const userData = JSON.parse(localStorage.getItem("userData") || "{}");
 
     const headerColumn = [
@@ -196,12 +200,25 @@ export default defineComponent({
         title: "ชื่อสถานประกอบการ",
         sort: true,
       },
+      {
+        column_name: "company_detail.province_id",
+        title: "จังหวัด",
+        sort: true,
+      },
       { column_name: "start_date", title: "วันเริ่ม", sort: true },
       { column_name: "end_date", title: "วันสิ้นสุด", sort: true },
       { column_name: "form_status_id", title: "สถานะ", sort: true },
       { column_name: "manage", title: "จัดการข้อมูล", sort: false },
     ];
 
+    const selectOptions = ref({
+      address_alls: <any>[],
+    });
+
+    const fetchAddress = async () => {
+      selectOptions.value.address_alls = await fetchAddressAlls({});
+    };
+    fetchAddress();
     // fetch
 
     const handleDetail = (item: any) => {
@@ -239,13 +256,11 @@ export default defineComponent({
         }
       });
     };
-
-    const convertStatus = (status: any) => {
-      const findStatus = statuses.find((x: any) => x.id === status);
-      return {
-        name_th: findStatus.name_th,
-        bg_color: findStatus.bg_color,
-      };
+    const convertAddress = (sub_district_id: any) => {
+      let ad = selectOptions.value.address_alls.find((x: any) => {
+        return x.sub_district_id == sub_district_id;
+      });
+      return ad?.province;
     };
 
     const updateCurrentPage = (newPage: any) => {
@@ -270,13 +285,13 @@ export default defineComponent({
       handleHistoryDetail,
       handleCancel,
       convertDate: useDateData().convertDate,
-      convertStatus,
       updateCurrentPage,
       updatePerPage,
       getSortIcon,
       handleSort,
       headerColumn,
       userData,
+      convertAddress,
     };
   },
 });

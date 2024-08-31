@@ -1,34 +1,6 @@
 <template>
   <!--begin::Wrapper-->
   <div class="container mt-5">
-    <!-- Profile -->
-    <!-- 
-    <div class="accordion" id="accordionExample">
-      <div class="accordion-item border rounded shadow-sm">
-        <h2 class="accordion-header" id="headingOne">
-          <button
-            class="accordion-button collapsed"
-            type="button"
-            data-bs-toggle="collapse"
-            data-bs-target="#collapseOne"
-            aria-expanded="false"
-            aria-controls="collapseOne"
-          >
-            ค้นหาใบสมัคร
-          </button>
-        </h2>
-        <div
-          id="collapseOne"
-          class="accordion-collapse collapse"
-          aria-labelledby="headingOne"
-          data-bs-parent="#accordionExample"
-        >
-          <div class="accordion-body">
-            
-          </div>
-        </div>
-      </div>
-    </div> -->
     <!--  -->
     <SearchComponent
       :search="search"
@@ -65,21 +37,19 @@
           @detail="(it: any) => {onFormDetailModal(it) }"
         />
       </div>
-      <!-- <div class="card-body d-lg-none">
-          <CardListComponent
-            :items="items"
-            :paginationData="paginationData"
-            :sortKey="sortKey"
-            :sortOrder="sortOrder"
-            @update:currentPage="paginationData.currentPage = $event"
-            @update:perPage="paginationData.perPage = $event"
-            @sort="(key: any) => {
+      <div class="card-body d-lg-none">
+        <CardListComponent
+          :items="items"
+          :paginationData="paginationData"
+          :sortKey="sortKey"
+          :sortOrder="sortOrder"
+          @update:currentPage="paginationData.currentPage = $event"
+          @update:perPage="paginationData.perPage = $event"
+          @sort="(key: any) => {
               sortedItems(key)}"
-            @edit="(it: any) => {goToFormEditPage(it.id)}"
-            @detail="(it: any) => {onFormDetailModal(it) }"
-            @history-detail="(it: any) =>{ onHistoryRejectModal(it)}"
-          />
-        </div> -->
+          @detail="(it: any) => {onFormDetailModal(it) }"
+        />
+      </div>
     </div>
 
     <!-- Modal -->
@@ -106,12 +76,12 @@ import ApiService from "@/core/services/ApiService";
 import useToast from "@/composables/useToast";
 
 // Component
-import ListComponent from "@/components/students/form/List.vue";
-import CardListComponent from "@/components/form/CardList.vue";
+import ListComponent from "@/components/students/form/ListAllActive.vue";
+import CardListComponent from "@/components/students/form/CardAllActive.vue";
 import Preloader from "@/components/preloader/Preloader.vue";
 import SearchComponent from "@/components/students/Search.vue";
 // Modal
-import StudentDetailFormPage from "@/views/students/Detail.vue";
+import StudentDetailFormPage from "@/views/form-students/Detail.vue";
 
 export default defineComponent({
   name: "student",

@@ -35,7 +35,7 @@
           </td>
           <td>{{ it.student_detail.class_year }}</td>
           <td>{{ it.company_detail.name }}</td>
-          <td>{{ it.company_detail.province_id }}</td>
+          <td>{{ convertAddress(it.company_detail.sub_district_id) }}</td>
           <td class="text-center">
             <span
               class="badge p-2 text-white"
@@ -147,11 +147,11 @@ import Swal from "sweetalert2/dist/sweetalert2.js";
 // Import Pagination
 import BlogPagination from "@/components/common/pagination/BlogPagination.vue";
 // Composable
-import useStatusData from "@/composables/useStatusData";
 import useDateData from "@/composables/useDateData";
+import { fetchAddressAlls } from "@/composables/useFetchSelectionData";
 
 export default defineComponent({
-  name: "list-paper",
+  name: "staff-list-form",
   components: {
     BlogPagination,
   },
@@ -178,7 +178,6 @@ export default defineComponent({
     const { paginationData } = toRefs(props);
     const internalCurrentPage = ref(paginationData.value.currentPage);
     const internalPerPage = ref(paginationData.value.perPage);
-    let { statuses } = useStatusData();
     const userData = JSON.parse(localStorage.getItem("userData") || "{}");
 
     const headerColumn = [
@@ -196,6 +195,15 @@ export default defineComponent({
       { column_name: "form_status_id", title: "สถานะ", sort: true },
       { column_name: "manage", title: "จัดการข้อมูล", sort: false },
     ];
+
+    const selectOptions = ref({
+      address_alls: <any>[],
+    });
+
+    const fetchAddress = async () => {
+      selectOptions.value.address_alls = await fetchAddressAlls({});
+    };
+    fetchAddress();
 
     // fetch
 
@@ -235,12 +243,11 @@ export default defineComponent({
       });
     };
 
-    const convertStatus = (status: any) => {
-      const findStatus = statuses.find((x: any) => x.id === status);
-      return {
-        name_th: findStatus.name_th,
-        bg_color: findStatus.bg_color,
-      };
+    const convertAddress = (sub_district_id: any) => {
+      let ad = selectOptions.value.address_alls.find((x: any) => {
+        return x.sub_district_id == sub_district_id;
+      });
+      return ad?.province;
     };
 
     const updateCurrentPage = (newPage: any) => {
@@ -265,13 +272,13 @@ export default defineComponent({
       handleHistoryDetail,
       handleCancel,
       convertDate: useDateData().convertDate,
-      convertStatus,
       updateCurrentPage,
       updatePerPage,
       getSortIcon,
       handleSort,
       headerColumn,
       userData,
+      convertAddress,
     };
   },
 });

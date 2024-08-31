@@ -55,49 +55,6 @@
                     <div class="wizard-footer-left"></div>
                     <div class="wizard-footer-right"></div>
                   </template>
-
-                  <!-- <template #footer="props">
-                    <div class="wizard-footer-left">
-                      <button
-                        v-if="props.activeTabIndex > 0"
-                        @click.native="props.prevTab()"
-                        class="btn btn-danger text-white float-left"
-                        :disabled="isLoading"
-                      >
-                        ย้อนกลับ
-                      </button>
-                    </div>
-
-                    <div class="wizard-footer-right">
-                      <button
-                        v-if="!props.isLastStep"
-                        @click.native="props.nextTab()"
-                        class="btn btn-primary text-white"
-                        :disabled="isLoading"
-                      >
-                        ถัดไป
-                      </button>
-
-                      <button
-                        v-else
-                        @click.native="onComplete(0)"
-                        class="btn btn-primary text-white"
-                        :disabled="isLoading"
-                      >
-                        {{ props.isLastStep ? "บันทึก" : "Next" }}
-                      </button>
-
-                      @click.native="onComplete(1)"
-                      <button
-                        v-if="props.isLastStep"
-                        class="finish-button btn text-white ms-4"
-                        style="background-color: green"
-                        :disabled="isLoading"
-                      >
-                        {{ "ส่งข้อมูล" }}
-                      </button>
-                    </div>
-                  </template> -->
                 </form-wizard>
               </div>
               <Preloader
@@ -143,7 +100,7 @@ dayjs.extend(customParseFormat);
 
 // Import Component
 import Preloader from "@/components/preloader/Preloader.vue";
-import Tab1 from "@/components/form/form/Tab1Add.vue";
+import Tab1 from "@/components/form/form/Tab1.vue";
 import Tab2 from "@/components/form/form/Tab2.vue";
 import Tab3 from "@/components/form/form/Tab3.vue";
 

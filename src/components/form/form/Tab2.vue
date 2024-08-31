@@ -68,10 +68,6 @@ import * as Yup from "yup";
 // Import FormWizard
 import { TabContent } from "vue3-form-wizard";
 // Use Composables
-import {
-  fetchTeachers,
-  fetchAddressAlls,
-} from "@/composables/useFetchSelectionData";
 // Components
 import CustomField from "@/Components/field/CustomField.vue";
 

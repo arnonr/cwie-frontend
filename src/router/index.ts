@@ -60,7 +60,7 @@ const routes: Array<RouteRecordRaw> = [
       {
         path: "/advisor/student",
         name: "advisor-student",
-        component: () => import("@/views/advisor/student/Index.vue"),
+        component: () => import("@/views/advisor/form-students/Index.vue"),
         meta: {
           pageTitle: "รายการนักศึกษา",
         },
