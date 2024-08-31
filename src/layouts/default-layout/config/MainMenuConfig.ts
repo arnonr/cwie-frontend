@@ -32,6 +32,17 @@ const MainMenuConfig: Array<MenuItem> = [
         ],
       },
       {
+        sectionTitle: "เจ้าหน้าที่",
+        route: "/staff",
+        bootstrapIcon: "bi-file-earmark-text",
+        sub: [
+          {
+            heading: "รายการใบสมัคร",
+            route: "/staff/student",
+          },
+        ],
+      },
+      {
         heading: "รายการโครงการวิจัย",
         route: "/admin-paper",
         keenthemesIcon: "element-11",

@@ -74,6 +74,14 @@ const routes: Array<RouteRecordRaw> = [
           pageTitle: "รายการนักศึกษา",
         },
       },
+      {
+        path: "/staff/student",
+        name: "staff-student",
+        component: () => import("@/views/staff/form-students/Index.vue"),
+        meta: {
+          pageTitle: "รายการนักศึกษา",
+        },
+      },
 
       //
       {

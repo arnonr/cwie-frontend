@@ -106,7 +106,7 @@ import SearchComponent from "@/components/students/Search.vue";
 import StudentDetailFormPage from "@/views/form-students/Detail.vue";
 
 export default defineComponent({
-  name: "division-student",
+  name: "staff-student",
   components: {
     ListComponent,
     CardListComponent,
@@ -160,7 +160,6 @@ export default defineComponent({
     });
 
     // Fetch Data
-
     const fetchItems = async () => {
       isLoading.value = true;
       const params = {
@@ -193,7 +192,7 @@ export default defineComponent({
 
       items.forEach((x: any) => {
         items_status.value.total.push(x);
-        if (x.form_status_id == 4) {
+        if (x.form_status_id == 5) {
           items_status.value.wating.push(x);
         } else {
           items_status.value.success.push(x);

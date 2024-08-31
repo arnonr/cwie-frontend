@@ -95,6 +95,19 @@
                     >
                   </button>
 
+                  <button
+                    class="btn btn-outline btn-outline-success me-2 pe-sm-3 ps-sm-5"
+                    @click="
+                      onApproveFormModal(student_profile_item.status_id, 3)
+                    "
+                    v-if="student_profile_item.status_id == 5"
+                  >
+                    <i class="bi bi-file-earmark-plus-fill fs-4"></i>
+                    <span class="d-none d-lg-inline-block ms-2"
+                      >เจ้าหน้าที่พิจารณาอนุมัติ</span
+                    >
+                  </button>
+
                   <!-- <div class="dropdown">
             <button
               class="btn btn-outline btn-outline-success me-2 pe-sm-3 ps-sm-5 dropdown-toggle"

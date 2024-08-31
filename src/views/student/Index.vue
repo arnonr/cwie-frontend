@@ -53,33 +53,10 @@
           </button>
 
           <div class="dropdown">
-            <button
-              class="btn btn-outline btn-outline-success me-2 pe-sm-3 ps-sm-5 dropdown-toggle"
-              type="button"
-              id="dropdownMenuButton"
-              data-bs-toggle="dropdown"
-              aria-expanded="false"
-            >
-              <i class="bi bi-file-earmark-plus-fill fs-4"></i>
-              <span class="d-none d-lg-inline-block">ดาวน์โหลดเอกสาร</span>
-            </button>
-            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-              <li>
-                <a class="dropdown-item cursor-pointer" @click=""
-                  >ใบสมัครโครงการ</a
-                >
-              </li>
-              <li>
-                <a class="dropdown-item cursor-pointer" @click=""
-                  >หนังสือขอความอนุเคราะห์</a
-                >
-              </li>
-              <li>
-                <a class="dropdown-item cursor-pointer" @click=""
-                  >หนังสือส่งตัว
-                </a>
-              </li>
-            </ul>
+            <ButtonsDownloadGroupComponent
+              :student_profile_item="student_profile_item"
+              :item="item_active"
+            />
           </div>
 
           <div class="dropdown">
@@ -95,12 +72,18 @@
             </button>
             <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
               <li>
-                <a class="dropdown-item cursor-pointer" @click=""
+                <a
+                  class="dropdown-item cursor-pointer"
+                  :class="{ disabled: student_profile_item.status_id < 8 }"
+                  @click="student_profile_item.status_id > 7 && onGereatePDF()"
                   >เอกสารตอบรับ</a
                 >
               </li>
               <li>
-                <a class="dropdown-item cursor-pointer" @click=""
+                <a
+                  class="dropdown-item cursor-pointer"
+                  :class="{ disabled: student_profile_item.status_id < 9 }"
+                  @click="student_profile_item.status_id > 8 && onGereatePDF()"
                   >แผนการปฏิบัติงาน</a
                 >
               </li>
@@ -235,6 +218,7 @@ import StudentProfileMinimalCardComponent from "@/components/student/StudentProf
 import StudentProfileCardComponent from "@/components/student/StudentProfileCard.vue";
 import ListComponent from "@/components/form/List.vue";
 import CardListComponent from "@/components/form/CardList.vue";
+import ButtonsDownloadGroupComponent from "@/components/document/ButtonsDownloadGroup.vue";
 import Preloader from "@/components/preloader/Preloader.vue";
 // Modal
 import DetailPage from "@/views/paper/DetailModal.vue";
@@ -258,6 +242,7 @@ export default defineComponent({
     AddFormPage,
     EditFormPage,
     DetailFormPage,
+    ButtonsDownloadGroupComponent,
   },
   setup() {
     // UI Variable
@@ -294,6 +279,7 @@ export default defineComponent({
     const student_profile_item = ref<any>({});
     const items = reactive<any>([]); // form items
     const item = reactive<any>({}); // form item
+    const item_active = reactive<any>({});
     const documents = ref([]);
     const document_types = ref([]);
 
@@ -367,6 +353,13 @@ export default defineComponent({
       const { data } = await ApiService.query("form", {
         params: params,
       });
+
+      Object.assign(
+        item_active,
+        data.data.find((x: any) => {
+          return (x.is_active = true);
+        })
+      );
 
       items.length = 0;
       Object.assign(items, data.data);
@@ -503,6 +496,10 @@ export default defineComponent({
       //
     };
 
+    const onGereatePDF = () => {
+      console.log("FREEDOM");
+    };
+
     // Mounted
     onMounted(() => {
       fetchStudentProfile();
@@ -522,6 +519,7 @@ export default defineComponent({
       student_profile_item,
       items,
       item,
+      item_active,
       documents,
       paginationData,
       sortKey,
@@ -543,6 +541,7 @@ export default defineComponent({
       onFormDetailModal,
       onEditFormModal,
       onFormCancel,
+      onGereatePDF,
     };
   },
 });
