@@ -30,3 +30,20 @@ export const fetchSemesters = async (params: any) => {
 
   return data.data;
 };
+
+export const fetchDivisions = async (params: any) => {
+  const { data } = await ApiService.query("division", {
+    params: params,
+  });
+
+  return data.data;
+};
+
+export const fetchFaculties = async (params: any) => {
+  const { data } = await ApiService.query("faculty", {
+    params: params,
+  });
+
+  return data.data;
+};
+

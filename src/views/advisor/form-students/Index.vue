@@ -7,6 +7,7 @@
       @search="
         () => {
           paginationData.currentPage = 1;
+
           fetchItems();
         }
       "
@@ -122,13 +123,27 @@ export default defineComponent({
     const userData = JSON.parse(localStorage.getItem("userData") || "{}");
     const items = reactive<any>([]); // form items
     const item = reactive<any>({}); // form item
-    const search = reactive<any>({});
+    const search = reactive<any>({
+      semester_id: null,
+      faculty_id: null,
+      division_id: null,
+      company_id: null,
+      student_code: "",
+      search_name: "",
+    });
 
     // Fetch Data
 
     const fetchItems = async () => {
       isLoading.value = true;
       const params = {
+        ...search,
+        semester_id: search.semester_id?.id,
+        faculty_id: search.faculty_id?.id,
+        division_id: search.division_id?.id,
+        company_id: search.company_id?.id,
+        advisor_id: search.advisor_id?.id,
+        visitor_id: search.visitor_id?.id,
         orderBy: "id",
         order: "desc",
         is_active: true,
@@ -156,33 +171,7 @@ export default defineComponent({
     };
 
     const onClear = () => {
-      Object.assign(search, {
-        complaint_type_id: null,
-        year: null,
-        complaint_title: "",
-        jcoms_no: "",
-        complainant_fullname: "",
-        accused_fullname: "",
-        inspector_id: null,
-        bureau_id: null,
-        division_id: null,
-        agency_id: null,
-        state_id: null,
-        inspector_state_id: null,
-        create_from: null,
-        create_to: null,
-        topic_category_id: null,
-        topic_type_id: null,
-        complaint_channel_id: null,
-        incident_datetime: null,
-        province_id: null,
-        district_id: null,
-        sub_district_id: null,
-        card_type: null,
-        id_card: "",
-        is_anonymous: null,
-        receive_doc_no: "",
-      });
+    //   console.log(search);
     };
 
     // Mounted

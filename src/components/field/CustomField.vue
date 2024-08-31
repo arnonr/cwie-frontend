@@ -67,6 +67,7 @@
       v-model="value"
       :placeholder="placeholder"
       @blur="onBlur"
+      @search="onSearchSelect"
       :disabled="disabled"
       :label="select_label"
       :options="options"
@@ -138,8 +139,13 @@ export default {
       type: Boolean,
       default: true,
     },
+    reloadSelect: {
+      type: Boolean,
+      default: false,
+    },
   },
-  setup(props) {
+
+  setup(props, { emit }) {
     const { value, errorMessage, handleBlur } = useField(props.field);
 
     const format = (date: any) => {
@@ -160,12 +166,23 @@ export default {
       handleBlur();
     };
 
+    const onSearchSelect = (searchQuery: string) => {
+      if (props.reloadSelect == true) {
+        if (searchQuery.length > 2) {
+          emit("reload-select", searchQuery);
+        } else {
+          emit("reset-select");
+        }
+      }
+    };
+
     return {
       value,
       errorMessage,
       onBlur,
       typedValue,
       format,
+      onSearchSelect,
     };
   },
 };
