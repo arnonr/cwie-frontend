@@ -43,8 +43,7 @@
                     aria-labelledby="flush-headingOne"
                     data-bs-parent="#accordionFlushExample"
                   >
-                    <div class="accordion-body" style="padding: 0">
-                      <DetailPage v-if="item.id" :paper_id="item.id" />
+                    <div class="accordion-body" style="padding: 0">ฟหกฟหกฟหก
                       <hr />
                     </div>
                   </div>

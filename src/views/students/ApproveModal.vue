@@ -104,7 +104,7 @@ export default defineComponent({
     const selectOptions = ref({
       approve_statuses: <any>[
         { id: 1, name: "อนุมัติ" },
-        { id: 2, name: "ไม่อนุมัติ" },
+        { id: 2, name: "ส่งกลับให้แก้ไข" },
       ],
     });
     const approve_item = ref<any>({

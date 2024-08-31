@@ -1,19 +1,45 @@
 <template>
   <!--begin::Wrapper-->
-  <div class="container mt-5">
-    <!-- Profile -->
 
-    <div class="row">
-      <div class="col-md-3">
-        <StudentProfileMinimalCardComponent :item="student_profile_item" />
-      </div>
-      <div class="col-md-9">
-        <div class="card shadow-sm my-5">
-          <div
-            class="card-header bg-white d-flex justify-content-end"
-            style="border-bottom: none"
-          >
-            <!-- <div class="card-toolbar">
+  <div
+    class="modal fade"
+    tabindex="-1"
+    ref="mainModalRef"
+    id="main-modal"
+    aria-hidden="true"
+    data-bs-backdrop="static"
+    data-bs-keyboard="false"
+  >
+    <div class="modal-dialog modal-dialog-centered modal-xl">
+      <div class="modal-content">
+        <div class="modal-header" v-if="!isLoading">
+          <h3 class="modal-title">พิจารณาอนุมัติ</h3>
+          <button
+            @click="onClose({ reload: false })"
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+          ></button>
+        </div>
+
+        <div class="modal-body" v-if="!isLoading">
+          <div class="container mt-5">
+            <!-- Profile -->
+
+            <div class="row">
+              <div class="col-md-3">
+                <StudentProfileMinimalCardComponent
+                  :item="student_profile_item"
+                />
+              </div>
+              <div class="col-md-9">
+                <div class="card shadow-sm my-5">
+                  <div
+                    class="card-header bg-white d-flex justify-content-end"
+                    style="border-bottom: none"
+                  >
+                    <!-- <div class="card-toolbar">
               <button
                 class="btn btn-outline btn-outline-primary me-2 pe-sm-3 ps-sm-5"
                 @click="onEditStudentProfileModal"
@@ -28,33 +54,35 @@
                 <span class="d-none d-lg-inline-block">แก้ไขข้อมูลส่วนตัว</span>
               </button>
             </div> -->
-          </div>
-          <div class="card-body" style="padding-top: 0rem">
-            <StudentProfileCardComponent
-              :item="student_profile_item"
-              :documents="documents"
-            />
-          </div>
-        </div>
-      </div>
-    </div>
+                  </div>
+                  <div class="card-body" style="padding-top: 0rem">
+                    <StudentProfileCardComponent
+                      :item="student_profile_item"
+                      :documents="documents"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
 
-    <div class="card shadow-sm my-5">
-      <div class="card-header bg-white">
-        <h4 class="card-title">ใบสมัครโครงการ CWIE</h4>
-        <div class="card-toolbar">
-          <button
-            class="btn btn-outline btn-outline-success me-2 pe-sm-3 ps-sm-5"
-            @click="onApproveFormModal(student_profile_item.status_id, 1)"
-            v-if="student_profile_item.status_id == 2"
-          >
-            <i class="bi bi-file-earmark-plus-fill fs-4"></i>
-            <span class="d-none d-lg-inline-block ms-2"
-              >อาจารย์ที่ปรึกษาพิจารณาอนุมัติ</span
-            >
-          </button>
+            <div class="card shadow-sm my-5">
+              <div class="card-header bg-white">
+                <h4 class="card-title">ใบสมัครโครงการ CWIE</h4>
+                <div class="card-toolbar">
+                  <button
+                    class="btn btn-outline btn-outline-success me-2 pe-sm-3 ps-sm-5"
+                    @click="
+                      onApproveFormModal(student_profile_item.status_id, 1)
+                    "
+                    v-if="student_profile_item.status_id == 2"
+                  >
+                    <i class="bi bi-file-earmark-plus-fill fs-4"></i>
+                    <span class="d-none d-lg-inline-block ms-2"
+                      >อาจารย์ที่ปรึกษาพิจารณาอนุมัติ</span
+                    >
+                  </button>
 
-          <!-- <div class="dropdown">
+                  <!-- <div class="dropdown">
             <button
               class="btn btn-outline btn-outline-success me-2 pe-sm-3 ps-sm-5 dropdown-toggle"
               type="button"
@@ -84,7 +112,7 @@
             </ul>
           </div> -->
 
-          <!-- <div class="dropdown">
+                  <!-- <div class="dropdown">
             <button
               class="btn btn-outline btn-outline-info me-2 pe-sm-3 ps-sm-5 dropdown-toggle"
               type="button"
@@ -108,29 +136,29 @@
               </li>
             </ul>
           </div> -->
-        </div>
-      </div>
-      <div
-        class="card-body table-responsive d-none d-lg-block"
-        style="min-height: 300px"
-      >
-        <Preloader :isLoading="isLoading" :position="'absolute'" />
-        <ListComponent
-          :items="items"
-          :paginationData="paginationData"
-          :sortKey="sortKey"
-          :sortOrder="sortOrder"
-          @update:currentPage="paginationData.currentPage = $event"
-          @update:perPage="paginationData.perPage = $event"
-          @sort="(key: any) => {
+                </div>
+              </div>
+              <div
+                class="card-body table-responsive d-none d-lg-block"
+                style="min-height: 300px"
+              >
+                <Preloader :isLoading="isLoading" :position="'absolute'" />
+                <ListComponent
+                  :items="items"
+                  :paginationData="paginationData"
+                  :sortKey="sortKey"
+                  :sortOrder="sortOrder"
+                  @update:currentPage="paginationData.currentPage = $event"
+                  @update:perPage="paginationData.perPage = $event"
+                  @sort="(key: any) => {
               sortedItems(key)}"
-          @edit="(it: any) => {onEditFormModal(it)}"
-          @detail="(it: any) => {onFormDetailModal(it) }"
-          @cancel="(it: any) => {onFormCancel(it) }"
-          @history-reject="(it: any) =>{ onHistoryRejectModal(it)}"
-        />
-      </div>
-      <!-- <div class="card-body d-lg-none">
+                  @edit="(it: any) => {onEditFormModal(it)}"
+                  @detail="(it: any) => {onFormDetailModal(it) }"
+                  @cancel="(it: any) => {onFormCancel(it) }"
+                  @history-reject="(it: any) =>{ onHistoryRejectModal(it)}"
+                />
+              </div>
+              <!-- <div class="card-body d-lg-none">
           <CardListComponent
             :items="items"
             :paginationData="paginationData"
@@ -145,102 +173,114 @@
             @history-detail="(it: any) =>{ onHistoryRejectModal(it)}"
           />
         </div> -->
-    </div>
+            </div>
 
-    <!-- Modal -->
-    <div>
-      <!-- Edit Student Profile Modal -->
-      <div id="edit-student-profile-modal">
-        <EditStudentProfilePage
-          v-if="openEditStudentProfileModal == true"
-          :id="student_profile_item.id"
-          @close-modal="
-            () => {
-              openEditStudentProfileModal = false;
-            }
-          "
-          @reload="fetchStudentProfile()"
-        />
-      </div>
+            <!-- Modal -->
+            <div>
+              <!-- Edit Student Profile Modal -->
+              <div id="edit-student-profile-modal">
+                <EditStudentProfilePage
+                  v-if="openEditStudentProfileModal == true"
+                  :id="student_profile_item.id"
+                  @close-modal="
+                    () => {
+                      openEditStudentProfileModal = false;
+                    }
+                  "
+                  @reload="fetchStudentProfile()"
+                />
+              </div>
 
-      <!-- Add Form Modal -->
-      <div id="add-form-modal">
-        <AddFormPage
-          v-if="openAddFormModal == true"
-          :student_profile="student_profile_item"
-          @reload="fetchStudentProfile()"
-          @close-modal="
-            () => {
-              openAddFormModal = false;
-            }
-          "
-        />
-      </div>
+              <!-- Add Form Modal -->
+              <div id="add-form-modal">
+                <AddFormPage
+                  v-if="openAddFormModal == true"
+                  :student_profile="student_profile_item"
+                  @reload="fetchStudentProfile()"
+                  @close-modal="
+                    () => {
+                      openAddFormModal = false;
+                    }
+                  "
+                />
+              </div>
 
-      <!-- Edit Form Modal -->
-      <div id="edit-form-modal">
-        <EditFormPage
-          v-if="openEditFormModal == true"
-          :student_profile="student_profile_item"
-          :id="item.id"
-          @reload="fetchStudentProfile()"
-          @close-modal="
-            () => {
-              openEditFormModal = false;
-            }
-          "
-        />
-      </div>
+              <!-- Edit Form Modal -->
+              <div id="edit-form-modal">
+                <EditFormPage
+                  v-if="openEditFormModal == true"
+                  :student_profile="student_profile_item"
+                  :id="item.id"
+                  @reload="fetchStudentProfile()"
+                  @close-modal="
+                    () => {
+                      openEditFormModal = false;
+                    }
+                  "
+                />
+              </div>
 
-      <!-- Detail Form Modal -->
-      <div id="detail-form-modal">
-        <DetailFormPage
-          v-if="openDetailFormModal == true"
-          :student_profile="student_profile_item"
-          :id="item.id"
-          @reload="fetchStudentProfile()"
-          @close-modal="
-            () => {
-              openDetailFormModal = false;
-            }
-          "
-        />
-      </div>
+              <!-- Detail Form Modal -->
+              <div id="detail-form-modal">
+                <DetailFormPage
+                  v-if="openDetailFormModal == true"
+                  :student_profile="student_profile_item"
+                  :id="item.id"
+                  @reload="fetchStudentProfile()"
+                  @close-modal="
+                    () => {
+                      openDetailFormModal = false;
+                    }
+                  "
+                />
+              </div>
 
-      <!-- History Reject Modal -->
-      <div id="history-reject-modal">
-        <HistoryRejectPage
-          v-if="openHistoryRejectModal == true"
-          :id="item.id"
-          @close-modal="
-            () => {
-              openHistoryRejectModal = false;
-            }
-          "
-        />
-      </div>
+              <!-- History Reject Modal -->
+              <div id="history-reject-modal">
+                <HistoryRejectPage
+                  v-if="openHistoryRejectModal == true"
+                  :id="item.id"
+                  @close-modal="
+                    () => {
+                      openHistoryRejectModal = false;
+                    }
+                  "
+                />
+              </div>
 
-      <!-- Approve Modal -->
-      <div id="approve-modal">
-        <ApproveModalPage
-          v-if="openApproveModal == true"
-          :item="item"
-          :reject_status_id="reject_status_id"
-          @close-modal="
-            () => {
-              openApproveModal = false;
-            }
-          "
-        />
+              <!-- Approve Modal -->
+              <div id="approve-modal">
+                <ApproveModalPage
+                  v-if="openApproveModal == true"
+                  :item="item"
+                  :reject_status_id="reject_status_id"
+                  @close-modal="
+                    () => {
+                      openApproveModal = false;
+                    }
+                  "
+                />
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, reactive, onMounted, watch } from "vue";
+import {
+  defineComponent,
+  ref,
+  reactive,
+  onMounted,
+  watch,
+  onUnmounted,
+} from "vue";
 import ApiService from "@/core/services/ApiService";
 import { useRouter } from "vue-router";
+import { Modal } from "bootstrap";
 import useToast from "@/composables/useToast";
 
 // Component
@@ -280,11 +320,13 @@ export default defineComponent({
       required: true,
     },
   },
-  setup(props) {
+  setup(props, { emit }) {
     // UI Variable
     const isLoading = ref<any>(false);
     const sortKey = ref<any>("");
     const sortOrder = ref<any>(-1);
+    const mainModalRef = ref<any>(null);
+    const mainModalObj = ref<any>(null);
     const paginationData = reactive<any>({
       perPage: 20,
       currentPage: 1,
@@ -542,11 +584,30 @@ export default defineComponent({
       openApproveModal.value = true;
     };
 
+    const onClose = ({ reload = false }: { reload?: boolean }) => {
+      mainModalObj.value.hide();
+      emit("close-modal");
+    };
+
     // Mounted
     onMounted(async () => {
       await fetchItem();
       await fetchStudentProfile();
       await fetchItems();
+
+      mainModalObj.value = new Modal(mainModalRef.value, {});
+      mainModalObj.value.show();
+      mainModalRef.value.addEventListener("hidden.bs.modal", () =>
+        onClose({ reload: false })
+      );
+    });
+
+    onUnmounted(() => {
+      if (mainModalRef.value) {
+        mainModalRef.value.removeEventListener("hidden.bs.modal", onClose);
+      }
+      mainModalObj.value.hide();
+      emit("close-modal");
     });
 
     // Watch
@@ -562,6 +623,7 @@ export default defineComponent({
       student_profile_item,
       items,
       item,
+      mainModalRef,
       reject_status_id,
       documents,
       paginationData,
@@ -586,6 +648,7 @@ export default defineComponent({
       onEditFormModal,
       onFormCancel,
       onApproveFormModal,
+      onClose,
     };
   },
 });

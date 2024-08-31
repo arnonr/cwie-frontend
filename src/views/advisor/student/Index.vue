@@ -2,10 +2,44 @@
   <!--begin::Wrapper-->
   <div class="container mt-5">
     <!-- Profile -->
-
-    <div class="row">
-      <div class="col-12"></div>
-    </div>
+    <!-- 
+    <div class="accordion" id="accordionExample">
+      <div class="accordion-item border rounded shadow-sm">
+        <h2 class="accordion-header" id="headingOne">
+          <button
+            class="accordion-button collapsed"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#collapseOne"
+            aria-expanded="false"
+            aria-controls="collapseOne"
+          >
+            ค้นหาใบสมัคร
+          </button>
+        </h2>
+        <div
+          id="collapseOne"
+          class="accordion-collapse collapse"
+          aria-labelledby="headingOne"
+          data-bs-parent="#accordionExample"
+        >
+          <div class="accordion-body">
+            
+          </div>
+        </div>
+      </div>
+    </div> -->
+    <!--  -->
+    <SearchComponent
+      :search="search"
+      @search="
+        () => {
+          paginationData.currentPage = 1;
+          fetchItems();
+        }
+      "
+      @clear="onClear"
+    />
 
     <div class="card shadow-sm my-5">
       <div class="card-header bg-white">
@@ -75,6 +109,7 @@ import useToast from "@/composables/useToast";
 import ListComponent from "@/components/students/form/List.vue";
 import CardListComponent from "@/components/form/CardList.vue";
 import Preloader from "@/components/preloader/Preloader.vue";
+import SearchComponent from "@/components/students/Search.vue";
 // Modal
 import StudentDetailFormPage from "@/views/students/Detail.vue";
 
@@ -85,6 +120,7 @@ export default defineComponent({
     CardListComponent,
     Preloader,
     StudentDetailFormPage,
+    SearchComponent,
   },
   setup() {
     // UI Variable
@@ -116,6 +152,7 @@ export default defineComponent({
     const userData = JSON.parse(localStorage.getItem("userData") || "{}");
     const items = reactive<any>([]); // form items
     const item = reactive<any>({}); // form item
+    const search = reactive<any>({});
 
     // Fetch Data
 
@@ -124,8 +161,8 @@ export default defineComponent({
       const params = {
         orderBy: "id",
         order: "desc",
-        is_active: true,    
-        form_status_id: '2,3,4,5,6,7,8,9,10',
+        is_active: true,
+        form_status_id: "2,3,4,5,6,7,8,9,10",
       };
 
       const { data } = await ApiService.query("form", {
@@ -148,6 +185,36 @@ export default defineComponent({
       openDetailFormModal.value = true;
     };
 
+    const onClear = () => {
+      Object.assign(search, {
+        complaint_type_id: null,
+        year: null,
+        complaint_title: "",
+        jcoms_no: "",
+        complainant_fullname: "",
+        accused_fullname: "",
+        inspector_id: null,
+        bureau_id: null,
+        division_id: null,
+        agency_id: null,
+        state_id: null,
+        inspector_state_id: null,
+        create_from: null,
+        create_to: null,
+        topic_category_id: null,
+        topic_type_id: null,
+        complaint_channel_id: null,
+        incident_datetime: null,
+        province_id: null,
+        district_id: null,
+        sub_district_id: null,
+        card_type: null,
+        id_card: "",
+        is_anonymous: null,
+        receive_doc_no: "",
+      });
+    };
+
     // Mounted
     onMounted(() => {
       fetchItems();
@@ -165,6 +232,7 @@ export default defineComponent({
       // Variable
       items,
       item,
+      search,
       paginationData,
       sortKey,
       sortOrder,
@@ -173,6 +241,8 @@ export default defineComponent({
       openDetailFormModal,
       //   Event
       onFormDetailModal,
+      fetchItems,
+      onClear,
     };
   },
 });

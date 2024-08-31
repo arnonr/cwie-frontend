@@ -1,7 +1,9 @@
 <!-- BaseInput.vue -->
 <template>
   <div class="mb-7 col-12" :class="colClass">
-    <label :for="field" class="required form-label">{{ label }}</label>
+    <label :for="field" class="form-label" :class="{ required: required }">{{
+      label
+    }}</label>
     <input
       v-if="componentType == 'text'"
       :id="field"
@@ -131,6 +133,10 @@ export default {
     select_label: {
       type: String,
       default: "name",
+    },
+    required: {
+      type: Boolean,
+      default: true,
     },
   },
   setup(props) {
