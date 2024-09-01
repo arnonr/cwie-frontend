@@ -72,18 +72,26 @@
             </button>
             <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
               <li>
+                <!-- :class="{ disabled: student_profile_item.status_id < 7 }"
+                  @click="student_profile_item.status_id > 7 && onAddResponse()" -->
                 <a
                   class="dropdown-item cursor-pointer"
-                  :class="{ disabled: student_profile_item.status_id < 8 }"
-                  @click="student_profile_item.status_id > 7 && onGereatePDF()"
+                  :class="{ disabled: student_profile_item.status_id < 5 }"
+                  @click="
+                    student_profile_item.status_id > 5 && onAddResponseModal()
+                  "
                   >เอกสารตอบรับ</a
                 >
               </li>
               <li>
+                <!-- :class="{ disabled: student_profile_item.status_id < 9 }"
+                @click="student_profile_item.status_id > 8 && onAddPlan()" -->
                 <a
                   class="dropdown-item cursor-pointer"
-                  :class="{ disabled: student_profile_item.status_id < 9 }"
-                  @click="student_profile_item.status_id > 8 && onGereatePDF()"
+                  :class="{ disabled: student_profile_item.status_id < 5 }"
+                  @click="
+                    student_profile_item.status_id > 5 && onAddPlanModal()
+                  "
                   >แผนการปฏิบัติงาน</a
                 >
               </li>
@@ -203,6 +211,46 @@
           "
         />
       </div>
+
+      <!-- Add Response Modal -->
+      <div id="add-response-modal">
+        <AddResponseComponent
+          v-if="openAddResponseModal == true"
+          :student_profile="student_profile_item"
+          :item="item_active"
+          @reload="
+            () => {
+              fetchStudentProfile();
+              fetchItems();
+            }
+          "
+          @close-modal="
+            () => {
+              openAddResponseModal = false;
+            }
+          "
+        />
+      </div>
+
+      <!-- Add Plan Modal -->
+      <div id="add-plan-modal">
+        <AddPlanComponent
+          v-if="openAddPlanModal == true"
+          :student_profile="student_profile_item"
+          :item="item_active"
+          @reload="
+            () => {
+              fetchStudentProfile();
+              fetchItems();
+            }
+          "
+          @close-modal="
+            () => {
+              openAddPlanModal = false;
+            }
+          "
+        />
+      </div>
     </div>
   </div>
 </template>
@@ -227,12 +275,16 @@ import AddFormPage from "@/views/form/Add.vue";
 import EditFormPage from "@/views/form/Edit.vue";
 import DetailFormPage from "@/views/form/Detail.vue";
 import HistoryRejectPage from "@/views/form/HistoryRejectModal.vue"; // ประวัติการแก้ไข
+import AddResponseComponent from "@/components/form/AddResponse.vue";
+import AddPlanComponent from "@/components/form/AddPlan.vue";
 
 export default defineComponent({
   name: "student",
   components: {
     StudentProfileMinimalCardComponent,
     StudentProfileCardComponent,
+    AddResponseComponent,
+    AddPlanComponent,
     ListComponent,
     CardListComponent,
     Preloader,
@@ -273,6 +325,8 @@ export default defineComponent({
     const openEditFormModal = ref(false);
     const openHistoryRejectModal = ref(false);
     const openAddFormModal = ref(false);
+    const openAddResponseModal = ref(false);
+    const openAddPlanModal = ref(false);
 
     // Variable
     const userData = JSON.parse(localStorage.getItem("userData") || "{}");
@@ -496,8 +550,12 @@ export default defineComponent({
       //
     };
 
-    const onGereatePDF = () => {
-      console.log("FREEDOM");
+    const onAddResponseModal = () => {
+      openAddResponseModal.value = true;
+    };
+
+    const onAddPlanModal = () => {
+      openAddPlanModal.value = true;
     };
 
     // Mounted
@@ -531,6 +589,8 @@ export default defineComponent({
       openHistoryRejectModal,
       openAddFormModal,
       openDetailFormModal,
+      openAddResponseModal,
+      openAddPlanModal,
       //   Fetch
       fetchStudentProfile,
       fetchItems,
@@ -541,7 +601,8 @@ export default defineComponent({
       onFormDetailModal,
       onEditFormModal,
       onFormCancel,
-      onGereatePDF,
+      onAddResponseModal,
+      onAddPlanModal,
     };
   },
 });

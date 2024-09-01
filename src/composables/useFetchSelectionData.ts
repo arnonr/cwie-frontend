@@ -47,3 +47,10 @@ export const fetchFaculties = async (params: any) => {
   return data.data;
 };
 
+export const fetchProvinces = async (params: any) => {
+  const { data } = await ApiService.query("province", {
+    params: params,
+  });
+
+  return data.data;
+};

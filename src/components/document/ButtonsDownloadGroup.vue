@@ -20,19 +20,18 @@
         >
       </li>
       <li>
-        <!-- :class="{ disabled: student_profile_item.status_id < 7 }"
-        @click="student_profile_item.status_id > 6 && handleDownloadPDF2()" -->
-        <a class="dropdown-item cursor-pointer" @click="handleDownloadPDF2()"
+        <a
+          class="dropdown-item cursor-pointer"
+          :class="{ disabled: student_profile_item.status_id < 7 }"
+          @click="student_profile_item.status_id > 6 && handleDownloadPDF2()"
           >หนังสือขอความอนุเคราะห์</a
         >
       </li>
       <li>
-        <!-- :class="{ disabled: student_profile_item.status_id < 10 }"
-          @click="student_profile_item.status_id > 9 && handleDownloadPDF3()" -->
         <a
           class="dropdown-item cursor-pointer"
           :class="{ disabled: student_profile_item.status_id < 10 }"
-          @click="handleDownloadPDF3()"
+          @click="student_profile_item.status_id > 9 && handleDownloadPDF3()"
           >หนังสือส่งตัว
         </a>
       </li>
