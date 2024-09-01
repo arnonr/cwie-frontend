@@ -47,6 +47,7 @@
           <td>{{ it.student_detail.class_year }}</td>
           <td>{{ it.company_detail.name }}</td>
           <td>{{ convertAddress(it.company_detail.sub_district_id) }}</td>
+          <td>{{ it.request_book_number }}</td>
           <td class="text-center">
             <span
               class="badge p-2 text-white"
@@ -78,7 +79,7 @@
                         id: it.id,
                       })
                     "
-                    >ดูรายละเอียดเพื่ออนุมัติ</a
+                    >ดูรายละเอียด</a
                   >
                 </li>
                 <!-- <li v-if="it.form_status_id > 1">
@@ -208,6 +209,7 @@ export default defineComponent({
         sort: true,
       },
       { column_name: "province_id", title: "จังหวัด", sort: true },
+      { column_name: "request_book_number", title: "เลขที่หนังสือ", sort: true },
       { column_name: "form_status_id", title: "สถานะ", sort: true },
       { column_name: "manage", title: "จัดการข้อมูล", sort: false },
     ];

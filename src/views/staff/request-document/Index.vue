@@ -40,43 +40,43 @@
           <!-- buttons -->
         </div>
       </div>
+      <div class="card-body" style="padding-bottom: 0px">
+        <button
+          class="btn btn-outline btn-outline-primary btn-sm fs-7 me-2"
+          type="button"
+          id="dropdownMenuButton"
+          data-bs-toggle="dropdown"
+          aria-expanded="false"
+        >
+          <i class="fa fa-check fs-4"></i>
+          <span class="d-none d-lg-inline-block ms-2">เลือก</span>
+        </button>
+        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+          <li>
+            <a class="dropdown-item" @click="onSelectItemAll">ทั้งหมด</a>
+          </li>
+          <li>
+            <a class="dropdown-item" @click="onDisSelectItemAll">ยกเลิก</a>
+          </li>
+        </ul>
+
+        <button
+          class="btn btn-outline btn-outline-success btn-sm fs-7"
+          type="button"
+          @click="onAddBook"
+        >
+          <i class="fa fa-file fs-4"></i>
+          <span class="d-none d-lg-inline-block ms-2"
+            >ออกหนังสือขอความอนุเคราะห์</span
+          >
+        </button>
+      </div>
       <div
         class="card-body table-responsive d-none d-lg-block"
         style="min-height: 300px"
       >
         <Preloader :isLoading="isLoading" :position="'absolute'" />
-        <div class="dropdown mb-5">
-          <button
-            class="btn btn-outline btn-outline-primary btn-sm fs-7 me-2"
-            type="button"
-            id="dropdownMenuButton"
-            data-bs-toggle="dropdown"
-            aria-expanded="false"
-          >
-            <i class="fa fa-file fs-4"></i>
-            <span class="d-none d-lg-inline-block ms-2">เลือก</span>
-          </button>
-          <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-            <li>
-              <a class="dropdown-item" @click="onSelectItemAll">ทั้งหมด</a>
-            </li>
-            <li>
-              <a class="dropdown-item" @click="onDisSelectItemAll">ยกเลิก</a>
-            </li>
-          </ul>
 
-          <button
-            class="btn btn-outline btn-outline-success btn-sm fs-7"
-            type="button"
-            aria-expanded="false"
-            @click="onAddBook"
-          >
-            <i class="fa fa-file fs-4"></i>
-            <span class="d-none d-lg-inline-block ms-2"
-              >ออกหนังสือขอความอนุเคราะห์</span
-            >
-          </button>
-        </div>
         <ListComponent
           :items="items"
           :paginationData="paginationData"
@@ -115,6 +115,7 @@
         <StudentDetailFormPage
           v-if="openDetailFormModal == true"
           :id="item.id"
+          @reload="fetchItems()"
           @close-modal="
             () => {
               fetchItems();
@@ -127,10 +128,11 @@
       <div id="add-book-modal">
         <AddBookComponent
           v-if="openAddBookModal == true"
-          :id="item.id"
+          book_type="request_book"
+          :ids="selectedItem"
+          @reload="fetchItems()"
           @close-modal="
             () => {
-              fetchItems();
               openAddBookModal = false;
             }
           "
