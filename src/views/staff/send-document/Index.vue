@@ -16,7 +16,7 @@
 
     <div class="card shadow-sm my-5">
       <div class="card-header bg-white">
-        <h4 class="card-title">หนังสือขอความอนุเคราะห์</h4>
+        <h4 class="card-title">หนังสือส่งตัว</h4>
         <div class="card-toolbar">
           <button
             class="btn btn-outline btn-outline-info btn-sm fs-7"
@@ -66,9 +66,7 @@
           @click="onAddBook"
         >
           <i class="fa fa-file fs-4"></i>
-          <span class="d-none d-lg-inline-block ms-2"
-            >ออกหนังสือขอความอนุเคราะห์</span
-          >
+          <span class="d-none d-lg-inline-block ms-2">ออกหนังสือส่งตัว</span>
         </button>
       </div>
       <div
@@ -83,7 +81,7 @@
           :sortKey="sortKey"
           :sortOrder="sortOrder"
           :selectedItem="selectedItem"
-          :book_type="'request_book'"
+          :book_type="'send_book'"
           @update:currentPage="paginationData.currentPage = $event"
           @update:perPage="paginationData.perPage = $event"
           @update:selectedItem="(event: any) => {
@@ -129,7 +127,7 @@
       <div id="add-book-modal">
         <AddBookComponent
           v-if="openAddBookModal == true"
-          book_type="request_book"
+          book_type="send_book"
           :ids="selectedItem"
           @reload="fetchItems()"
           @close-modal="
@@ -154,13 +152,12 @@ import CardListComponent from "@/components/students/book/CardAllActive.vue";
 import AddBookComponent from "@/components/students/book/Add.vue";
 import Preloader from "@/components/preloader/Preloader.vue";
 import SearchComponent from "@/components/students/Search.vue";
-import useDateData from "@/composables/useDateData";
 // Modal
 import StudentDetailFormPage from "@/views/form-students/Detail.vue";
 import { fetchAddressAlls } from "@/composables/useFetchSelectionData";
 
 export default defineComponent({
-  name: "request-book",
+  name: "send-book",
   components: {
     ListComponent,
     CardListComponent,
@@ -198,7 +195,6 @@ export default defineComponent({
     const openDetailFormModal = ref(false);
 
     // Variable
-    const userData = JSON.parse(localStorage.getItem("userData") || "{}");
     const items = reactive<any>([]); // form items
     const item = reactive<any>({}); // form item
     const items_status = ref<any>({
@@ -239,7 +235,7 @@ export default defineComponent({
         orderBy: "id",
         order: "desc",
         is_active: true,
-        form_status_id: "6,7,8,9,10",
+        form_status_id: "8,9,10,11",
       };
 
       const { data } = await ApiService.query("form", {
@@ -258,7 +254,7 @@ export default defineComponent({
 
       items.forEach((x: any) => {
         items_status.value.total.push(x);
-        if (x.form_status_id == 6) {
+        if (x.form_status_id == 9) {
           items_status.value.wating.push(x);
         } else {
           items_status.value.success.push(x);
@@ -293,7 +289,7 @@ export default defineComponent({
     const onSelectItemAll = () => {
       selectedItem.value = [];
       let check = items.filter((d: any) => {
-        return d.form_status_id > 5 && d.form_status < 90;
+        return d.form_status_id > 8 && d.form_status < 90;
       });
       selectedItem.value = check.map((d: any) => {
         return d.id;

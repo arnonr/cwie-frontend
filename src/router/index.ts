@@ -91,6 +91,14 @@ const routes: Array<RouteRecordRaw> = [
         },
       },
       {
+        path: "/staff/student/send-document",
+        name: "staff-student-senddocument",
+        component: () => import("@/views/staff/send-document/Index.vue"),
+        meta: {
+          pageTitle: "หนังสือส่งตัว",
+        },
+      },
+      {
         path: "/visitor/student",
         name: "visitor-student",
         component: () => import("@/views/visitor/form-students/Index.vue"),

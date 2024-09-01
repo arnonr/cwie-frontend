@@ -44,6 +44,10 @@ const MainMenuConfig: Array<MenuItem> = [
             heading: "หนังสือขอความอนุเคราะห์",
             route: "/staff/student/request-document",
           },
+          {
+            heading: "หนังสือส่งตัว",
+            route: "/staff/student/send-document",
+          },
         ],
       },
       {
