@@ -48,6 +48,10 @@ const MainMenuConfig: Array<MenuItem> = [
             heading: "หนังสือส่งตัว",
             route: "/staff/student/send-document",
           },
+          {
+            heading: "รายการเอกสารตอบรับ",
+            route: "/staff/student/response",
+          },
         ],
       },
       {
@@ -58,6 +62,10 @@ const MainMenuConfig: Array<MenuItem> = [
           {
             heading: "รายการใบสมัคร",
             route: "/visitor/student",
+          },
+          {
+            heading: "รายการแผนการปฏิบัติงาน",
+            route: "/visitor/student/plan",
           },
         ],
       },

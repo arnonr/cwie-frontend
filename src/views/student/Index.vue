@@ -72,25 +72,36 @@
             </button>
             <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
               <li>
-                <!-- :class="{ disabled: student_profile_item.status_id < 7 }"
-                  @click="student_profile_item.status_id > 7 && onAddResponse()" -->
                 <a
                   class="dropdown-item cursor-pointer"
-                  :class="{ disabled: student_profile_item.status_id < 5 }"
+                  :class="{
+                    disabled:
+                      student_profile_item.status_id != 7 &&
+                      student_profile_item.status_id != 9,
+                  }"
                   @click="
-                    student_profile_item.status_id > 5 && onAddResponseModal()
+                    (student_profile_item.status_id == 7 ||
+                      student_profile_item.status_id == 9) &&
+                      onAddResponseModal()
                   "
                   >เอกสารตอบรับ</a
                 >
               </li>
               <li>
-                <!-- :class="{ disabled: student_profile_item.status_id < 9 }"
-                @click="student_profile_item.status_id > 8 && onAddPlan()" -->
+                <!-- :class="{ disabled: student_profile_item.status_id != 11 && student_profile_item.status_id != 13 }"
+                @click="(student_profile_item.status_id == 11 || student_profile_item.status_id == 13) && onAddPlan()" -->
                 <a
                   class="dropdown-item cursor-pointer"
-                  :class="{ disabled: student_profile_item.status_id < 5 }"
+                  :class="{
+                    disabled:
+                      student_profile_item.status_id != 10 &&
+                      student_profile_item.status_id != 11 &&
+                      student_profile_item.status_id != 13,
+                  }"
                   @click="
-                    student_profile_item.status_id > 5 && onAddPlanModal()
+                    (student_profile_item.status_id == 10 || student_profile_item.status_id == 11 ||
+                      student_profile_item.status_id == 13) &&
+                      onAddPlanModal()
                   "
                   >แผนการปฏิบัติงาน</a
                 >

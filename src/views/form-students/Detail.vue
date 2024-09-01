@@ -77,7 +77,8 @@
                   <button
                     class="btn btn-outline btn-outline-success me-2 pe-sm-3 ps-sm-5"
                     @click="
-                      onApproveFormModal(student_profile_item.status_id, 1)
+                      approve_at = 'advisor_verified_at';
+                      onApproveFormModal(student_profile_item.status_id, 1);
                     "
                     v-if="student_profile_item.status_id == 2"
                   >
@@ -90,7 +91,8 @@
                   <button
                     class="btn btn-outline btn-outline-success me-2 pe-sm-3 ps-sm-5"
                     @click="
-                      onApproveFormModal(student_profile_item.status_id, 2)
+                      approve_at = 'division_head_approved_at';
+                      onApproveFormModal(student_profile_item.status_id, 2);
                     "
                     v-if="student_profile_item.status_id == 4"
                   >
@@ -103,13 +105,42 @@
                   <button
                     class="btn btn-outline btn-outline-success me-2 pe-sm-3 ps-sm-5"
                     @click="
-                      onApproveFormModal(student_profile_item.status_id, 3)
+                      approve_at = 'staff_confirmed_at';
+                      onApproveFormModal(student_profile_item.status_id, 3);
                     "
                     v-if="student_profile_item.status_id == 5"
                   >
                     <i class="bi bi-file-earmark-plus-fill fs-4"></i>
                     <span class="d-none d-lg-inline-block ms-2"
                       >เจ้าหน้าที่พิจารณาอนุมัติ</span
+                    >
+                  </button>
+
+                  <button
+                    class="btn btn-outline btn-outline-success me-2 pe-sm-3 ps-sm-5"
+                    @click="
+                      approve_at = 'confirm_response_at';
+                      onApproveFormModal(student_profile_item.status_id, 4);
+                    "
+                    v-if="student_profile_item.status_id == 8"
+                  >
+                    <i class="bi bi-file-earmark-plus-fill fs-4"></i>
+                    <span class="d-none d-lg-inline-block ms-2"
+                      >พิจารณาอนุมัติเอกสารตอบกลับ</span
+                    >
+                  </button>
+
+                  <button
+                    class="btn btn-outline btn-outline-success me-2 pe-sm-3 ps-sm-5"
+                    @click="
+                      approve_at = 'plan_accept_at';
+                      onApproveFormModal(student_profile_item.status_id, 5);
+                    "
+                    v-if="student_profile_item.status_id == 12"
+                  >
+                    <i class="bi bi-file-earmark-plus-fill fs-4"></i>
+                    <span class="d-none d-lg-inline-block ms-2"
+                      >พิจารณาอนุมัติแผนการปฏิบัติงาน</span
                     >
                   </button>
 
@@ -284,10 +315,12 @@
 
               <!-- Approve Modal -->
               <div id="approve-modal">
+                <!--  -->
                 <ApproveModalPage
                   v-if="openApproveModal == true"
                   :item="item"
                   :reject_status_id="reject_status_id"
+                  :approve_at="approve_at"
                   @close-modal="
                     () => {
                       fetchStudentProfile();
@@ -401,6 +434,7 @@ export default defineComponent({
     const documents = ref([]);
     const document_types = ref([]);
     const reject_status_id = ref<any>(null);
+    const approve_at = ref<any>(null);
 
     // Fetch Data
     const fetchStudentProfile = async () => {
@@ -670,6 +704,7 @@ export default defineComponent({
       student_profile_item,
       items,
       item,
+      approve_at,
       item_active,
       mainModalRef,
       reject_status_id,

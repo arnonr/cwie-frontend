@@ -78,6 +78,11 @@ import * as Yup from "yup";
 import useToast from "@/composables/useToast";
 import Preloader from "@/components/preloader/Preloader.vue";
 import CustomField from "@/Components/field/CustomField.vue";
+// Import Dayjs
+import dayjs from "dayjs";
+import "dayjs/locale/th";
+import buddhistEra from "dayjs/plugin/buddhistEra";
+dayjs.extend(buddhistEra);
 
 export default defineComponent({
   name: "approve-modal",
@@ -88,6 +93,10 @@ export default defineComponent({
     },
     reject_status_id: {
       type: Number,
+      required: true,
+    },
+    approve_at: {
+      type: String,
       required: true,
     },
   },
@@ -153,12 +162,32 @@ export default defineComponent({
       approve_item.value = { ...values };
       console.log("Form Submitted:", values);
 
-
+      let _at = {};
       if (approve_item.value.approve_status_id.id === 1) {
-        form_status_id.value =
-          form_status_id.value == 2 ? 4 : form_status_id.value + 1;
+        if (form_status_id.value == 2) {
+          form_status_id.value = 4;
+        } else if (form_status_id.value == 8) {
+          if (props.item.response_result == 1) {
+            form_status_id.value = 10;
+          } else {
+            form_status_id.value = 97;
+          }
+        } else if (form_status_id.value == 12) {
+          form_status_id.value = 14;
+        } else {
+          form_status_id.value = form_status_id.value + 1;
+        }
+
+        _at[props.approve_at] = dayjs().format("YYYY-MM-DD");
       } else {
-        form_status_id.value = 3;
+        if (form_status_id.value == 8) {
+          form_status_id.value = 9;
+        } else if (form_status_id.value == 12) {
+          form_status_id.value = 13;
+        } else {
+          form_status_id.value = 3;
+        }
+
         await ApiService.post(`reject-log`, {
           comment: approve_item.value.comment,
           form_id: props.item.id,
@@ -167,17 +196,34 @@ export default defineComponent({
         });
       }
 
-      await ApiService.post(`form/${props.item.id}`, {
-        form_status_id: form_status_id.value,
-        reject_status_id:
-          approve_item.value.approve_status_id.id != 1
-            ? props.reject_status_id
-            : undefined,
-      });
+      if (form_status_id.value == 97) {
+        await ApiService.delete("form/cancel/" + props.item.id);
 
-      await ApiService.post(`student-profile/${props.item.student_id}`, {
-        status_id: form_status_id.value,
-      });
+        await ApiService.post(`student-profile/${props.item.student_id}`, {
+          status_id: 1,
+        })
+          .then(({ status }) => {
+            if (status != 200) {
+              throw new Error("ERROR");
+            }
+          })
+          .catch(({ response }) => {
+            console.log(response);
+          });
+      } else {
+        await ApiService.post(`form/${props.item.id}`, {
+          form_status_id: form_status_id.value,
+          reject_status_id:
+            approve_item.value.approve_status_id.id != 1
+              ? props.reject_status_id
+              : undefined,
+          ..._at,
+        });
+
+        await ApiService.post(`student-profile/${props.item.student_id}`, {
+          status_id: form_status_id.value,
+        });
+      }
 
       useToast("บันทึกข้อมูลเสร็จสิ้น");
       onClose({ reload: true });

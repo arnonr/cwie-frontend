@@ -235,7 +235,7 @@ export default defineComponent({
         orderBy: "id",
         order: "desc",
         is_active: true,
-        form_status_id: "8,9,10,11",
+        form_status_id: "10,11,12,13,14",
       };
 
       const { data } = await ApiService.query("form", {
@@ -254,7 +254,7 @@ export default defineComponent({
 
       items.forEach((x: any) => {
         items_status.value.total.push(x);
-        if (x.form_status_id == 9) {
+        if (x.form_status_id == 10) {
           items_status.value.wating.push(x);
         } else {
           items_status.value.success.push(x);
@@ -289,7 +289,7 @@ export default defineComponent({
     const onSelectItemAll = () => {
       selectedItem.value = [];
       let check = items.filter((d: any) => {
-        return d.form_status_id > 8 && d.form_status < 90;
+        return d.form_status_id > 9 && d.form_status < 90;
       });
       selectedItem.value = check.map((d: any) => {
         return d.id;

@@ -107,6 +107,24 @@ const routes: Array<RouteRecordRaw> = [
         },
       },
 
+      {
+        path: "/staff/student/response",
+        name: "staff-student-response",
+        component: () => import("@/views/staff/form-students/Response.vue"),
+        meta: {
+          pageTitle: "รายการเอกสารตอบกลับ",
+        },
+      },
+
+      {
+        path: "/visitor/student/plan",
+        name: "visitor-student-plan",
+        component: () => import("@/views/visitor/form-students/Plan.vue"),
+        meta: {
+          pageTitle: "รายการแผนการปฏิบัติงาน",
+        },
+      },
+
       //
       {
         path: "/paper",

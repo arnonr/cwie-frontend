@@ -185,7 +185,7 @@ export default defineComponent({
     ]);
 
     const validationSchema = Yup.object().shape({
-      workplace_adddress: Yup.string().required().label("สถานที่ปฏิบัติงาน"),
+      workplace_address: Yup.string().required().label("สถานที่ปฏิบัติงาน"),
       workplace_address_all: Yup.object()
         .required()
         .label("จังหวัด/อำเภอ/ตำบล/รหัสไปรษณีย์"),
@@ -241,7 +241,7 @@ export default defineComponent({
             ? plan_item.value.plan_document_file
             : undefined,
         plan_send_at: dayjs().format("YYYY-MM-DD"),
-        form_status_id: 11,
+        form_status_id: 12,
       };
 
       Swal.fire({

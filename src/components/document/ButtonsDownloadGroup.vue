@@ -1,7 +1,7 @@
 <template>
   <div>
     <button
-      class="btn btn-outline btn-outline-success me-2 pe-sm-3 ps-sm-5 dropdown-toggle"
+      class="btn btn-outline btn-outline-info me-2 pe-sm-3 ps-sm-5 dropdown-toggle"
       type="button"
       id="dropdownMenuButton"
       data-bs-toggle="dropdown"
