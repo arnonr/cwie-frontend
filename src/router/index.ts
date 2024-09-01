@@ -134,6 +134,15 @@ const routes: Array<RouteRecordRaw> = [
         },
       },
 
+      {
+        path: "/staff/student/map-teacher",
+        name: "staff-map-teacher",
+        component: () => import("@/views/staff/form-students/MapTeacher.vue"),
+        meta: {
+          pageTitle: "จับคู่อาจารย์นิเทศ",
+        },
+      },
+
       //
       {
         path: "/paper",

@@ -53,6 +53,10 @@ const MainMenuConfig: Array<MenuItem> = [
             route: "/staff/student/response",
           },
           {
+            heading: "จับคู่อาจารย์นิเทศ",
+            route: "/staff/student/map-teacher",
+          },
+          {
             heading: "รายงานผลการปฏิบัติงาน",
             route: "/staff/student/report",
           },
