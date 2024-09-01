@@ -40,6 +40,21 @@ const MainMenuConfig: Array<MenuItem> = [
             heading: "รายการใบสมัคร",
             route: "/staff/student",
           },
+          {
+            heading: "หนังสือขอความอนุเคราะห์",
+            route: "/staff/student/request-document",
+          },
+        ],
+      },
+      {
+        sectionTitle: "อาจารย์นิเทศ",
+        route: "/visitor",
+        bootstrapIcon: "bi-file-earmark-text",
+        sub: [
+          {
+            heading: "รายการใบสมัคร",
+            route: "/visitor/student",
+          },
         ],
       },
       {

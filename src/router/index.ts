@@ -82,6 +82,22 @@ const routes: Array<RouteRecordRaw> = [
           pageTitle: "รายการนักศึกษา",
         },
       },
+      {
+        path: "/staff/student/request-document",
+        name: "staff-student-request-document",
+        component: () => import("@/views/staff/request-document/Index.vue"),
+        meta: {
+          pageTitle: "หนังสือขอความอนุเคราะห์",
+        },
+      },
+      {
+        path: "/visitor/student",
+        name: "visitor-student",
+        component: () => import("@/views/visitor/form-students/Index.vue"),
+        meta: {
+          pageTitle: "รายการนักศึกษา",
+        },
+      },
 
       //
       {

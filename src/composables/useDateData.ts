@@ -10,7 +10,13 @@ export default () => {
     return dayjs(date).locale("th").format("DD MMM BB");
   };
 
+  const convertFullDate = (date: any) => {
+    if (!date) return "";
+    return dayjs(date).locale("th").format("DD MMMM BBBB");
+  };
+
   return {
     convertDate,
+    convertFullDate,
   };
 };

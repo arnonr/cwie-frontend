@@ -20,6 +20,7 @@
     "@fullcalendar/list": "^6.1.8",
     "@fullcalendar/timegrid": "^6.1.8",
     "@fullcalendar/vue3": "^6.1.8",
+    "@pdf-lib/fontkit": "^1.1.1",
     "@popperjs/core": "^2.11.8",
     "@tinymce/tinymce-vue": "^5.1.0",
     "@uppy/core": "^4.1.0",
@@ -48,6 +49,7 @@
     "deepmerge": "^4.2.2",
     "dropzone": "^5.9.3",
     "element-plus": "^2.2.4",
+    "exceljs": "^4.4.0",
     "froala-editor": "^4.2.1",
     "html-to-pdfmake": "^2.5.12",
     "html2pdf.js": "^0.10.2",
@@ -56,6 +58,7 @@
     "moment": "^2.29.1",
     "nouislider": "^15.7.1",
     "object-path": "^0.11.8",
+    "pdf-lib": "^1.17.1",
     "pdfmake": "^0.2.11",
     "pinia": "^2.0.23",
     "prism-themes": "^1.9.0",
@@ -77,6 +80,7 @@
     "vue3-form-wizard": "^0.2.4",
     "vue3-html2pdf": "^1.1.2",
     "vue3-tags-input": "^1.0.12",
+    "xlsx": "^0.18.5",
     "yup": "^1.2.0"
   },
   "devDependencies": {

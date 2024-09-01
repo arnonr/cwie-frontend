@@ -69,6 +69,11 @@
               <div class="card-header bg-white">
                 <h4 class="card-title">ใบสมัครโครงการ CWIE</h4>
                 <div class="card-toolbar">
+                  <ButtonsDownloadGroupComponent
+                    :student_profile_item="student_profile_item"
+                    :item="item_active"
+                  />
+
                   <button
                     class="btn btn-outline btn-outline-success me-2 pe-sm-3 ps-sm-5"
                     @click="
@@ -320,6 +325,8 @@ import StudentProfileCardComponent from "@/components/student/StudentProfileCard
 import ListComponent from "@/components/students/form/ListOneStudent.vue";
 import CardListComponent from "@/components/students/form/CardListOneStudent.vue";
 import Preloader from "@/components/preloader/Preloader.vue";
+import ButtonsDownloadGroupComponent from "@/components/document/ButtonsDownloadGroup.vue";
+
 // Modal
 import DetailPage from "@/views/paper/DetailModal.vue";
 import EditStudentProfilePage from "@/views/student/EditProfile.vue";
@@ -344,6 +351,7 @@ export default defineComponent({
     EditFormPage,
     DetailFormPage,
     ApproveModalPage,
+    ButtonsDownloadGroupComponent,
   },
   props: {
     id: {
@@ -389,6 +397,7 @@ export default defineComponent({
     const student_profile_item = ref<any>({});
     const items = reactive<any>([]); // form items
     const item = reactive<any>({}); // form item
+    const item_active = reactive<any>({});
     const documents = ref([]);
     const document_types = ref([]);
     const reject_status_id = ref<any>(null);
@@ -471,6 +480,13 @@ export default defineComponent({
       const { data } = await ApiService.query("form", {
         params: params,
       });
+
+      Object.assign(
+        item_active,
+        data.data.find((x: any) => {
+          return (x.is_active = true);
+        })
+      );
 
       items.length = 0;
       Object.assign(items, data.data);
@@ -654,6 +670,7 @@ export default defineComponent({
       student_profile_item,
       items,
       item,
+      item_active,
       mainModalRef,
       reject_status_id,
       documents,
