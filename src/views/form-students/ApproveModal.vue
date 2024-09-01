@@ -116,6 +116,13 @@ export default defineComponent({
         { id: 2, name: "ส่งกลับให้แก้ไข" },
       ],
     });
+    if (props.item.form_status_id == 17) {
+      selectOptions.value.approve_statuses =
+        selectOptions.value.approve_statuses.filter(
+          (status: any) => status.id !== 2
+        );
+    }
+
     const approve_item = ref<any>({
       approve_status_id: { id: 1, name: "อนุมัติ" },
       comment: "",
@@ -174,6 +181,10 @@ export default defineComponent({
           }
         } else if (form_status_id.value == 12) {
           form_status_id.value = 14;
+        } else if (form_status_id.value == 15) {
+          form_status_id.value = 17;
+        } else if (form_status_id.value == 17) {
+          form_status_id.value = 18;
         } else {
           form_status_id.value = form_status_id.value + 1;
         }
@@ -184,6 +195,8 @@ export default defineComponent({
           form_status_id.value = 9;
         } else if (form_status_id.value == 12) {
           form_status_id.value = 13;
+        } else if (form_status_id.value == 15) {
+          form_status_id.value = 16;
         } else {
           form_status_id.value = 3;
         }

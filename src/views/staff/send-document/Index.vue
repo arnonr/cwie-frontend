@@ -235,7 +235,7 @@ export default defineComponent({
         orderBy: "id",
         order: "desc",
         is_active: true,
-        form_status_id: "10,11,12,13,14",
+        form_status_id: "10,11,12,13,14,15",
       };
 
       const { data } = await ApiService.query("form", {

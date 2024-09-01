@@ -144,6 +144,34 @@
                     >
                   </button>
 
+                  <button
+                    class="btn btn-outline btn-outline-success me-2 pe-sm-3 ps-sm-5"
+                    @click="
+                      approve_at = 'report_accept_at';
+                      onApproveFormModal(student_profile_item.status_id, 6);
+                    "
+                    v-if="student_profile_item.status_id == 15"
+                  >
+                    <i class="bi bi-file-earmark-plus-fill fs-4"></i>
+                    <span class="d-none d-lg-inline-block ms-2"
+                      >พิจารณาอนุมัติรายงานผลการปฏิบัติงาน</span
+                    >
+                  </button>
+
+                  <button
+                    class="btn btn-outline btn-outline-success me-2 pe-sm-3 ps-sm-5"
+                    @click="
+                      approve_at = 'closed_at';
+                      onApproveFormModal(student_profile_item.status_id, 6);
+                    "
+                    v-if="student_profile_item.status_id == 17"
+                  >
+                    <i class="bi bi-file-earmark-plus-fill fs-4"></i>
+                    <span class="d-none d-lg-inline-block ms-2"
+                      >จบสหกิจศึกษา</span
+                    >
+                  </button>
+
                   <!-- <div class="dropdown">
             <button
               class="btn btn-outline btn-outline-success me-2 pe-sm-3 ps-sm-5 dropdown-toggle"

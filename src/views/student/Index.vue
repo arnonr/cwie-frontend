@@ -61,7 +61,7 @@
 
           <div class="dropdown">
             <button
-              class="btn btn-outline btn-outline-info me-2 pe-sm-3 ps-sm-5 dropdown-toggle"
+              class="btn btn-outline btn-outline-danger me-2 pe-sm-3 ps-sm-5 dropdown-toggle"
               type="button"
               id="dropdownMenuButton"
               data-bs-toggle="dropdown"
@@ -88,22 +88,36 @@
                 >
               </li>
               <li>
-                <!-- :class="{ disabled: student_profile_item.status_id != 11 && student_profile_item.status_id != 13 }"
-                @click="(student_profile_item.status_id == 11 || student_profile_item.status_id == 13) && onAddPlan()" -->
                 <a
                   class="dropdown-item cursor-pointer"
                   :class="{
                     disabled:
-                      student_profile_item.status_id != 10 &&
                       student_profile_item.status_id != 11 &&
                       student_profile_item.status_id != 13,
                   }"
                   @click="
-                    (student_profile_item.status_id == 10 || student_profile_item.status_id == 11 ||
+                    (student_profile_item.status_id == 11 ||
                       student_profile_item.status_id == 13) &&
                       onAddPlanModal()
                   "
                   >แผนการปฏิบัติงาน</a
+                >
+              </li>
+
+              <li>
+                <a
+                  class="dropdown-item cursor-pointer"
+                  :class="{
+                    disabled:
+                      student_profile_item.status_id != 14 &&
+                      student_profile_item.status_id != 16,
+                  }"
+                  @click="
+                    (student_profile_item.status_id == 14 ||
+                      student_profile_item.status_id == 16) &&
+                      onAddReportModal()
+                  "
+                  >รายงานผลการปฏิบัติงาน</a
                 >
               </li>
             </ul>
@@ -262,6 +276,26 @@
           "
         />
       </div>
+
+      <!-- Add Report Modal -->
+      <div id="add-report-modal">
+        <AddReportComponent
+          v-if="openAddReportModal == true"
+          :student_profile="student_profile_item"
+          :item="item_active"
+          @reload="
+            () => {
+              fetchStudentProfile();
+              fetchItems();
+            }
+          "
+          @close-modal="
+            () => {
+              openAddReportModal = false;
+            }
+          "
+        />
+      </div>
     </div>
   </div>
 </template>
@@ -288,6 +322,7 @@ import DetailFormPage from "@/views/form/Detail.vue";
 import HistoryRejectPage from "@/views/form/HistoryRejectModal.vue"; // ประวัติการแก้ไข
 import AddResponseComponent from "@/components/form/AddResponse.vue";
 import AddPlanComponent from "@/components/form/AddPlan.vue";
+import AddReportComponent from "@/components/form/AddReport.vue";
 
 export default defineComponent({
   name: "student",
@@ -295,6 +330,7 @@ export default defineComponent({
     StudentProfileMinimalCardComponent,
     StudentProfileCardComponent,
     AddResponseComponent,
+    AddReportComponent,
     AddPlanComponent,
     ListComponent,
     CardListComponent,
@@ -338,6 +374,7 @@ export default defineComponent({
     const openAddFormModal = ref(false);
     const openAddResponseModal = ref(false);
     const openAddPlanModal = ref(false);
+    const openAddReportModal = ref(false);
 
     // Variable
     const userData = JSON.parse(localStorage.getItem("userData") || "{}");
@@ -569,6 +606,10 @@ export default defineComponent({
       openAddPlanModal.value = true;
     };
 
+    const onAddReportModal = () => {
+      openAddReportModal.value = true;
+    };
+
     // Mounted
     onMounted(() => {
       fetchStudentProfile();
@@ -602,6 +643,7 @@ export default defineComponent({
       openDetailFormModal,
       openAddResponseModal,
       openAddPlanModal,
+      openAddReportModal,
       //   Fetch
       fetchStudentProfile,
       fetchItems,
@@ -614,6 +656,7 @@ export default defineComponent({
       onFormCancel,
       onAddResponseModal,
       onAddPlanModal,
+      onAddReportModal,
     };
   },
 });

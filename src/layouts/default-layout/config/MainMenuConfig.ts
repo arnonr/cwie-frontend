@@ -52,6 +52,10 @@ const MainMenuConfig: Array<MenuItem> = [
             heading: "รายการเอกสารตอบรับ",
             route: "/staff/student/response",
           },
+          {
+            heading: "รายงานผลการปฏิบัติงาน",
+            route: "/staff/student/report",
+          },
         ],
       },
       {
@@ -66,6 +70,10 @@ const MainMenuConfig: Array<MenuItem> = [
           {
             heading: "รายการแผนการปฏิบัติงาน",
             route: "/visitor/student/plan",
+          },
+          {
+            heading: "รายงานผลการปฏิบัติงาน",
+            route: "/staff/student/report",
           },
         ],
       },

@@ -125,6 +125,15 @@ const routes: Array<RouteRecordRaw> = [
         },
       },
 
+      {
+        path: "/staff/student/report",
+        name: "staff-student-report",
+        component: () => import("@/views/staff/form-students/Report.vue"),
+        meta: {
+          pageTitle: "รายงานผลการปฏิบัติงาน",
+        },
+      },
+
       //
       {
         path: "/paper",

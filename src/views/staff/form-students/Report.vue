@@ -115,8 +115,8 @@ import ApiService from "@/core/services/ApiService";
 import useToast from "@/composables/useToast";
 
 // Component
-import ListComponent from "@/components/students/plan/ListAllActive.vue";
-import CardListComponent from "@/components/students/plan/CardAllActive.vue";
+import ListComponent from "@/components/students/report/ListAllActive.vue";
+import CardListComponent from "@/components/students/report/CardAllActive.vue";
 import Preloader from "@/components/preloader/Preloader.vue";
 import SearchComponent from "@/components/students/Search.vue";
 import useDateData from "@/composables/useDateData";
@@ -205,7 +205,7 @@ export default defineComponent({
         orderBy: "id",
         order: "desc",
         is_active: true,
-        form_status_id: "12,13,14,15",
+        form_status_id: "12,13,14,15,16,17,18",
       };
 
       const { data } = await ApiService.query("form", {
@@ -224,7 +224,7 @@ export default defineComponent({
 
       items.forEach((x: any) => {
         items_status.value.total.push(x);
-        if (x.form_status_id == 12) {
+        if (x.form_status_id == 15) {
           items_status.value.wating.push(x);
         } else {
           items_status.value.success.push(x);
@@ -262,7 +262,7 @@ export default defineComponent({
         orderBy: "id",
         order: "desc",
         is_active: true,
-        form_status_id: "12,13,14,15",
+        form_status_id: "12,13,14,15,16,17,18",
       };
 
       const { data } = await ApiService.query("form", {
