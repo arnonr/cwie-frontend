@@ -109,6 +109,7 @@ import { fetchSemesters } from "@/composables/useFetchSelectionData";
 // Components
 import CustomField from "@/Components/field/CustomField.vue";
 import useToast from "@/composables/useToast";
+import * as XLSX from "xlsx";
 
 export default defineComponent({
   name: "import-visitor",
@@ -124,6 +125,7 @@ export default defineComponent({
     const isLoading = ref(true);
     const file = ref<any>(null);
     const previewFile = ref<any>(null);
+    const importResult = ref<any>([]);
 
     const import_item = ref<any>({
       semester_id: "",
@@ -167,6 +169,26 @@ export default defineComponent({
       initialValues: import_item.value,
     });
 
+    const readFileAsync = (file: any) => {
+      return new Promise((resolve, reject) => {
+        let reader = new FileReader();
+
+        reader.onload = () => {
+          let data: any = reader.result;
+          data = new Uint8Array(data);
+
+          let workbook = XLSX.read(data, { type: "array" });
+          let first_worksheet = workbook.Sheets[workbook.SheetNames[0]];
+          let result = XLSX.utils.sheet_to_json(first_worksheet, { header: 1 });
+          resolve(result);
+        };
+
+        reader.onerror = reject;
+
+        reader.readAsArrayBuffer(file);
+      });
+    };
+
     const onSubmit = handleSubmit(async (values) => {
       const { import_file, ...otherValues } = values;
 
@@ -182,27 +204,79 @@ export default defineComponent({
 
       const { semester_id } = import_item.value;
 
+      //
+
+      let importFile = null;
+      importFile = import_item.value.import_file;
+      let result: any = await readFileAsync(importFile);
+      result.shift();
+
+      let data: any = [];
+      result.forEach((el: any) => {
+        if (el.length != 0) {
+          let s_firstname = "";
+          let s_surname = "";
+
+          if (el[12] != "" && el[12] != null) {
+            let arr_prefix = el[12].split(".");
+            let fullname = arr_prefix[arr_prefix.length - 1];
+            let arr_name = fullname.split(" ");
+
+            s_firstname = arr_name[0];
+            for (let i = 0; i < arr_name.length; i++) {
+              if (i != 0) {
+                s_surname = s_surname + arr_name[i] + " ";
+              }
+            }
+
+            s_surname = s_surname.trim();
+          }
+          data.push({
+            level: el[0],
+            student_code: el[1].replace("'", ""),
+            student_fullname: el[2],
+            visitor_fullname: el[12],
+            first_name: s_firstname,
+            last_name: s_surname,
+          });
+        }
+      });
+
       let data_send = {
         semester_id: semester_id?.id,
-        import_file:
-          import_item.value.import_file.length != 0
-            ? import_item.value.import_file
-            : undefined,
+        students: [...data],
       };
 
-      await ApiService.postFormData(`form/map-teacher-student`, {
+
+      await ApiService.post(`form/map-teacher-student`, {
         ...data_send,
       })
-        .then(({ status }) => {
+        .then(({ status, data }) => {
           if (status != 200) {
             throw new Error("ERROR");
           }
+
+          data = data.map((e: any) => {
+            let check = data.data.find((x) => {
+              return x.student_code == e.student_code;
+            });
+            if (check) {
+              e["status"] = check.status;
+              e["message"] = check.message;
+            }
+
+            return e;
+          });
+
+          console.log(data);
+
+          importResult.value = [...data];
         })
         .catch(({ response }) => {
           console.log(response);
         });
       useToast("นำเข้าเสร็จสิ้น", "success");
-      onClose({ reload: true });
+    //   onClose({ reload: true });
 
       //
     });
