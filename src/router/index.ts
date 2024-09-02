@@ -158,6 +158,31 @@ const routes: Array<RouteRecordRaw> = [
           pageTitle: "รายงานสถานประกอบการ",
         },
       },
+
+      {
+        path: "/setting/users",
+        name: "setting-users",
+        component: () => import("@/views/setting/users/Index.vue"),
+        meta: {
+          pageTitle: "รายการผู้ใช้งาน",
+        },
+      },
+      {
+        path: "/setting/teachers",
+        name: "setting-teachers",
+        component: () => import("@/views/setting/teachers/Index.vue"),
+        meta: {
+          pageTitle: "รายการอาจารย์",
+        },
+      },
+      {
+        path: "/setting/company",
+        name: "setting-company",
+        component: () => import("@/views/setting/company/Index.vue"),
+        meta: {
+          pageTitle: "รายการสถานประกอบการ",
+        },
+      },
       {
         path: "/paper",
         name: "paper",

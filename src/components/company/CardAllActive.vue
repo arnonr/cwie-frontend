@@ -1,50 +1,66 @@
 <template>
   <div>
-    <table class="table table-bordered table-striped fs-8" style="width: 100%">
-      <thead class="bg-primary">
-        <tr>
-          <th
-            class="text-center text-white cursor-pointer"
-            v-for="(hc, idx) in headerColumn"
-            :key="idx"
-            @click="hc.sort == true ? handleSort(hc.column_name) : undefined"
-          >
-            <span>{{ hc.title }}</span>
-            <i
-              :class="getSortIcon(hc.column_name)"
-              class="sort-icon ms-2 text-grey"
-            ></i>
-          </th>
-        </tr>
-      </thead>
-      <tbody v-if="items.length != 0">
-        <tr v-for="(it, idx) in items" :key="idx">
-          <td class="text-center">
-            {{ convertDate(it.send_at) }}
-          </td>
-          <td>{{ it.semester_detail.term + "/" + it.semester_detail.year }}</td>
-          <td>{{ it.student_detail.student_code }}</td>
-          <td>
-            {{
-              it.student_detail.prefix +
-              " " +
-              it.student_detail.firstname +
-              " " +
-              it.student_detail.surname
-            }}
-          </td>
-          <td>{{ it.student_detail.class_year }}</td>
-          <td>{{ it.company_detail.name }}</td>
-          <td>{{ convertAddress(it.company_detail.sub_district_id) }}</td>
-          <td class="text-center">
-            <span
-              class="badge p-2 text-white"
-              :style="`background-color: ${it.form_status_detail.color};`"
-              >{{ it.form_status_detail.name }}</span
-            >
-          </td>
+    <div class="row g-3">
+      <div
+        v-for="(it, idx) in items"
+        :key="idx"
+        class="col-12 col-md-12 col-lg-4 p-5"
+      >
+        <div
+          class="card h-100 border border-dotted"
+          :style="`border-color: ${it.form_status_detail.color} !important;`"
+        >
+          <div class="card-body p-5">
+            <h6 class="card-title">
+              {{
+                it.student_detail.prefix +
+                " " +
+                it.student_detail.firstname +
+                " " +
+                it.student_detail.surname
+              }}
+            </h6>
+            <h6 class="card-subtitle mb-4 text-muted">
+              {{ it.student_detail.student_code }}
+            </h6>
 
-          <td class="text-center">
+            <div class="mb-2">
+              <span class="fw-bold">วันที่ส่งใบสมัคร : </span>
+              <span> {{ convertDate(it.send_at) }}</span>
+            </div>
+
+            <div class="mb-2">
+              <span class="fw-bold">ปีการศึกษา : </span>
+              <span>
+                {{
+                  it.semester_detail.term + "/" + it.semester_detail.year
+                }}</span
+              >
+            </div>
+
+            <div class="mb-2">
+              <span class="fw-bold">ชั้นปีที่ : </span>
+              <span>{{ it.student_detail.class_year }}</span>
+            </div>
+            <div class="mb-2">
+              <span class="fw-bold">สถานประกอบการ : </span>
+              <span>{{ it.company_detail.name }}</span>
+            </div>
+            <div class="mb-2">
+              <span class="fw-bold">จังหวัดที่ตั้งสถานประกอบการ : </span>
+
+              <span>{{
+                convertAddress(it.company_detail.sub_district_id)
+              }}</span>
+            </div>
+
+            <div class="mb-2">
+              <span
+                class="badge p-2 text-white"
+                :style="`background-color: ${it.form_status_detail.color};`"
+                >{{ it.form_status_detail.name }}</span
+              >
+            </div>
             <div class="dropdown">
               <button
                 class="btn btn-primary btn-sm dropdown-toggle"
@@ -53,10 +69,8 @@
                 data-bs-toggle="dropdown"
                 aria-expanded="false"
               >
-                <i
-                  class="bi bi-pencil-square fs-4 d-sm-inline-block d-lg-none"
-                ></i>
-                <span class="d-none d-lg-inline-block">จัดการ</span>
+                <i class="bi bi-pencil-square"></i>
+                <span>จัดการ</span>
               </button>
               <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                 <li>
@@ -70,22 +84,65 @@
                     >ดูรายละเอียดเพื่ออนุมัติ</a
                   >
                 </li>
+                <!-- <li v-if="it.form_status_id > 1">
+                  <a
+                    class="dropdown-item cursor-pointer"
+                    @click="
+                      handleHistoryDetail({
+                        id: it.id,
+                      })
+                    "
+                    >ประวัติการ Comment</a
+                  >
+                </li> -->
+                <li v-if="it.form_status_id == 1 || it.form_status_id == 2">
+                  <a
+                    class="dropdown-item cursor-pointer"
+                    v-if="
+                      (userData.group_id == 1 ||
+                        userData.group_id == 2 ||
+                        userData.group_id == 3 ||
+                        userData.group_id == 4) &&
+                      it.form_status_id != 99
+                    "
+                    @click="
+                      handleEdit({
+                        id: it.id,
+                      })
+                    "
+                    >แก้ไขใบสมัคร
+                  </a>
+                </li>
+                <li>
+                  <a
+                    class="dropdown-item cursor-pointer"
+                    v-if="
+                      (userData.group_id == 1 ||
+                        userData.group_id == 2 ||
+                        userData.group_id == 3 ||
+                        userData.group_id == 4) &&
+                      it.form_status_id != 99
+                    "
+                    @click="
+                      handleCancel({
+                        id: it.id,
+                      })
+                    "
+                    >ยกเลิกใบสมัคร
+                  </a>
+                </li>
               </ul>
             </div>
-          </td>
-        </tr>
-      </tbody>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div v-if="items.length === 0" class="text-center mt-3">
+      <span>ไม่พบข้อมูล</span>
+    </div>
 
-      <tbody v-else>
-        <tr>
-          <td colspan="10">
-            <div class="text-center"><span>ไม่พบข้อมูล</span></div>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-    <div class="col-xxl-12">
-      <div class="tp-pagination mt-30">
+    <div class="col-12 mt-4">
+      <div class="tp-pagination">
         <BlogPagination
           :perPage="paginationData.perPage"
           :totalItems="paginationData.totalItems"
@@ -117,7 +174,7 @@ import useDateData from "@/composables/useDateData";
 import { fetchAddressAlls } from "@/composables/useFetchSelectionData";
 
 export default defineComponent({
-  name: "staff-list-form",
+  name: "staff-card-list-form",
   components: {
     BlogPagination,
   },

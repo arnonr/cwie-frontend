@@ -19,31 +19,21 @@
       </thead>
       <tbody v-if="items.length != 0">
         <tr v-for="(it, idx) in items" :key="idx">
+          <td>{{ it.id }}</td>
           <td class="text-center">
-            {{ convertDate(it.send_at) }}
+            {{ convertDate(it.created_at) }}
           </td>
-          <td>{{ it.semester_detail.term + "/" + it.semester_detail.year }}</td>
-          <td>{{ it.student_detail.student_code }}</td>
+          <td>{{ it.name }}</td>
+          <td>{{ it.username }}</td>
+          <td>{{ it.group_detail.name }}</td>
           <td>
-            {{
-              it.student_detail.prefix +
-              " " +
-              it.student_detail.firstname +
-              " " +
-              it.student_detail.surname
-            }}
+            {{ it.phone }}
           </td>
-          <td>{{ it.student_detail.class_year }}</td>
-          <td>{{ it.company_detail.name }}</td>
-          <td>{{ convertAddress(it.company_detail.sub_district_id) }}</td>
-          <td class="text-center">
-            <span
-              class="badge p-2 text-white"
-              :style="`background-color: ${it.form_status_detail.color};`"
-              >{{ it.form_status_detail.name }}</span
-            >
-          </td>
+          <td>{{ it.email }}</td>
 
+          <td class="text-center">
+            <span class="badge p-2">{{ it.status_detail.name }}</span>
+          </td>
           <td class="text-center">
             <div class="dropdown">
               <button
@@ -63,11 +53,22 @@
                   <a
                     class="dropdown-item cursor-pointer"
                     @click="
-                      handleDetail({
+                      handleEdit({
+                        id: it.uuid,
+                      })
+                    "
+                    >แก้ไขข้อมูล/ปรับสิทธิ์</a
+                  >
+                </li>
+                <li>
+                  <a
+                    class="dropdown-item cursor-pointer"
+                    @click="
+                      handleDelete({
                         id: it.id,
                       })
                     "
-                    >ดูรายละเอียดเพื่ออนุมัติ</a
+                    >ลบ</a
                   >
                 </li>
               </ul>
@@ -117,7 +118,7 @@ import useDateData from "@/composables/useDateData";
 import { fetchAddressAlls } from "@/composables/useFetchSelectionData";
 
 export default defineComponent({
-  name: "staff-list-form",
+  name: "users-list",
   components: {
     BlogPagination,
   },
@@ -147,18 +148,14 @@ export default defineComponent({
     const userData = JSON.parse(localStorage.getItem("userData") || "{}");
 
     const headerColumn = [
-      { column_name: "sended_at", title: "วันที่ส่งใบสมัคร", sort: true },
-      { column_name: "semester_id", title: "ปีการศึกษา", sort: true },
-      { column_name: "student_code", title: "รหัสนักศึกษา", sort: true },
-      { column_name: "fullname", title: "ชื่อ-นามสกุล", sort: true },
-      { column_name: "class_year", title: "ชั้นปี", sort: true },
-      {
-        column_name: "company_detail.name",
-        title: "ชื่อสถานประกอบการ",
-        sort: true,
-      },
-      { column_name: "province_id", title: "จังหวัด", sort: true },
-      { column_name: "form_status_id", title: "สถานะ", sort: true },
+      { column_name: "id", title: "ลำดับ", sort: true },
+      { column_name: "created_at", title: "วันที่ขอใช้งาน", sort: true },
+      { column_name: "name", title: "ชื่อ", sort: true },
+      { column_name: "username", title: "ICIT Account", sort: true },
+      { column_name: "group_id", title: "กลุ่มผู้ใช้งาน", sort: true },
+      { column_name: "phone", title: "เบอร์โทรศัพท์", sort: true },
+      { column_name: "email", title: "เมล", sort: true },
+      { column_name: "status_id", title: "สถานะ", sort: true },
       { column_name: "manage", title: "จัดการข้อมูล", sort: false },
     ];
 
@@ -185,13 +182,10 @@ export default defineComponent({
       emit("sort", key);
     };
 
-    const handleHistoryDetail = (item: any) => {
-      emit("history-reject", item);
-    };
-    const handleCancel = (item: any) => {
+    const handleDelete = (item: any) => {
       Swal.fire({
-        title: "ยืนยันการยกเลิกใบสมัคร",
-        text: "เมื่อยกเลิกใบสมัครจะไม่สามารถกลับมาแก้ไขได้",
+        title: "ยืนยันการลบ",
+        text: "เมื่อลบแล้วจะไม่สามารถกลับมาแก้ไขได้",
         icon: "warning",
         buttonsStyling: false,
         showCancelButton: true,
@@ -204,7 +198,7 @@ export default defineComponent({
         },
       }).then(async (result: any) => {
         if (result.isConfirmed) {
-          emit("cancel", item);
+          emit("delete", item);
         }
       });
     };
@@ -235,8 +229,7 @@ export default defineComponent({
       items,
       handleDetail,
       handleEdit,
-      handleHistoryDetail,
-      handleCancel,
+      handleDelete,
       convertDate: useDateData().convertDate,
       updateCurrentPage,
       updatePerPage,

@@ -62,3 +62,19 @@ export const fetchFormStatuses = async (params: any) => {
 
   return data.data;
 };
+
+export const fetchUserStatuses = async (params: any) => {
+  const { data } = await ApiService.query("user-status", {
+    params: params,
+  });
+
+  return data.data;
+};
+
+export const fetchGroups = async (params: any) => {
+  const { data } = await ApiService.query("group", {
+    params: params,
+  });
+
+  return data.data;
+};

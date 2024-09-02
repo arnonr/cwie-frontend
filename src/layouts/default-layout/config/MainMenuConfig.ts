@@ -90,6 +90,30 @@ const MainMenuConfig: Array<MenuItem> = [
         ],
       },
       {
+        sectionTitle: "การตั้งค่า",
+        route: "/visitor",
+        bootstrapIcon: "bi-file-earmark-text",
+        sub: [
+          {
+            heading: "รายการผู้ใช้งาน",
+            route: "/setting/users",
+          },
+          {
+            heading: "รายการข้อมูลอาจารย์นิเทศ",
+            route: "/setting/teachers",
+          },
+          {
+            heading: "รายการข้อมูลสถานประกอบการ",
+            route: "/setting/company",
+          },
+          {
+            heading: "รายการข้อมูปีการศึกษา",
+            route: "/setting/semester",
+          },
+        ],
+      },
+
+      {
         heading: "รายการโครงการวิจัย",
         route: "/admin-paper",
         keenthemesIcon: "element-11",
