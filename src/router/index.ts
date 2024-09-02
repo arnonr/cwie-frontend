@@ -184,6 +184,14 @@ const routes: Array<RouteRecordRaw> = [
         },
       },
       {
+        path: "/setting/semester",
+        name: "setting-semester",
+        component: () => import("@/views/setting/semester/Index.vue"),
+        meta: {
+          pageTitle: "รายการปีการศึกษา",
+        },
+      },
+      {
         path: "/paper",
         name: "paper",
         component: () => import("@/views/paper/Index.vue"),
