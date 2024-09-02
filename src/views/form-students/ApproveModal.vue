@@ -77,7 +77,7 @@ import { useForm } from "vee-validate";
 import * as Yup from "yup";
 import useToast from "@/composables/useToast";
 import Preloader from "@/components/preloader/Preloader.vue";
-import CustomField from "@/Components/field/CustomField.vue";
+import CustomField from "@/components/field/CustomField.vue";
 // Import Dayjs
 import dayjs from "dayjs";
 import "dayjs/locale/th";

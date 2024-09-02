@@ -69,7 +69,7 @@ import * as Yup from "yup";
 import { TabContent } from "vue3-form-wizard";
 // Use Composables
 // Components
-import CustomField from "@/Components/field/CustomField.vue";
+import CustomField from "@/components/field/CustomField.vue";
 
 export default defineComponent({
   name: "student-profile-form-tab2",

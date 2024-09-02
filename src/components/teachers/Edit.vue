@@ -98,7 +98,7 @@ import {
   fetchUserStatuses,
 } from "@/composables/useFetchSelectionData";
 // Components
-import CustomField from "@/Components/field/CustomField.vue";
+import CustomField from "@/components/field/CustomField.vue";
 import useToast from "@/composables/useToast";
 
 export default defineComponent({

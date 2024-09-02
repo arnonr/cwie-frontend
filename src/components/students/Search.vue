@@ -128,7 +128,7 @@
 <script lang="ts">
 import { defineComponent, toRefs, watch, ref, onMounted, computed } from "vue";
 
-import CustomField from "@/Components/field/CustomField.vue";
+import CustomField from "@/components/field/CustomField.vue";
 // Import Vue-select
 import vSelect from "vue-select";
 import "vue-select/dist/vue-select.css";

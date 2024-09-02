@@ -109,7 +109,7 @@ import Swal from "sweetalert2/dist/sweetalert2.js";
 // Use Composables
 import { fetchProvinces } from "@/composables/useFetchSelectionData";
 // Components
-import CustomField from "@/Components/field/CustomField.vue";
+import CustomField from "@/components/field/CustomField.vue";
 import useToast from "@/composables/useToast";
 
 export default defineComponent({

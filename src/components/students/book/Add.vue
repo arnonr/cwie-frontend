@@ -82,7 +82,7 @@ import { useForm } from "vee-validate";
 import * as Yup from "yup";
 import Swal from "sweetalert2/dist/sweetalert2.js";
 
-import CustomField from "@/Components/field/CustomField.vue";
+import CustomField from "@/components/field/CustomField.vue";
 
 export default defineComponent({
   name: "add-book",
