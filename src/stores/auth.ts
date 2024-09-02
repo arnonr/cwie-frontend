@@ -52,6 +52,7 @@ export const useAuthStore = defineStore("auth", () => {
           "userData",
           JSON.stringify({
             ...data,
+            permissions: [data.group_id],
           })
         );
 

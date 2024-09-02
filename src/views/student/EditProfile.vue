@@ -198,7 +198,7 @@ export default defineComponent({
             : null,
           faculty_name: faculty_detail.name,
           division_name: division_detail.name,
-          address_all: {},
+          address_all: null,
           photo_file_old: photo_file,
         });
 

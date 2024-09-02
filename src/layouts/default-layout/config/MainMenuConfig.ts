@@ -8,6 +8,7 @@ const MainMenuConfig: Array<MenuItem> = [
         route: "/student",
         keenthemesIcon: "element-11",
         bootstrapIcon: "bi-file-earmark-text",
+        permissions: [7],
       },
       {
         sectionTitle: "อาจารย์ที่ปรึกษา",
@@ -19,6 +20,7 @@ const MainMenuConfig: Array<MenuItem> = [
             route: "/advisor/student",
           },
         ],
+        permissions: [6],
       },
       {
         sectionTitle: "ประธานอาจารย์นิเทศ",
@@ -30,6 +32,7 @@ const MainMenuConfig: Array<MenuItem> = [
             route: "/division-head/student",
           },
         ],
+        permissions: [6],
       },
       {
         sectionTitle: "เจ้าหน้าที่",
@@ -69,6 +72,7 @@ const MainMenuConfig: Array<MenuItem> = [
             route: "/report/report2",
           },
         ],
+        permissions: [1, 2, 3, 4, 5],
       },
       {
         sectionTitle: "อาจารย์นิเทศ",
@@ -88,6 +92,7 @@ const MainMenuConfig: Array<MenuItem> = [
             route: "/staff/student/report",
           },
         ],
+        permissions: [6],
       },
       {
         sectionTitle: "การตั้งค่า",
@@ -111,6 +116,7 @@ const MainMenuConfig: Array<MenuItem> = [
             route: "/setting/semester",
           },
         ],
+        permissions: [1],
       },
 
       {

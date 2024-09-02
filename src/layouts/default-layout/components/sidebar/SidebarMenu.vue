@@ -31,11 +31,7 @@
             <template v-if="menuItem.heading">
               <div
                 class="menu-item"
-                v-if="
-                  menuItem.route == '/student' ||
-                  menuItem.route == '/advisor/student' ||
-                  userData.level == 1
-                "
+                v-if="menuItem.permissions?.includes(userData.group_id)"
               >
                 <router-link
                   v-if="menuItem.route"
@@ -62,8 +58,13 @@
                 </router-link>
               </div>
             </template>
+            <!-- user_permissions.some(permission => permissions.includes(permission)) -->
             <div
-              v-if="menuItem.sectionTitle && menuItem.route"
+              v-if="
+                menuItem.sectionTitle &&
+                menuItem.route &&
+                userData.permissions.some((permission: any) => menuItem.permissions?.includes(permission))
+              "
               :class="{ show: hasActiveChildren(menuItem.route) }"
               class="menu-item menu-accordion"
               data-kt-menu-sub="accordion"
