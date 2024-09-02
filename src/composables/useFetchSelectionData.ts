@@ -54,3 +54,11 @@ export const fetchProvinces = async (params: any) => {
 
   return data.data;
 };
+
+export const fetchFormStatuses = async (params: any) => {
+  const { data } = await ApiService.query("form-status", {
+    params: params,
+  });
+
+  return data.data;
+};

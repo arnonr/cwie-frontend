@@ -152,6 +152,7 @@ import {
   fetchSemesters,
   fetchDivisions,
   fetchFaculties,
+  fetchFormStatuses,
 } from "@/composables/useFetchSelectionData";
 // Components
 
@@ -277,6 +278,19 @@ export default defineComponent({
         colClass: "col-lg-4",
         disabled: false,
       },
+      {
+        name: "form_status_id",
+        label: "สถานะฟอร์ม",
+        model: "form_status_id",
+        select_label: "name",
+        type: "v-select",
+        options: computed(() => selectOptions.value.form_statuses),
+        placeholder: "",
+        colClass: "col-lg-4",
+        disabled: false,
+        reloadSelect: false,
+        fetchName: "FormStatuses",
+      },
     ]);
 
     const format = (date: any) => {
@@ -372,6 +386,11 @@ export default defineComponent({
           }),
         });
       },
+      FormStatuses: async (searchQuery: string) => {
+        selectOptions.value.form_statuses = await fetchFormStatuses({
+          is_active: true,
+        });
+      },
     };
 
     const fetchSelectionData = (field_name: any, searchQuery: string) => {
@@ -385,6 +404,7 @@ export default defineComponent({
       await fetching.Faculties("");
       await fetching.Advisors("");
       await fetching.Visitors("");
+      await fetching.FormStatuses("");
     });
 
     return {

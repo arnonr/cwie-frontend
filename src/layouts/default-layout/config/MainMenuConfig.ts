@@ -60,6 +60,14 @@ const MainMenuConfig: Array<MenuItem> = [
             heading: "รายงานผลการปฏิบัติงาน",
             route: "/staff/student/report",
           },
+          {
+            heading: "รายงานนักศึกษา",
+            route: "/report/report1",
+          },
+          {
+            heading: "รายงานสถานประกอบการ",
+            route: "/report/report2",
+          },
         ],
       },
       {

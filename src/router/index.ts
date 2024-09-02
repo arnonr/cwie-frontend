@@ -142,8 +142,22 @@ const routes: Array<RouteRecordRaw> = [
           pageTitle: "จับคู่อาจารย์นิเทศ",
         },
       },
-
-      //
+      {
+        path: "/report/report1",
+        name: "report1",
+        component: () => import("@/views/report/report1.vue"),
+        meta: {
+          pageTitle: "รายงานนักศึกษา",
+        },
+      },
+      {
+        path: "/report/report2",
+        name: "report2",
+        component: () => import("@/views/report/report2.vue"),
+        meta: {
+          pageTitle: "รายงานสถานประกอบการ",
+        },
+      },
       {
         path: "/paper",
         name: "paper",
