@@ -19,14 +19,14 @@
       </thead>
       <tbody v-if="items.length != 0">
         <tr v-for="(it, idx) in items" :key="idx">
-          <td>{{ it.id }}</td>
+          <td class="text-center">{{ it.id }}</td>
           <td class="text-center">
             {{ convertDate(it.created_at) }}
           </td>
-          <td>{{ it.name }}</td>
+          <td >{{ it.name }}</td>
           <td>{{ it.username }}</td>
-          <td>{{ it.group_detail.name }}</td>
-          <td>
+          <td class="text-center">{{ it.group_detail.name }}</td>
+          <td class="text-center">
             {{ it.phone }}
           </td>
           <td>{{ it.email }}</td>

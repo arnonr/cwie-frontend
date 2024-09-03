@@ -129,6 +129,8 @@ export default defineComponent({
       currentPage: 1,
       totalPage: 1,
       totalItems: 0,
+      orderBy: "id",
+      order: "desc",
     });
     const sortedItems = (key: any) => {
       if (sortKey.value === key) {
@@ -163,9 +165,8 @@ export default defineComponent({
       isLoading.value = true;
       const params = {
         ...search,
-        orderBy: "id",
-        order: "desc",
         is_active: true,
+        ...paginationData,
       };
 
       const { data } = await ApiService.query("user", {
@@ -201,7 +202,7 @@ export default defineComponent({
 
     const onEditModal = (it: any) => {
       Object.assign(item, it);
-      console.log(item)
+      console.log(item);
       openEditModal.value = true;
     };
 

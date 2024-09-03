@@ -448,7 +448,7 @@ export default defineComponent({
     const fields5 = ref<any>([
       {
         label: "วันที่ส่งรายงานผลการปฏิบัติงาน",
-        model: "send_at",
+        model: "report_send_at",
         colClass: "col-lg-4",
       },
       {
@@ -474,12 +474,12 @@ export default defineComponent({
       },
       {
         label: "วันที่ตรวจรายงานผล",
-        model: "send_at",
+        model: "report_accept_at",
         colClass: "col-lg-4",
       },
       {
         label: "วันที่อนุมัติผลการจบสหกิจศึกษา",
-        model: "send_at",
+        model: "closed_at",
         colClass: "col-lg-4",
       },
       {

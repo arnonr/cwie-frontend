@@ -163,7 +163,7 @@ export default defineComponent({
       },
       {
         name: "website",
-        label: "Website",
+        label: "Website/Facebook Page",
         model: "website",
         type: "text",
         options: [],

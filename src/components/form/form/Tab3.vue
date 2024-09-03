@@ -13,7 +13,7 @@
         >
           <label for="" class="required form-label">{{
             d.document_name
-          }}</label>
+          }} (PDF ไฟล์เท่านั้น)</label>
           <div class="row">
             <div class="col-10 col-lg-10">
               <input
@@ -109,10 +109,10 @@ export default defineComponent({
     });
     const documents = ref<any>([]);
 
-    const validationSchema = Yup.object().shape({
-      //   document_1: Yup.mixed().required().label("ใบเกรด"),
-      //   document_2: Yup.mixed().required().label("Resume"),
-    });
+    // const validationSchema = Yup.object().shape({
+    //   //   document_1: Yup.mixed().required().label("ใบเกรด"),
+    //   //   document_2: Yup.mixed().required().label("Resume"),
+    // });
 
     // fetch
     const fetchDocumentTypes = async () => {

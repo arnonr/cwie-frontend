@@ -19,7 +19,7 @@
                 @click="onEditStudentProfileModal"
                 :disabled="
                   student_profile_item.status_id == 1 ||
-                  student_profile_item.status_id == 2
+                  student_profile_item.status_id == 3
                     ? false
                     : true
                 "
@@ -39,6 +39,26 @@
       </div>
     </div>
 
+    <div class="alert alert-info d-flex align-items-center p-5">
+      <i class="ki-duotone ki-shield-tick fs-2hx text-success me-4"
+        ><span class="path1"></span><span class="path2"></span
+      ></i>
+
+      <div class="d-flex flex-column">
+        <!-- <h4 class="mb-1 text-dark">This is an alert</h4> -->
+        <span v-if="student_profile_item.status_id == 1">
+          1. คลิกปุ่ม กรอกข้อมูลส่วนตัว และทำการกรอกข้อมูลส่วนตัวให้ครบถ้วน<br />
+          2. คลิกปุ่ม กรอกใบสมัคร และทำการกรอกข้อมูลใบสมัครให้ครบถ้วน
+        </span>
+        <span v-if="student_profile_item.status_id == 2">
+          รออนุมัติใบสมัคร<br />
+        </span>
+        <span v-if="student_profile_item.status_id == 3">
+          แก้ไขใบสมัคร โดยดู Comment ได้ที่ปุ่มจัดการ > ประวัติการ Comment<br />
+        </span>
+      </div>
+    </div>
+
     <div class="card shadow-sm my-5">
       <div class="card-header bg-white">
         <h4 class="card-title">ใบสมัครโครงการ CWIE</h4>
@@ -46,7 +66,12 @@
           <button
             class="btn btn-outline btn-outline-primary me-2 pe-sm-3 ps-sm-5"
             @click="onAddFormModal"
-            :disabled="student_profile_item.status_id == 1 ? false : true"
+            :disabled="
+              student_profile_item.status_id == 1 ||
+              student_profile_item.status_id == 3
+                ? false
+                : true
+            "
           >
             <i class="bi bi-file-earmark-plus-fill fs-4"></i>
             <span class="d-none d-lg-inline-block ms-2">กรอกใบสมัคร</span>

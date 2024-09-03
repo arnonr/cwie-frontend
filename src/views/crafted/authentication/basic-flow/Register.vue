@@ -289,7 +289,7 @@ export default defineComponent({
 
           if (data.group_id != 7) {
             Swal.fire({
-              text: "ได้รัับข้อมูลของท่านแล้ว โปรดรอการอนุมัติการเข้าใช้งาน",
+              text: "ได้รับข้อมูลของท่านแล้ว โปรดรอการอนุมัติการเข้าใช้งาน",
               icon: "success",
               buttonsStyling: false,
               confirmButtonText: "Ok, got it!",

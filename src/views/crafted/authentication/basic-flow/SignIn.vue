@@ -188,8 +188,20 @@ export default defineComponent({
           const userData = JSON.parse(localStorage.getItem("userData") || "{}");
           if (userData.group_id == 7) {
             router.push({ name: "student" });
+          } else if (userData.group_id == 1) {
+            router.push({ name: "staff-student" });
+          } else if (userData.group_id == 2) {
+            router.push({ name: "staff-student" });
+          } else if (userData.group_id == 3) {
+            router.push({ name: "staff-student" });
+          } else if (userData.group_id == 4) {
+            router.push({ name: "staff-student" });
+          } else if (userData.group_id == 5) {
+            router.push({ name: "staff-student" });
+          } else if (userData.group_id == 6) {
+            router.push({ name: "advisor-student" });
           } else {
-            router.push({ name: "students" });
+            router.push({ name: "sign-in" });
           }
         });
       } else {

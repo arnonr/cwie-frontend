@@ -4,7 +4,6 @@
     tabindex="-1"
     ref="mainModalRef"
     id="company-modal"
-    aria-hidden="true"
     data-bs-backdrop="static"
     data-bs-keyboard="false"
   >
@@ -165,7 +164,7 @@ export default defineComponent({
       },
       {
         name: "website",
-        label: "Website",
+        label: "Website/Facebook Page",
         model: "website",
         type: "text",
         options: [],
