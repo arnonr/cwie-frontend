@@ -25,7 +25,7 @@
         />
       </div>
       <div class="card-body d-lg-none">
-        <!-- <CardListComponent
+        <CardListComponent
           :items="items"
           :paginationData="paginationData"
           :sortKey="sortKey"
@@ -34,8 +34,9 @@
           @update:perPage="paginationData.perPage = $event"
           @sort="(key: any) => {
                 sortedItems(key)}"
-          @detail="(it: any) => {onFormDetailModal(it) }"
-        /> -->
+          @edit="(it: any) => {onEditModal(it) }"
+          @delete="(it: any) => {onDelete(it) }"
+        />
       </div>
       <div class="card-footer"></div>
     </div>

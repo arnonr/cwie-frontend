@@ -63,7 +63,7 @@
                   type="button"
                   class="btn btn-danger ms-2"
                 >
-                  ปิด
+                  ยกเลิก
                 </button>
               </div>
             </div>
@@ -118,6 +118,7 @@ export default defineComponent({
     const item = ref<any>({
       term: "",
       year: "",
+      is_active: null,
     });
 
     const instance = getCurrentInstance();
@@ -148,21 +149,41 @@ export default defineComponent({
         colClass: "col-lg-12",
         disabled: false,
       },
+      {
+        name: "is_active",
+        label: "สถานะ",
+        model: "is_active",
+
+        select_label: "name",
+        type: "v-select",
+        options: [
+          { id: true, name: "True" },
+          { id: false, name: "False" },
+        ],
+        placeholder: "",
+        colClass: "col-lg-12",
+        disabled: false,
+      },
     ]);
 
     const validationSchema = Yup.object().shape({
       term: Yup.string().required().label("เทอม"),
       year: Yup.string().required().label("ปี"),
+      is_active: Yup.object().required().label("สถานะ"),
     });
 
     // fetch
     const fetchItem = async () => {
       const { data } = await ApiService.query(`semester/${props.id}`, {});
 
-      const { term, year } = data.data;
+      const { term, year, is_active } = data.data;
 
       item.value = {
         ...data.data,
+        is_active:
+          is_active == true
+            ? { id: true, name: "True" }
+            : { id: false, name: "False" },
       };
 
       setValues(item.value);
@@ -180,11 +201,12 @@ export default defineComponent({
 
       Object.assign(item.value, otherValues);
 
-      const { term, year } = item.value;
+      const { term, year, is_active } = item.value;
 
       let data_send = {
         term,
         year,
+        is_active: is_active?.id,
       };
 
       Swal.fire({

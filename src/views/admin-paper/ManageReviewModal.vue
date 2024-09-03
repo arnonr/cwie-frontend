@@ -94,9 +94,7 @@
                   <div class="form">
                     <div class="mb-7 col-12 col-lg-12">
                       <div class="row">
-                        <div
-                          class="col-md-12 table-responsive"
-                        >
+                        <div class="col-md-12 table-responsive">
                           <!-- ตารางปกติสำหรับหน้าจอขนาดใหญ่ (ไม่เปลี่ยนแปลง) -->
                           <table class="table table-bordered table-striped">
                             <thead class="bg-primary">
@@ -176,7 +174,7 @@
                       type="button"
                       class="btn btn-danger me-2"
                     >
-                      ปิด
+                      ยกเลิก
                     </button>
                   </div>
                 </div>
@@ -233,7 +231,7 @@
                       type="button"
                       class="btn btn-danger me-2"
                     >
-                      ปิด
+                      ยกเลิก
                     </button>
                     <button
                       @click="onSubmit"

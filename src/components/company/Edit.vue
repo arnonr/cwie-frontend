@@ -63,7 +63,7 @@
                   type="button"
                   class="btn btn-danger ms-2"
                 >
-                  ปิด
+                  ยกเลิก
                 </button>
               </div>
             </div>
@@ -193,6 +193,20 @@ export default defineComponent({
         colClass: "col-lg-12",
         disabled: false,
       },
+      {
+        name: "blacklist",
+        label: "Blacklist",
+        model: "blacklist",
+        select_label: "name",
+        type: "v-select",
+        options: [
+          { id: 1, type: true, name: "Yes" },
+          { id: 2, type: false, name: "No" },
+        ],
+        placeholder: "",
+        colClass: "col-lg-12",
+        disabled: false,
+      },
     ]);
 
     const validationSchema = Yup.object().shape({
@@ -219,6 +233,7 @@ export default defineComponent({
         province_id,
         province_detail,
         sub_district_id,
+        blacklist,
       } = data.data;
 
       let address_all = selectOptions.value.address_alls.find((x: any) => {
@@ -226,6 +241,18 @@ export default defineComponent({
       });
       item.value = {
         ...data.data,
+        blacklist:
+          blacklist == true
+            ? {
+                id: 1,
+                type: true,
+                name: "Yes",
+              }
+            : {
+                id: 2,
+                type: false,
+                name: "No",
+              },
         address_all: address_all,
       };
 
@@ -244,7 +271,8 @@ export default defineComponent({
 
       Object.assign(item.value, otherValues);
 
-      const { name, phone, email, website, address, address_all } = item.value;
+      const { name, phone, email, website, address, address_all, blacklist } =
+        item.value;
 
       const { province_id, district_id, sub_district_id } = address_all;
 
@@ -257,12 +285,13 @@ export default defineComponent({
         province_id,
         district_id,
         sub_district_id,
+        blacklist: blacklist?.type,
       };
 
       console.log(data_send);
 
       Swal.fire({
-        title: "ยืนยันการเพิ่มสถานประกอบการ",
+        title: "ยืนยันการแก้ไข",
         icon: "warning",
         buttonsStyling: false,
         showCancelButton: true,

@@ -42,7 +42,7 @@
                 type="button"
                 class="btn btn-danger mt-6"
               >
-                ปิด
+                ยกเลิก
               </button>
               <button
                 ref="submitButtonRef"

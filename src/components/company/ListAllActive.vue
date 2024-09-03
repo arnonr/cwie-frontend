@@ -151,8 +151,8 @@ export default defineComponent({
     const headerColumn = [
       { column_name: "name", title: "ชื่อ", sort: true },
       { column_name: "address", title: "ที่ตั้ง", sort: true },
-      { column_name: "department", title: "เบอร์โทรศัพท์", sort: true },
-      { column_name: "MAP User", title: "เมล", sort: true },
+      { column_name: "phone", title: "เบอร์โทรศัพท์", sort: true },
+      { column_name: "email", title: "เมล", sort: true },
       { column_name: "manage", title: "จัดการข้อมูล", sort: false },
     ];
 
@@ -166,7 +166,6 @@ export default defineComponent({
     fetchAddress();
 
     // fetch
-
     const handleDetail = (item: any) => {
       emit("detail", item);
     };

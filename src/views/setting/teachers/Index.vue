@@ -34,7 +34,7 @@
           @click="onAddModal"
         >
           <i class="fa fa-plus fs-4"></i>
-          <span class="d-none d-lg-inline-block ms-2">เพิ่มอาจารย์</span>
+          <span class="d-none d-lg-inline-block ms-2">Sync อาจารย์</span>
         </button>
       </div>
 
@@ -205,8 +205,20 @@ export default defineComponent({
     };
 
     // Modal action
-    const onAddModal = (it: any) => {
-      openAddModal.value = true;
+    const onAddModal = async (it: any) => {
+      //   openAddModal.value = true;
+      isLoading.value = true;
+      await ApiService.post(`teacher-profile/hris-sync-teacher`, {})
+        .then(({ status }) => {
+          if (status != 200) {
+            throw new Error("ERROR");
+          }
+          useToast("Sync สำเร็จ", "success");
+          isLoading.value = false;
+        })
+        .catch(({ response }) => {
+          console.log(response);
+        });
     };
 
     const onEditModal = (it: any) => {

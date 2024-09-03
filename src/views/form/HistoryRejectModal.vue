@@ -56,7 +56,7 @@
               type="button"
               class="btn btn-danger me-2 mt-6"
             >
-              ปิด
+              ยกเลิก
             </button>
           </div>
         </div>

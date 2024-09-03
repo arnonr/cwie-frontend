@@ -152,7 +152,6 @@ export default defineComponent({
         ...search,
         orderBy: "id",
         order: "desc",
-        is_active: true,
       };
 
       const { data } = await ApiService.query("semester", {

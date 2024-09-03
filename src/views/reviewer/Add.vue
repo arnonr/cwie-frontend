@@ -84,7 +84,7 @@
                 type="button"
                 class="btn btn-danger me-2"
               >
-                ปิด
+                ยกเลิก
               </button>
               <button @click="onSubmit" type="button" class="btn btn-success">
                 ยืนยัน

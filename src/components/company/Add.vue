@@ -63,7 +63,7 @@
                     type="button"
                     class="btn btn-danger ms-2"
                   >
-                    ปิด
+                    ยกเลิก
                   </button>
                 </div>
               </div>

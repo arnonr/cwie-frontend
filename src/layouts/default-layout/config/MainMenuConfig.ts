@@ -100,19 +100,19 @@ const MainMenuConfig: Array<MenuItem> = [
         bootstrapIcon: "bi-file-earmark-text",
         sub: [
           {
-            heading: "รายการผู้ใช้งาน",
+            heading: "ผู้ใช้งาน",
             route: "/setting/users",
           },
           {
-            heading: "รายการข้อมูลอาจารย์นิเทศ",
+            heading: "อาจารย์",
             route: "/setting/teachers",
           },
           {
-            heading: "รายการข้อมูลสถานประกอบการ",
+            heading: "สถานประกอบการ",
             route: "/setting/company",
           },
           {
-            heading: "รายการข้อมูปีการศึกษา",
+            heading: "ปีการศึกษา",
             route: "/setting/semester",
           },
         ],

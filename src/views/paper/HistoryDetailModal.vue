@@ -65,7 +65,9 @@
               </tbody>
               <tbody v-else>
                 <tr>
-                    <td colspan="3" class="text-center">ไม่พบการส่งกลับให้แก้ไข</td>
+                  <td colspan="3" class="text-center">
+                    ไม่พบการส่งกลับให้แก้ไข
+                  </td>
                 </tr>
               </tbody>
             </table>
@@ -76,7 +78,7 @@
               type="button"
               class="btn btn-danger me-2 mt-6"
             >
-              ปิด
+              ยกเลิก
             </button>
           </div>
         </div>
