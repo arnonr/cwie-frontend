@@ -6,60 +6,23 @@
         :key="idx"
         class="col-12 col-md-12 col-lg-4 p-5"
       >
-        <div
-          class="card h-100 border border-dotted"
-          :style="`border-color: ${it.form_status_detail.color} !important;`"
-        >
+        <div class="card h-100 border border-dotted">
           <div class="card-body p-5">
             <h6 class="card-title">
-              {{
-                it.student_detail.prefix +
-                " " +
-                it.student_detail.firstname +
-                " " +
-                it.student_detail.surname
-              }}
+              {{ it.fullname }}
             </h6>
             <h6 class="card-subtitle mb-4 text-muted">
-              {{ it.student_detail.student_code }}
+              {{ it.user_id }}
             </h6>
 
             <div class="mb-2">
-              <span class="fw-bold">วันที่ส่งใบสมัคร : </span>
-              <span> {{ convertDate(it.send_at) }}</span>
+              <span class="fw-bold">คณะ : </span>
+              <span> {{ it.faculty_detail.name }}</span>
             </div>
 
             <div class="mb-2">
-              <span class="fw-bold">ปีการศึกษา : </span>
-              <span>
-                {{
-                  it.semester_detail.term + "/" + it.semester_detail.year
-                }}</span
-              >
-            </div>
-
-            <div class="mb-2">
-              <span class="fw-bold">ชั้นปีที่ : </span>
-              <span>{{ it.student_detail.class_year }}</span>
-            </div>
-            <div class="mb-2">
-              <span class="fw-bold">สถานประกอบการ : </span>
-              <span>{{ it.company_detail.name }}</span>
-            </div>
-            <div class="mb-2">
-              <span class="fw-bold">จังหวัดที่ตั้งสถานประกอบการ : </span>
-
-              <span>{{
-                convertAddress(it.company_detail.sub_district_id)
-              }}</span>
-            </div>
-
-            <div class="mb-2">
-              <span
-                class="badge p-2 text-white"
-                :style="`background-color: ${it.form_status_detail.color};`"
-                >{{ it.form_status_detail.name }}</span
-              >
+              <span class="fw-bold">ภาควิชา : </span>
+              <span> {{ it.department_detail.name }}</span>
             </div>
             <div class="dropdown">
               <button
@@ -77,59 +40,23 @@
                   <a
                     class="dropdown-item cursor-pointer"
                     @click="
-                      handleDetail({
-                        id: it.id,
-                      })
-                    "
-                    >ดูรายละเอียดเพื่ออนุมัติ</a
-                  >
-                </li>
-                <!-- <li v-if="it.form_status_id > 1">
-                  <a
-                    class="dropdown-item cursor-pointer"
-                    @click="
-                      handleHistoryDetail({
-                        id: it.id,
-                      })
-                    "
-                    >ประวัติการ Comment</a
-                  >
-                </li> -->
-                <li v-if="it.form_status_id == 1 || it.form_status_id == 2">
-                  <a
-                    class="dropdown-item cursor-pointer"
-                    v-if="
-                      (userData.group_id == 1 ||
-                        userData.group_id == 2 ||
-                        userData.group_id == 3 ||
-                        userData.group_id == 4) &&
-                      it.form_status_id != 99
-                    "
-                    @click="
                       handleEdit({
                         id: it.id,
                       })
                     "
-                    >แก้ไขใบสมัคร
-                  </a>
+                    >แก้ไขข้อมูล</a
+                  >
                 </li>
                 <li>
                   <a
                     class="dropdown-item cursor-pointer"
-                    v-if="
-                      (userData.group_id == 1 ||
-                        userData.group_id == 2 ||
-                        userData.group_id == 3 ||
-                        userData.group_id == 4) &&
-                      it.form_status_id != 99
-                    "
                     @click="
-                      handleCancel({
+                      handleDelete({
                         id: it.id,
                       })
                     "
-                    >ยกเลิกใบสมัคร
-                  </a>
+                    >ลบ</a
+                  >
                 </li>
               </ul>
             </div>
@@ -171,10 +98,9 @@ import Swal from "sweetalert2/dist/sweetalert2.js";
 import BlogPagination from "@/components/common/pagination/BlogPagination.vue";
 // Composable
 import useDateData from "@/composables/useDateData";
-import { fetchAddressAlls } from "@/composables/useFetchSelectionData";
 
 export default defineComponent({
-  name: "staff-card-list-form",
+  name: "teacher-profile-card-list",
   components: {
     BlogPagination,
   },
@@ -204,29 +130,14 @@ export default defineComponent({
     const userData = JSON.parse(localStorage.getItem("userData") || "{}");
 
     const headerColumn = [
-      { column_name: "sended_at", title: "วันที่ส่งใบสมัคร", sort: true },
-      { column_name: "semester_id", title: "ปีการศึกษา", sort: true },
-      { column_name: "student_code", title: "รหัสนักศึกษา", sort: true },
-      { column_name: "fullname", title: "ชื่อ-นามสกุล", sort: true },
-      { column_name: "class_year", title: "ชั้นปี", sort: true },
-      {
-        column_name: "company_detail.name",
-        title: "ชื่อสถานประกอบการ",
-        sort: true,
-      },
-      { column_name: "province_id", title: "จังหวัด", sort: true },
-      { column_name: "form_status_id", title: "สถานะ", sort: true },
+      { column_name: "name", title: "ชื่อ", sort: true },
+      { column_name: "faculty", title: "คณะ", sort: true },
+      { column_name: "department", title: "ภาควิชา", sort: true },
+      { column_name: "MAP User", title: "ผู้ใช้งาน", sort: true },
       { column_name: "manage", title: "จัดการข้อมูล", sort: false },
     ];
 
-    const selectOptions = ref({
-      address_alls: <any>[],
-    });
-
-    const fetchAddress = async () => {
-      selectOptions.value.address_alls = await fetchAddressAlls({});
-    };
-    fetchAddress();
+    const selectOptions = ref({});
 
     // fetch
 
@@ -242,13 +153,10 @@ export default defineComponent({
       emit("sort", key);
     };
 
-    const handleHistoryDetail = (item: any) => {
-      emit("history-reject", item);
-    };
-    const handleCancel = (item: any) => {
+    const handleDelete = (item: any) => {
       Swal.fire({
-        title: "ยืนยันการยกเลิกใบสมัคร",
-        text: "เมื่อยกเลิกใบสมัครจะไม่สามารถกลับมาแก้ไขได้",
+        title: "ยืนยันการลบ",
+        text: "เมื่อลบแล้วจะไม่สามารถกลับมาแก้ไขได้",
         icon: "warning",
         buttonsStyling: false,
         showCancelButton: true,
@@ -261,16 +169,9 @@ export default defineComponent({
         },
       }).then(async (result: any) => {
         if (result.isConfirmed) {
-          emit("cancel", item);
+          emit("delete", item);
         }
       });
-    };
-
-    const convertAddress = (sub_district_id: any) => {
-      let ad = selectOptions.value.address_alls.find((x: any) => {
-        return x.sub_district_id == sub_district_id;
-      });
-      return ad?.province;
     };
 
     const updateCurrentPage = (newPage: any) => {
@@ -292,8 +193,7 @@ export default defineComponent({
       items,
       handleDetail,
       handleEdit,
-      handleHistoryDetail,
-      handleCancel,
+      handleDelete,
       convertDate: useDateData().convertDate,
       updateCurrentPage,
       updatePerPage,
@@ -301,7 +201,6 @@ export default defineComponent({
       handleSort,
       headerColumn,
       userData,
-      convertAddress,
     };
   },
 });

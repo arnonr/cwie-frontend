@@ -27,6 +27,16 @@
           <!-- buttons -->
         </div>
       </div>
+      <div class="card-body" style="padding-bottom: 0px">
+        <button
+          class="btn btn-outline btn-outline-success btn-sm fs-7"
+          type="button"
+          @click="onAddModal"
+        >
+          <i class="fa fa-plus fs-4"></i>
+          <span class="d-none d-lg-inline-block ms-2">เพิ่มผู้ใช้งาน</span>
+        </button>
+      </div>
       <div
         class="card-body table-responsive d-none d-lg-block"
         style="min-height: 300px"
@@ -64,6 +74,19 @@
 
     <!-- Modal -->
     <div>
+      <!-- Add Modal -->
+      <div id="add-user-modal">
+        <AddUserComponent
+          v-if="openAddModal == true"
+          :id="item.id"
+          @close-modal="
+            () => {
+              fetchItems();
+              openAddModal = false;
+            }
+          "
+        />
+      </div>
       <!-- Edit Modal -->
       <div id="edit-user-modal">
         <EditUserComponent
@@ -92,6 +115,7 @@ import CardListComponent from "@/components/users/CardAllActive.vue";
 import Preloader from "@/components/preloader/Preloader.vue";
 import SearchComponent from "@/components/students/Search.vue";
 import EditUserComponent from "@/components/users/Edit.vue";
+import AddUserComponent from "@/components/users/Add.vue";
 
 export default defineComponent({
   name: "staff-manage-user",
@@ -101,6 +125,7 @@ export default defineComponent({
     Preloader,
     SearchComponent,
     EditUserComponent,
+    AddUserComponent,
   },
   setup() {
     // UI Variable
@@ -113,8 +138,6 @@ export default defineComponent({
       currentPage: 1,
       totalPage: 1,
       totalItems: 0,
-      orderBy: "id",
-      order: "desc",
     });
     const sortedItems = (key: any) => {
       if (sortKey.value === key) {
@@ -130,6 +153,7 @@ export default defineComponent({
 
     // Modal Variable
     const openEditModal = ref(false);
+    const openAddModal = ref(false);
 
     // Variable
     const items = reactive<any>([]); // form items
@@ -157,8 +181,6 @@ export default defineComponent({
     fetchCountWatingItems();
 
     const fetchItems = async () => {
-      console.log(sortKey.value);
-      console.log(sortOrder.value);
       isLoading.value = true;
       const params = {
         ...search,
@@ -182,9 +204,11 @@ export default defineComponent({
     };
 
     // Modal action
+    const onAddModal = () => {
+      openAddModal.value = true;
+    };
     const onEditModal = (it: any) => {
       Object.assign(item, it);
-      console.log(item);
       openEditModal.value = true;
     };
     const onDelete = async (it: any) => {
@@ -230,11 +254,13 @@ export default defineComponent({
       sortOrder,
       sortedItems,
       isLoading,
+      openAddModal,
       openEditModal,
       //   Event
       onchangeCurrentStatus,
       fetchItems,
       onClear,
+      onAddModal,
       onEditModal,
       onDelete,
     };

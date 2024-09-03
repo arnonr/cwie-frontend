@@ -22,7 +22,7 @@
           <td>{{ it.fullname }}</td>
           <td>{{ it.faculty_detail.name }}</td>
           <td>{{ it.department_detail.name }}</td>
-          <td>{{ it.user_id }}</td>
+          <td class="text-center">{{ it.user_id }}</td>
           <td class="text-center">
             <div class="dropdown">
               <button
@@ -38,7 +38,7 @@
                 <span class="d-none d-lg-inline-block">จัดการ</span>
               </button>
               <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                <!-- <li>
+                <li>
                   <a
                     class="dropdown-item cursor-pointer"
                     @click="
@@ -59,7 +59,7 @@
                     "
                     >ลบ</a
                   >
-                </li> -->
+                </li>
               </ul>
             </div>
           </td>
@@ -104,10 +104,9 @@ import Swal from "sweetalert2/dist/sweetalert2.js";
 import BlogPagination from "@/components/common/pagination/BlogPagination.vue";
 // Composable
 import useDateData from "@/composables/useDateData";
-import { fetchAddressAlls } from "@/composables/useFetchSelectionData";
 
 export default defineComponent({
-  name: "users-list",
+  name: "teacher-profile-list",
   components: {
     BlogPagination,
   },
@@ -144,14 +143,7 @@ export default defineComponent({
       { column_name: "manage", title: "จัดการข้อมูล", sort: false },
     ];
 
-    const selectOptions = ref({
-      address_alls: <any>[],
-    });
-
-    const fetchAddress = async () => {
-      selectOptions.value.address_alls = await fetchAddressAlls({});
-    };
-    fetchAddress();
+    const selectOptions = ref({});
 
     // fetch
 
@@ -188,13 +180,6 @@ export default defineComponent({
       });
     };
 
-    const convertAddress = (sub_district_id: any) => {
-      let ad = selectOptions.value.address_alls.find((x: any) => {
-        return x.sub_district_id == sub_district_id;
-      });
-      return ad?.province;
-    };
-
     const updateCurrentPage = (newPage: any) => {
       internalCurrentPage.value = newPage;
       emit("update:currentPage", newPage);
@@ -222,7 +207,6 @@ export default defineComponent({
       handleSort,
       headerColumn,
       userData,
-      convertAddress,
     };
   },
 });

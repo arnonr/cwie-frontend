@@ -3,7 +3,7 @@
     class="modal fade"
     tabindex="-1"
     ref="mainModalRef"
-    id="company-modal"
+    id="teacher-modal"
     aria-hidden="true"
     data-bs-backdrop="static"
     data-bs-keyboard="false"
@@ -64,7 +64,7 @@
                   type="button"
                   class="btn btn-danger ms-2"
                 >
-                  ปิด
+                  ยกเลิก
                 </button>
               </div>
             </div>
@@ -82,7 +82,6 @@ import {
   onMounted,
   onBeforeUnmount,
   getCurrentInstance,
-  computed,
 } from "vue";
 
 import ApiService from "@/core/services/ApiService";
@@ -102,12 +101,12 @@ import CustomField from "@/components/field/CustomField.vue";
 import useToast from "@/composables/useToast";
 
 export default defineComponent({
-  name: "edit-user-form",
+  name: "edit-teacher-profile-form",
   components: {
     CustomField,
   },
   props: {
-    id: String,
+    id: Number,
   },
   setup(props, { emit }) {
     // UI
@@ -137,24 +136,34 @@ export default defineComponent({
 
     const fields = ref([
       {
-        name: "name",
-        label: "ชื่อ",
-        model: "name",
+        name: "prefix",
+        label: "คำนำหน้า",
+        model: "prefix",
         type: "text",
         options: [],
         placeholder: "",
         colClass: "col-lg-12",
-        disabled: true,
+        disabled: false,
       },
       {
-        name: "username",
-        label: "ICIT Account",
-        model: "username",
+        name: "firstname",
+        label: "ชื่อ",
+        model: "firstname",
         type: "text",
         options: [],
         placeholder: "",
         colClass: "col-lg-12",
-        disabled: true,
+        disabled: false,
+      },
+      {
+        name: "surname",
+        label: "นามสกุล",
+        model: "surname",
+        type: "text",
+        options: [],
+        placeholder: "",
+        colClass: "col-lg-12",
+        disabled: false,
       },
       {
         name: "phone",
@@ -177,60 +186,73 @@ export default defineComponent({
         disabled: false,
       },
       {
-        name: "group_id",
-        label: "สิทธิ",
-        model: "group_id",
-        select_label: "name",
-        type: "v-select",
-        options: computed(() => selectOptions.value.groups),
+        name: "user_id",
+        label: "จับคู่อาจารย์ & ผู้ใช้งาน",
+        model: "user_id",
+        type: "text",
+        options: [],
         placeholder: "",
         colClass: "col-lg-12",
         disabled: false,
       },
       {
-        name: "status_id",
-        label: "สถานะ",
-        model: "status_id",
+        name: "faculty_name",
+        label: "คณะ",
+        model: "faculty_name",
         select_label: "name",
-        type: "v-select",
-        options: computed(() => selectOptions.value.user_statuses),
+        type: "text",
+        options: [],
         placeholder: "",
-        colClass: "col-lg-12",
-        disabled: false,
+        colClass: "col-lg-6",
+        disabled: true,
+      },
+      {
+        name: "department_name",
+        label: "ภาควิชา",
+        model: "department_name",
+        type: "text",
+        options: [],
+        placeholder: "",
+        colClass: "col-lg-6",
+        disabled: true,
       },
     ]);
 
     const validationSchema = Yup.object().shape({
+      prefix: Yup.string().nullable().label("คำนำหน้า"),
+      firstname: Yup.string().nullable().label("ชื่อ"),
+      surname: Yup.string().nullable().label("นามสกุล"),
       phone: Yup.string().nullable().label("เบอร์โทรศัพท์"),
       email: Yup.string().nullable().label("เมล"),
-      group_id: Yup.object().required().label("สิทธิ"),
-      status_id: Yup.object().required().label("สถานะ"),
+      user_id: Yup.number().nullable().label("ผู้ใช้งาน"),
     });
 
     // fetch
-    const fetchUser = async () => {
-      const { data } = await ApiService.query(`teacher-profile/${props.id}`, {});
+    const fetchTecherProfile = async () => {
+      const { data } = await ApiService.query(
+        `teacher-profile/${props.id}`,
+        {}
+      );
 
-      const { phone, email, group_id, status_id, group_detail, status_detail } =
-        data.data;
+      const {
+        prefix,
+        firstname,
+        surname,
+        phone,
+        email,
+        faculty_detail,
+        department_detail,
+      } = data.data;
 
       item.value = {
         ...data.data,
-        group_id: {
-          id: group_id,
-          name: group_detail.name,
-        },
-        status_id: {
-          id: status_id,
-          name: status_detail.name,
-        },
-        phone: phone,
-        email: email,
+        faculty_name: faculty_detail.name,
+        department_name: department_detail.name,
       };
 
       setValues(item.value);
     };
-    fetchUser();
+    fetchTecherProfile();
 
     // Event
 
@@ -242,13 +264,15 @@ export default defineComponent({
     const onSubmit = handleSubmit(async (values) => {
       item.value = { ...values };
 
-      const { phone, email, group_id, status_id, id } = item.value;
+      const { phone, email, prefix, firstname, surname, user_id } = item.value;
 
       let data_send = {
         phone,
         email,
-        group_id: group_id?.id,
-        status_id: status_id?.id,
+        prefix,
+        firstname,
+        surname,
+        user_id,
       };
 
       Swal.fire({
@@ -265,7 +289,7 @@ export default defineComponent({
         },
       }).then(async (result: any) => {
         if (result.isConfirmed) {
-          await ApiService.put(`teacher-profile/${props.id}`, {
+          await ApiService.post(`teacher-profile/${props.id}`, {
             ...data_send,
           })
             .then(({ status }) => {

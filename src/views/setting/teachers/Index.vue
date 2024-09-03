@@ -9,24 +9,35 @@
             class="btn btn-outline btn-outline-info btn-sm fs-7"
             @click="onchangeCurrentStatus('total')"
           >
-            ทั้งหมด ({{ items_status.total.length }})
+            ทั้งหมด
           </button>
 
           <button
             class="btn btn-outline btn-outline-warning btn-sm fs-7 ms-2"
             @click="onchangeCurrentStatus('wating')"
           >
-            ยังไม่เข้าใช้งาน ({{ items_status.wating.length }})
+            ยังไม่เข้าใช้งาน ({{ items_wating_count }})
           </button>
           <button
             class="btn btn-outline btn-outline-success btn-sm fs-7 ms-2"
             @click="onchangeCurrentStatus('success')"
           >
-            เข้าใช้งานแล้ว ({{ items_status.success.length }})
+            เข้าใช้งานแล้ว
           </button>
           <!-- buttons -->
         </div>
       </div>
+      <div class="card-body" style="padding-bottom: 0px">
+        <button
+          class="btn btn-outline btn-outline-success btn-sm fs-7"
+          type="button"
+          @click="onAddModal"
+        >
+          <i class="fa fa-plus fs-4"></i>
+          <span class="d-none d-lg-inline-block ms-2">เพิ่มอาจารย์</span>
+        </button>
+      </div>
+
       <div
         class="card-body table-responsive d-none d-lg-block"
         style="min-height: 300px"
@@ -46,7 +57,7 @@
         />
       </div>
       <div class="card-body d-lg-none">
-        <!-- <CardListComponent
+        <CardListComponent
           :items="items"
           :paginationData="paginationData"
           :sortKey="sortKey"
@@ -55,8 +66,9 @@
           @update:perPage="paginationData.perPage = $event"
           @sort="(key: any) => {
                 sortedItems(key)}"
-          @detail="(it: any) => {onFormDetailModal(it) }"
-        /> -->
+          @edit="(it: any) => {onEditModal(it) }"
+          @delete="(it: any) => {onDelete(it) }"
+        />
       </div>
       <div class="card-footer"></div>
     </div>
@@ -64,7 +76,7 @@
     <!-- Modal -->
     <div>
       <!-- Add Modal -->
-      <div id="add-user-modal">
+      <div id="add-teacher-profile-modal">
         <AddTeacherComponent
           v-if="openAddModal == true"
           @close-modal="
@@ -77,7 +89,7 @@
       </div>
 
       <!-- Edit Modal -->
-      <div id="edit-user-modal">
+      <div id="edit-teacher-profile-modal">
         <EditTeacherComponent
           v-if="openEditModal == true"
           :id="item.id"
@@ -103,13 +115,11 @@ import ListComponent from "@/components/teachers/ListAllActive.vue";
 import CardListComponent from "@/components/teachers/CardAllActive.vue";
 import Preloader from "@/components/preloader/Preloader.vue";
 import SearchComponent from "@/components/students/Search.vue";
-import useDateData from "@/composables/useDateData";
-// Modal
 import EditTeacherComponent from "@/components/teachers/Edit.vue";
-import AddTeacherComponent from "@/components/teachers/Edit.vue";
+import AddTeacherComponent from "@/components/teachers/Add.vue";
 
 export default defineComponent({
-  name: "staff-student",
+  name: "staff-manage-teacher",
   components: {
     ListComponent,
     CardListComponent,
@@ -149,24 +159,36 @@ export default defineComponent({
     // Variable
     const items = reactive<any>([]); // form items
     const item = reactive<any>({}); // form item
-    const items_status = ref<any>({
-      total: [],
-      wating: [],
-      success: [],
-    });
+    const items_wating_count = ref(0);
     const search = reactive<any>({
       search_name: "",
     });
 
     // Fetch Data
+    const fetchCountWatingItems = async () => {
+      isLoading.value = true;
+      const params = {
+        ...search,
+        is_active: true,
+        user_id: null,
+      };
+
+      const { data } = await ApiService.query("teacher-profile/count-all", {
+        params: params,
+      });
+
+      items_wating_count.value = data.count;
+    };
+    fetchCountWatingItems();
+
     const fetchItems = async () => {
       isLoading.value = true;
       const params = {
         ...search,
-        // ...paginationData,
-        orderBy: "id",
-        order: "desc",
         is_active: true,
+        ...paginationData,
+        orderBy: sortKey.value,
+        order: sortOrder.value == 1 ? "asc" : "desc",
       };
 
       const { data } = await ApiService.query("teacher-profile", {
@@ -179,19 +201,6 @@ export default defineComponent({
       paginationData.totalItems = data.totalData;
       paginationData.currentPage = data.currentPage;
 
-      items_status.value.total = [];
-      items_status.value.wating = [];
-      items_status.value.success = [];
-
-      items.forEach((x: any) => {
-        items_status.value.total.push(x);
-        if (x.user_id == null) {
-          items_status.value.wating.push(x);
-        } else {
-          items_status.value.success.push(x);
-        }
-      });
-
       isLoading.value = false;
     };
 
@@ -201,23 +210,29 @@ export default defineComponent({
     };
 
     const onEditModal = (it: any) => {
+      console.log(it);
       Object.assign(item, it);
-      console.log(item);
       openEditModal.value = true;
     };
 
     const onDelete = async (it: any) => {
-      await ApiService.delete("user/" + it);
+      await ApiService.delete("teacher-profile/" + it);
       fetchItems();
       useToast("ลบเสร็จสิ้น", "success");
     };
 
     const onClear = () => {};
 
-    const onchangeCurrentStatus = (cas: string) => {
+    const onchangeCurrentStatus = async (cas: string) => {
       current_active_status.value = cas;
-      items.length = 0;
-      Object.assign(items, [...items_status.value[cas]]);
+      if (cas == "wating") {
+        search.user_id = "null";
+      } else if (cas == "success") {
+        search.user_id = "not_null";
+      } else {
+        search.user_id = undefined;
+      }
+      await fetchItems();
     };
 
     // Mounted
@@ -237,13 +252,15 @@ export default defineComponent({
       // Variable
       items,
       item,
-      items_status,
+      items_wating_count,
       search,
       paginationData,
       sortKey,
       sortOrder,
       sortedItems,
       isLoading,
+      openAddModal,
+      openEditModal,
       //   Event
       onchangeCurrentStatus,
       fetchItems,
@@ -251,8 +268,6 @@ export default defineComponent({
       onAddModal,
       onEditModal,
       onDelete,
-      openAddModal,
-      openEditModal,
     };
   },
 });

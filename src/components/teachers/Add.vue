@@ -3,8 +3,7 @@
     class="modal fade"
     tabindex="-1"
     ref="mainModalRef"
-    id="company-modal"
-    aria-hidden="true"
+    id="teacher-modal"
     data-bs-backdrop="static"
     data-bs-keyboard="false"
   >
@@ -64,7 +63,7 @@
                   type="button"
                   class="btn btn-danger ms-2"
                 >
-                  ปิด
+                  ยกเลิก
                 </button>
               </div>
             </div>
@@ -103,7 +102,7 @@ import CustomField from "@/components/field/CustomField.vue";
 import useToast from "@/composables/useToast";
 
 export default defineComponent({
-  name: "edit-user-form",
+  name: "edit-teacher-profile-form",
   components: {
     CustomField,
   },
@@ -139,9 +138,9 @@ export default defineComponent({
 
     const fields = ref([
       {
-        name: "name",
-        label: "ชื่อ",
-        model: "name",
+        name: "prefix",
+        label: "คำนำหน้า",
+        model: "prefix",
         type: "text",
         options: [],
         placeholder: "",
@@ -149,9 +148,19 @@ export default defineComponent({
         disabled: true,
       },
       {
-        name: "username",
-        label: "ICIC Account",
-        model: "username",
+        name: "firstname",
+        label: "ชื่อ",
+        model: "firstname",
+        type: "text",
+        options: [],
+        placeholder: "",
+        colClass: "col-lg-12",
+        disabled: true,
+      },
+      {
+        name: "surname",
+        label: "นามสกุล",
+        model: "surname",
         type: "text",
         options: [],
         placeholder: "",
@@ -179,25 +188,24 @@ export default defineComponent({
         disabled: false,
       },
       {
-        name: "group_id",
+        name: "faculty_id",
         label: "สิทธิ",
-        model: "group_id",
+        model: "faculty_id",
         select_label: "name",
-        type: "v-select",
-        options: computed(() => selectOptions.value.groups),
+        type: "text",
+        options: [],
         placeholder: "",
-        colClass: "col-lg-12",
+        colClass: "col-lg-6",
         disabled: false,
       },
       {
-        name: "status_id",
+        name: "faculty_id",
         label: "สถานะ",
-        model: "status_id",
-        select_label: "name",
-        type: "v-select",
-        options: computed(() => selectOptions.value.user_statuses),
+        model: "faculty_id",
+        type: "text",
+        options: [],
         placeholder: "",
-        colClass: "col-lg-12",
+        colClass: "col-lg-6",
         disabled: false,
       },
     ]);
