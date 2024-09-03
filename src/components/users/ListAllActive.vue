@@ -23,7 +23,7 @@
           <td class="text-center">
             {{ convertDate(it.created_at) }}
           </td>
-          <td >{{ it.name }}</td>
+          <td>{{ it.name }}</td>
           <td>{{ it.username }}</td>
           <td class="text-center">{{ it.group_detail.name }}</td>
           <td class="text-center">
@@ -68,7 +68,7 @@
                         id: it.id,
                       })
                     "
-                    >ลบ</a
+                    >ระงับการใช้งาน</a
                   >
                 </li>
               </ul>
@@ -115,7 +115,6 @@ import Swal from "sweetalert2/dist/sweetalert2.js";
 import BlogPagination from "@/components/common/pagination/BlogPagination.vue";
 // Composable
 import useDateData from "@/composables/useDateData";
-import { fetchAddressAlls } from "@/composables/useFetchSelectionData";
 
 export default defineComponent({
   name: "users-list",
@@ -159,14 +158,7 @@ export default defineComponent({
       { column_name: "manage", title: "จัดการข้อมูล", sort: false },
     ];
 
-    const selectOptions = ref({
-      address_alls: <any>[],
-    });
-
-    const fetchAddress = async () => {
-      selectOptions.value.address_alls = await fetchAddressAlls({});
-    };
-    fetchAddress();
+    const selectOptions = ref({});
 
     // fetch
 
@@ -184,8 +176,8 @@ export default defineComponent({
 
     const handleDelete = (item: any) => {
       Swal.fire({
-        title: "ยืนยันการลบ",
-        text: "เมื่อลบแล้วจะไม่สามารถกลับมาแก้ไขได้",
+        title: "ยืนยันระงับการใช้งาน",
+        // text: "เมื่อลบแล้วจะไม่สามารถกลับมาแก้ไขได้",
         icon: "warning",
         buttonsStyling: false,
         showCancelButton: true,
@@ -201,13 +193,6 @@ export default defineComponent({
           emit("delete", item);
         }
       });
-    };
-
-    const convertAddress = (sub_district_id: any) => {
-      let ad = selectOptions.value.address_alls.find((x: any) => {
-        return x.sub_district_id == sub_district_id;
-      });
-      return ad?.province;
     };
 
     const updateCurrentPage = (newPage: any) => {
@@ -237,7 +222,6 @@ export default defineComponent({
       handleSort,
       headerColumn,
       userData,
-      convertAddress,
     };
   },
 });

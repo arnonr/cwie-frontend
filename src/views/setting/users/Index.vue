@@ -9,20 +9,20 @@
             class="btn btn-outline btn-outline-info btn-sm fs-7"
             @click="onchangeCurrentStatus('total')"
           >
-            ทั้งหมด ({{ items_status.total.length }})
+            ทั้งหมด
           </button>
 
           <button
             class="btn btn-outline btn-outline-warning btn-sm fs-7 ms-2"
             @click="onchangeCurrentStatus('wating')"
           >
-            รออนุมัติ ({{ items_status.wating.length }})
+            รออนุมัติ ({{ items_wating_count }})
           </button>
           <button
             class="btn btn-outline btn-outline-success btn-sm fs-7 ms-2"
             @click="onchangeCurrentStatus('success')"
           >
-            อนุมัติเสร็จสิ้น ({{ items_status.success.length }})
+            อนุมัติเสร็จสิ้น
           </button>
           <!-- buttons -->
         </div>
@@ -46,7 +46,7 @@
         />
       </div>
       <div class="card-body d-lg-none">
-        <!-- <CardListComponent
+        <CardListComponent
           :items="items"
           :paginationData="paginationData"
           :sortKey="sortKey"
@@ -55,27 +55,15 @@
           @update:perPage="paginationData.perPage = $event"
           @sort="(key: any) => {
                 sortedItems(key)}"
-          @detail="(it: any) => {onFormDetailModal(it) }"
-        /> -->
+          @edit="(it: any) => {onEditModal(it) }"
+          @delete="(it: any) => {onDelete(it) }"
+        />
       </div>
       <div class="card-footer"></div>
     </div>
 
     <!-- Modal -->
     <div>
-      <!-- Add Modal -->
-      <div id="add-user-modal">
-        <AddUserComponent
-          v-if="openAddModal == true"
-          @close-modal="
-            () => {
-              fetchItems();
-              openAddModal = false;
-            }
-          "
-        />
-      </div>
-
       <!-- Edit Modal -->
       <div id="edit-user-modal">
         <EditUserComponent
@@ -103,25 +91,21 @@ import ListComponent from "@/components/users/ListAllActive.vue";
 import CardListComponent from "@/components/users/CardAllActive.vue";
 import Preloader from "@/components/preloader/Preloader.vue";
 import SearchComponent from "@/components/students/Search.vue";
-import useDateData from "@/composables/useDateData";
-// Modal
 import EditUserComponent from "@/components/users/Edit.vue";
-import AddUserComponent from "@/components/users/Edit.vue";
 
 export default defineComponent({
-  name: "staff-student",
+  name: "staff-manage-user",
   components: {
     ListComponent,
     CardListComponent,
     Preloader,
     SearchComponent,
     EditUserComponent,
-    AddUserComponent,
   },
   setup() {
     // UI Variable
     const isLoading = ref<any>(false);
-    const sortKey = ref<any>("");
+    const sortKey = ref<any>("id");
     const sortOrder = ref<any>(-1);
     const current_active_status = ref<any>("total");
     const paginationData = reactive<any>({
@@ -145,28 +129,43 @@ export default defineComponent({
     };
 
     // Modal Variable
-    const openAddModal = ref(false);
     const openEditModal = ref(false);
 
     // Variable
     const items = reactive<any>([]); // form items
     const item = reactive<any>({}); // form item
-    const items_status = ref<any>({
-      total: [],
-      wating: [],
-      success: [],
-    });
+    const items_wating_count = ref(0);
     const search = reactive<any>({
       search_name: "",
     });
 
     // Fetch Data
+    const fetchCountWatingItems = async () => {
+      isLoading.value = true;
+      const params = {
+        ...search,
+        is_active: true,
+        status_id: 1,
+      };
+
+      const { data } = await ApiService.query("user/count-all", {
+        params: params,
+      });
+
+      items_wating_count.value = data.count;
+    };
+    fetchCountWatingItems();
+
     const fetchItems = async () => {
+      console.log(sortKey.value);
+      console.log(sortOrder.value);
       isLoading.value = true;
       const params = {
         ...search,
         is_active: true,
         ...paginationData,
+        orderBy: sortKey.value,
+        order: sortOrder.value == 1 ? "asc" : "desc",
       };
 
       const { data } = await ApiService.query("user", {
@@ -179,45 +178,32 @@ export default defineComponent({
       paginationData.totalItems = data.totalData;
       paginationData.currentPage = data.currentPage;
 
-      items_status.value.total = [];
-      items_status.value.wating = [];
-      items_status.value.success = [];
-
-      items.forEach((x: any) => {
-        items_status.value.total.push(x);
-        if (x.form_status_id == 5) {
-          items_status.value.wating.push(x);
-        } else {
-          items_status.value.success.push(x);
-        }
-      });
-
       isLoading.value = false;
     };
 
     // Modal action
-    const onAddModal = (it: any) => {
-      openAddModal.value = true;
-    };
-
     const onEditModal = (it: any) => {
       Object.assign(item, it);
       console.log(item);
       openEditModal.value = true;
     };
-
     const onDelete = async (it: any) => {
       await ApiService.delete("user/" + it);
       fetchItems();
-      useToast("ลบเสร็จสิ้น", "success");
+      useToast("ระงับการใช้งาน", "success");
     };
-
     const onClear = () => {};
 
-    const onchangeCurrentStatus = (cas: string) => {
+    const onchangeCurrentStatus = async (cas: string) => {
       current_active_status.value = cas;
-      items.length = 0;
-      Object.assign(items, [...items_status.value[cas]]);
+      if (cas == "wating") {
+        search.status_id = 1;
+      } else if (cas == "success") {
+        search.status_id = 2;
+      } else {
+        search.status_id = undefined;
+      }
+      await fetchItems();
     };
 
     // Mounted
@@ -237,22 +223,20 @@ export default defineComponent({
       // Variable
       items,
       item,
-      items_status,
+      items_wating_count,
       search,
       paginationData,
       sortKey,
       sortOrder,
       sortedItems,
       isLoading,
+      openEditModal,
       //   Event
       onchangeCurrentStatus,
       fetchItems,
       onClear,
-      onAddModal,
       onEditModal,
       onDelete,
-      openAddModal,
-      openEditModal,
     };
   },
 });
