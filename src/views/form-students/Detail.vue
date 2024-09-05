@@ -174,7 +174,7 @@
                       onApproveFormModal(student_profile_item.status_id, 6);
                     "
                     v-if="
-                      parantPage == 'visitor' &&
+                      parantPage == 'report' &&
                       student_profile_item.status_id == 15 &&
                       userData.group_id == 6 &&
                       item_active.visitor_id == userData.teacher_profile.id

@@ -6,6 +6,16 @@
         <h4 class="card-title">รายการสถานประกอบการ</h4>
         <div class="card-toolbar"></div>
       </div>
+      <div class="card-body" style="padding-bottom: 0px">
+        <button
+          class="btn btn-outline btn-outline-success btn-sm fs-7"
+          type="button"
+          @click="onAddModal"
+        >
+          <i class="fa fa-plus fs-4"></i>
+          <span class="d-none d-lg-inline-block ms-2">เพิ่มสถานประกอบการ</span>
+        </button>
+      </div>
       <div
         class="card-body table-responsive d-none d-lg-block"
         style="min-height: 300px"
@@ -186,7 +196,7 @@ export default defineComponent({
     };
 
     const onDelete = async (it: any) => {
-      await ApiService.delete("company/" + it);
+      await ApiService.delete("company/" + it.id);
       fetchItems();
       useToast("ลบเสร็จสิ้น", "success");
     };

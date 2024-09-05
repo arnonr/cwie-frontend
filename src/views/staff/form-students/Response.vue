@@ -76,7 +76,6 @@
             type="button"
             id="dropdownMenuButton"
             data-bs-toggle="dropdown"
-            aria-expanded="false"
           >
             <i class="fa fa-download fs-4"></i>
             <span class="d-none d-lg-inline-block ms-2">ส่งออกข้อมูล</span>

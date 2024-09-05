@@ -133,6 +133,7 @@ export default defineComponent({
     // Variable
     const { student_profile, item } = toRefs(props);
     const isLoading = ref(true);
+    const success_data = ref<any>(null);
     const file = ref<any>(null);
     const previewFile = ref<any>(null);
 
@@ -262,10 +263,11 @@ export default defineComponent({
           await ApiService.postFormData(`form/${props.item.id}`, {
             ...data_send,
           })
-            .then(({ status }) => {
+            .then(({ status, data }) => {
               if (status != 200) {
                 throw new Error("ERROR");
               }
+              success_data.value = data;
             })
             .catch(({ response }) => {
               console.log(response);
@@ -282,6 +284,34 @@ export default defineComponent({
             .catch(({ response }) => {
               console.log(response);
             });
+
+          if (success_data.value.visitor_id) {
+            await ApiService.query(
+              `teacher-profile/${success_data.value.visitor_id}`,
+              {
+                ...data_send,
+              }
+            )
+              .then(async ({ status, data }) => {
+                if (status != 200) {
+                  throw new Error("ERROR");
+                }
+
+                if (data.email) {
+                  await ApiService.query(`helper/send-email/`, {
+                    mailto: data.email,
+                    subject: "แจ้งส่งแผนการปฏิบัติงาน",
+                    body:
+                      "นศ รหัส " +
+                      student_profile.value.student_code +
+                      " ส่งแผนการปฏิบัติงาน",
+                  });
+                }
+              })
+              .catch(({ response }) => {
+                console.log(response);
+              });
+          }
 
           useToast("ส่งข้อมูลเสร็จสิ้น", "success");
           onClose({ reload: true });

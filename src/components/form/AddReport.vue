@@ -158,6 +158,7 @@ export default defineComponent({
     const file2 = ref<any>(null);
     const file3 = ref<any>(null);
     const previewFile = ref<any>(null);
+    const success_data = ref<any>(null);
 
     const report_item = ref<any>({
       id: "",
@@ -283,10 +284,12 @@ export default defineComponent({
           await ApiService.postFormData(`form/${props.item.id}`, {
             ...data_send,
           })
-            .then(({ status }) => {
+            .then(({ status, data }) => {
               if (status != 200) {
                 throw new Error("ERROR");
               }
+
+              success_data.value = data;
             })
             .catch(({ response }) => {
               console.log(response);
@@ -303,6 +306,34 @@ export default defineComponent({
             .catch(({ response }) => {
               console.log(response);
             });
+
+          if (success_data.value.visitor_id) {
+            await ApiService.query(
+              `teacher-profile/${success_data.value.visitor_id}`,
+              {
+                ...data_send,
+              }
+            )
+              .then(async ({ status, data }) => {
+                if (status != 200) {
+                  throw new Error("ERROR");
+                }
+
+                if (data.email) {
+                  await ApiService.query(`helper/send-email/`, {
+                    mailto: data.email,
+                    subject: "แจ้งส่งรายงานผลการฏิบัติงาน",
+                    body:
+                      "นศ รหัส " +
+                      student_profile.value.student_code +
+                      " ส่งรายงานผลการฏิบัติงาน",
+                  });
+                }
+              })
+              .catch(({ response }) => {
+                console.log(response);
+              });
+          }
 
           useToast("ส่งข้อมูลเสร็จสิ้น", "success");
           onClose({ reload: true });

@@ -27,7 +27,7 @@
           <!-- buttons -->
         </div>
       </div>
-      <div class="card-body" style="padding-bottom: 0px">
+      <!-- <div class="card-body" style="padding-bottom: 0px">
         <button
           class="btn btn-outline btn-outline-success btn-sm fs-7"
           type="button"
@@ -36,7 +36,7 @@
           <i class="fa fa-plus fs-4"></i>
           <span class="d-none d-lg-inline-block ms-2">เพิ่มผู้ใช้งาน</span>
         </button>
-      </div>
+      </div> -->
       <div
         class="card-body table-responsive d-none d-lg-block"
         style="min-height: 300px"
