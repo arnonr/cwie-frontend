@@ -7,7 +7,6 @@
       @search="
         () => {
           paginationData.currentPage = 1;
-
           fetchItems();
         }
       "
@@ -372,8 +371,6 @@ export default defineComponent({
               outlineLevel: 1,
             },
           ];
-
-          // worksheet.properties.defaultRowHeight = 20;
 
           worksheet.addRows(items_export);
 

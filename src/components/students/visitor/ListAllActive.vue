@@ -34,16 +34,18 @@
             }}
           </td>
           <td>{{ it.student_detail.class_year }}</td>
+          <td>{{ it.company_detail.name }}</td>
+          <td>{{ convertAddress(it.response_province_id) }}</td>
           <td>
             {{
-              it.visitor_detail?.prefix +
-              it.visitor_detail?.firstname +
-              " " +
-              it.visitor_detail?.surname
+              it.visitor_id
+                ? it.visitor_detail?.prefix +
+                  it.visitor_detail?.firstname +
+                  " " +
+                  it.visitor_detail?.surname
+                : ""
             }}
           </td>
-          <td>{{ it.company_detail.name }}</td>
-          <td>{{ convertAddress(it.company_detail.sub_district_id) }}</td>
           <td class="text-center">
             <span
               class="badge p-2 text-white"
@@ -75,43 +77,9 @@
                         id: it.id,
                       })
                     "
-                    >ดูรายละเอียดเพื่ออนุมัติ</a
+                    >ดูรายละเอียด</a
                   >
                 </li>
-                <!-- <li v-if="it.form_status_id > 1">
-                  <a
-                    class="dropdown-item cursor-pointer"
-                    @click="
-                      handleHistoryDetail({
-                        id: it.id,
-                      })
-                    "
-                    >ประวัติการ Comment</a
-                  >
-                </li> -->
-                <!-- <li v-if="it.form_status_id == 1 || it.form_status_id == 2">
-                  <a
-                    class="dropdown-item cursor-pointer"
-                    @click="
-                      handleEdit({
-                        id: it.id,
-                      })
-                    "
-                    >แก้ไขใบสมัคร
-                  </a>
-                </li>
-                <li>
-                  <a
-                    class="dropdown-item cursor-pointer"
-                    v-if="it.form_status_id < 8 && it.form_status_id != 99"
-                    @click="
-                      handleCancel({
-                        id: it.id,
-                      })
-                    "
-                    >ยกเลิกใบสมัคร
-                  </a>
-                </li> -->
               </ul>
             </div>
           </td>
@@ -159,7 +127,7 @@ import useDateData from "@/composables/useDateData";
 import { fetchAddressAlls } from "@/composables/useFetchSelectionData";
 
 export default defineComponent({
-  name: "staff-list-form",
+  name: "visitor-list-form",
   components: {
     BlogPagination,
   },
@@ -194,13 +162,13 @@ export default defineComponent({
       { column_name: "student_code", title: "รหัสนักศึกษา", sort: true },
       { column_name: "fullname", title: "ชื่อ-นามสกุล", sort: true },
       { column_name: "class_year", title: "ชั้นปี", sort: true },
-      { column_name: "visitor_id", title: "อาจารย์นิเทศ", sort: true },
       {
         column_name: "company_detail.name",
         title: "ชื่อสถานประกอบการ",
         sort: true,
       },
       { column_name: "province_id", title: "จังหวัด", sort: true },
+      { column_name: "visitor_id", title: "อาจารย์นิเทศ", sort: true },
       { column_name: "form_status_id", title: "สถานะ", sort: true },
       { column_name: "manage", title: "จัดการข้อมูล", sort: false },
     ];
@@ -252,9 +220,9 @@ export default defineComponent({
       });
     };
 
-    const convertAddress = (sub_district_id: any) => {
+    const convertAddress = (province_id: any) => {
       let ad = selectOptions.value.address_alls.find((x: any) => {
-        return x.sub_district_id == sub_district_id;
+        return x.province_id == province_id;
       });
       return ad?.province;
     };

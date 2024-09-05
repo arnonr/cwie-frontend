@@ -7,7 +7,6 @@
       @search="
         () => {
           paginationData.currentPage = 1;
-
           fetchItems();
         }
       "
@@ -18,26 +17,6 @@
       <div class="card-header bg-white">
         <h4 class="card-title">ใบสมัครโครงการ CWIE</h4>
         <div class="card-toolbar">
-          <!-- :class="['btn-primary': 'd']" -->
-          <button
-            class="btn btn-outline btn-outline-info btn-sm fs-7"
-            @click="onchangeCurrentStatus('total')"
-          >
-            ทั้งหมด ({{ items_status.total.length }})
-          </button>
-
-          <button
-            class="btn btn-outline btn-outline-warning btn-sm fs-7 ms-2"
-            @click="onchangeCurrentStatus('wating')"
-          >
-            รออนุมัติ ({{ items_status.wating.length }})
-          </button>
-          <button
-            class="btn btn-outline btn-outline-success btn-sm fs-7 ms-2"
-            @click="onchangeCurrentStatus('success')"
-          >
-            อนุมัติเสร็จสิ้น ({{ items_status.success.length }})
-          </button>
           <!-- buttons -->
         </div>
       </div>
@@ -97,6 +76,7 @@
         <StudentDetailFormPage
           v-if="openDetailFormModal == true"
           :id="item.id"
+          parantPage="visitor"
           @close-modal="
             () => {
               fetchItems();
@@ -112,8 +92,6 @@
 <script lang="ts">
 import { defineComponent, ref, reactive, onMounted, watch } from "vue";
 import ApiService from "@/core/services/ApiService";
-import useToast from "@/composables/useToast";
-
 // Component
 import ListComponent from "@/components/students/form/ListAllActive.vue";
 import CardListComponent from "@/components/students/form/CardAllActive.vue";
@@ -128,7 +106,7 @@ import * as XLSX from "xlsx";
 import ExcelJS from "exceljs";
 
 export default defineComponent({
-  name: "division-student",
+  name: "visitor-student",
   components: {
     ListComponent,
     CardListComponent,
@@ -139,7 +117,7 @@ export default defineComponent({
   setup() {
     // UI Variable
     const isLoading = ref<any>(false);
-    const sortKey = ref<any>("");
+    const sortKey = ref<any>("id");
     const sortOrder = ref<any>(-1);
     const current_active_status = ref<any>("total");
     const paginationData = reactive<any>({
@@ -168,11 +146,6 @@ export default defineComponent({
     const items = reactive<any>([]); // form items
     const item = reactive<any>({}); // form item
     const items_export = reactive<any[]>([]);
-    const items_status = ref<any>({
-      total: [],
-      wating: [],
-      success: [],
-    }); // form item
     const search = reactive<any>({
       semester_id: null,
       faculty_id: null,
@@ -197,16 +170,16 @@ export default defineComponent({
       isLoading.value = true;
       const params = {
         ...search,
-        semester_id: search.semester_id?.id,
-        faculty_id: search.faculty_id?.id,
+        division_head_id: search.division_head_id?.id,
         division_id: search.division_id?.id,
-        company_id: search.company_id?.id,
         advisor_id: search.advisor_id?.id,
-        visitor_id: search.visitor_id?.id,
-        orderBy: "id",
-        order: "desc",
+        semester_id: search.semester_id?.id,
+        company_id: search.company_id?.id,
+        visitor_id: userData.teacher_profile.id,
         is_active: true,
-        form_status_id: "2,3,4,5,6,7,8,9,10",
+        ...paginationData,
+        orderBy: sortKey.value,
+        order: sortOrder.value == 1 ? "asc" : "desc",
       };
 
       const { data } = await ApiService.query("form", {
@@ -218,19 +191,6 @@ export default defineComponent({
       paginationData.totalPage = data.totalPage;
       paginationData.totalItems = data.totalData;
       paginationData.currentPage = data.currentPage;
-
-      items_status.value.total = [];
-      items_status.value.wating = [];
-      items_status.value.success = [];
-
-      items.forEach((x: any) => {
-        items_status.value.total.push(x);
-        if (x.form_status_id == 4) {
-          items_status.value.wating.push(x);
-        } else {
-          items_status.value.success.push(x);
-        }
-      });
 
       isLoading.value = false;
     };
@@ -244,26 +204,22 @@ export default defineComponent({
 
     const onClear = () => {};
 
-    const onchangeCurrentStatus = (cas: string) => {
-      current_active_status.value = cas;
-      items.length = 0;
-      Object.assign(items, [...items_status.value[cas]]);
+    const onchangeCurrentStatus = async (cas: string) => {
+      //
     };
 
     const fetchExportItems = async () => {
       isLoading.value = true;
       const params = {
         ...search,
-        semester_id: search.semester_id?.id,
-        faculty_id: search.faculty_id?.id,
         division_id: search.division_id?.id,
-        company_id: search.company_id?.id,
         advisor_id: search.advisor_id?.id,
-        visitor_id: search.visitor_id?.id,
-        orderBy: "id",
-        order: "desc",
+        semester_id: search.semester_id?.id,
+        company_id: search.company_id?.id,
+        visitor_id: userData.teacher_profile.id,
         is_active: true,
-        form_status_id: "2,3,4,5,6,7,8,9,10",
+        orderBy: sortKey.value,
+        order: sortOrder.value == 1 ? "asc" : "desc",
       };
 
       const { data } = await ApiService.query("form", {
@@ -291,7 +247,6 @@ export default defineComponent({
         })
       );
 
-      console.log(items_export);
       isLoading.value = false;
     };
 
@@ -365,8 +320,6 @@ export default defineComponent({
             },
           ];
 
-          // worksheet.properties.defaultRowHeight = 20;
-
           worksheet.addRows(items_export);
 
           worksheet.eachRow((row: any) => {
@@ -436,7 +389,6 @@ export default defineComponent({
       // Variable
       items,
       item,
-      items_status,
       search,
       paginationData,
       sortKey,

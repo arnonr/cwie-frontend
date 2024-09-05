@@ -7,7 +7,6 @@
       @search="
         () => {
           paginationData.currentPage = 1;
-
           fetchItems();
         }
       "
@@ -18,7 +17,6 @@
       <div class="card-header bg-white">
         <h4 class="card-title">รายการเอกสารตอบกลับ</h4>
         <div class="card-toolbar">
-          <!-- :class="['btn-primary': 'd']" -->
           <button
             class="btn btn-outline btn-outline-info btn-sm fs-7"
             @click="onchangeCurrentStatus('total')"
@@ -100,6 +98,7 @@
           parantPage="response"
           @close-modal="
             () => {
+              fetchCountWatingItems();
               fetchItems();
               openDetailFormModal = false;
             }
@@ -265,6 +264,7 @@ export default defineComponent({
     };
 
     const onClear = () => {};
+
     const onchangeCurrentStatus = async (cas: string) => {
       current_active_status.value = cas;
       if (cas == "wating") {
@@ -474,6 +474,7 @@ export default defineComponent({
       onFormDetailModal,
       onchangeCurrentStatus,
       fetchItems,
+      fetchCountWatingItems,
       onClear,
       onExport,
     };

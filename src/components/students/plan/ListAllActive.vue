@@ -38,11 +38,21 @@
           <td>{{ convertAddress(it.workplace_sub_district_id) }}</td>
           <td class="text-center">
             <a
+              :href="it.workplace_googlemap_url"
+              target="_blank"
+              class="btn btn-primary btn-icon btn-sm"
+              >
+                <i class="fa fa-map"></i>
+              </a
+            >
+          </td>
+          <td class="text-center">
+            <a
               :href="it.plan_document_file ? it.plan_document_file : '#'"
               target=" _blank"
               class="btn btn-success btn-icon btn-sm"
             >
-              <i class="fa fa-file"></i>
+              <i class="fa fa-file"></i> 
             </a>
           </td>
           <td>{{ convertDate(it.plan_accept_at) }}</td>
@@ -80,40 +90,6 @@
                     >ดูรายละเอียดเพื่ออนุมัติ</a
                   >
                 </li>
-                <!-- <li v-if="it.form_status_id > 1">
-                  <a
-                    class="dropdown-item cursor-pointer"
-                    @click="
-                      handleHistoryDetail({
-                        id: it.id,
-                      })
-                    "
-                    >ประวัติการ Comment</a
-                  >
-                </li> -->
-                <!-- <li v-if="it.form_status_id == 1 || it.form_status_id == 2">
-                  <a
-                    class="dropdown-item cursor-pointer"
-                    @click="
-                      handleEdit({
-                        id: it.id,
-                      })
-                    "
-                    >แก้ไขใบสมัคร
-                  </a>
-                </li>
-                <li>
-                  <a
-                    class="dropdown-item cursor-pointer"
-                    v-if="it.form_status_id < 8 && it.form_status_id != 99"
-                    @click="
-                      handleCancel({
-                        id: it.id,
-                      })
-                    "
-                    >ยกเลิกใบสมัคร
-                  </a>
-                </li> -->
               </ul>
             </div>
           </td>
@@ -161,7 +137,7 @@ import useDateData from "@/composables/useDateData";
 import { fetchAddressAlls } from "@/composables/useFetchSelectionData";
 
 export default defineComponent({
-  name: "staff-list-form",
+  name: "plan-list-form",
   components: {
     BlogPagination,
   },
@@ -206,6 +182,7 @@ export default defineComponent({
         sort: true,
       },
       { column_name: "province_id", title: "สถานที่ปฏิบัติงาน", sort: true },
+      { column_name: "workplace_googlemap_url", title: "Google Map", sort: true },
       {
         column_name: "plan_document_file",
         title: "ไฟล์แผนการปฏิบัติงาน",

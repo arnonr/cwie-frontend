@@ -11,7 +11,7 @@
     <div class="modal-dialog modal-dialog-centered modal-xl">
       <div class="modal-content">
         <div class="modal-header" v-if="!isLoading">
-          <h3 class="modal-title">แบบฟอร์มจับคู่อจารย์นิเทศ</h3>
+          <h3 class="modal-title">แบบฟอร์มจับคู่อาจารย์นิเทศ</h3>
           <button
             @click="onClose({ reload: false })"
             type="button"

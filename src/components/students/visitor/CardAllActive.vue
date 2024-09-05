@@ -49,9 +49,22 @@
             <div class="mb-2">
               <span class="fw-bold">จังหวัดที่ตั้งสถานประกอบการ : </span>
 
-              <span>{{
-                convertAddress(it.company_detail.sub_district_id)
-              }}</span>
+              <span>{{ convertAddress(it.response_province_id) }}</span>
+            </div>
+
+            <div class="mb-2">
+              <span class="fw-bold">อาจารย์นิเทศ : </span>
+
+              <span>
+                {{
+                  it.visitor_id
+                    ? it.visitor_detail?.prefix +
+                      it.visitor_detail?.firstname +
+                      " " +
+                      it.visitor_detail?.surname
+                    : ""
+                }}</span
+              >
             </div>
 
             <div class="mb-2">
@@ -81,55 +94,8 @@
                         id: it.id,
                       })
                     "
-                    >ดูรายละเอียดเพื่ออนุมัติ</a
+                    >ดูรายละเอียด</a
                   >
-                </li>
-                <!-- <li v-if="it.form_status_id > 1">
-                  <a
-                    class="dropdown-item cursor-pointer"
-                    @click="
-                      handleHistoryDetail({
-                        id: it.id,
-                      })
-                    "
-                    >ประวัติการ Comment</a
-                  >
-                </li> -->
-                <li v-if="it.form_status_id == 1 || it.form_status_id == 2">
-                  <a
-                    class="dropdown-item cursor-pointer"
-                    v-if="
-                      (userData.group_id == 1 ||
-                        userData.group_id == 2 ||
-                        userData.group_id == 3 ||
-                        userData.group_id == 4) &&
-                      it.form_status_id != 99
-                    "
-                    @click="
-                      handleEdit({
-                        id: it.id,
-                      })
-                    "
-                    >แก้ไขใบสมัคร
-                  </a>
-                </li>
-                <li>
-                  <a
-                    class="dropdown-item cursor-pointer"
-                    v-if="
-                      (userData.group_id == 1 ||
-                        userData.group_id == 2 ||
-                        userData.group_id == 3 ||
-                        userData.group_id == 4) &&
-                      it.form_status_id != 99
-                    "
-                    @click="
-                      handleCancel({
-                        id: it.id,
-                      })
-                    "
-                    >ยกเลิกใบสมัคร
-                  </a>
                 </li>
               </ul>
             </div>

@@ -7,7 +7,6 @@
       @search="
         () => {
           paginationData.currentPage = 1;
-
           fetchItems();
         }
       "
@@ -18,25 +17,24 @@
       <div class="card-header bg-white">
         <h4 class="card-title">ใบสมัครโครงการ CWIE</h4>
         <div class="card-toolbar">
-          <!-- :class="['btn-primary': 'd']" -->
           <button
             class="btn btn-outline btn-outline-info btn-sm fs-7"
             @click="onchangeCurrentStatus('total')"
           >
-            ทั้งหมด ({{ items_status.total.length }})
+            ทั้งหมด
           </button>
 
           <button
             class="btn btn-outline btn-outline-warning btn-sm fs-7 ms-2"
             @click="onchangeCurrentStatus('wating')"
           >
-            รอจับคู่ ({{ items_status.wating.length }})
+            รอจับคู่ ({{ items_wating_count }})
           </button>
           <button
             class="btn btn-outline btn-outline-success btn-sm fs-7 ms-2"
             @click="onchangeCurrentStatus('success')"
           >
-            จับคู่แล้ว ({{ items_status.success.length }})
+            จับคู่แล้ว
           </button>
           <!-- buttons -->
         </div>
@@ -46,7 +44,8 @@
         <a
           class="btn btn-outline btn-outline-primary btn-sm fs-7 me-2"
           type="button"
-          href=""
+          target="_blank"
+          :href="template"
         >
           <i class="fa fa-file fs-4"></i>
           <span class="d-none d-lg-inline-block ms-2">ดาวน์โหลด Template</span>
@@ -118,6 +117,7 @@
         <StudentDetailFormPage
           v-if="openDetailFormModal == true"
           :id="item.id"
+          parantPage="staff"
           @close-modal="
             () => {
               fetchItems();
@@ -133,6 +133,7 @@
           v-if="openImportVisitorModal == true"
           @close-modal="
             () => {
+              fetchCountWatingItems();
               fetchItems();
               openImportVisitorModal = false;
             }
@@ -146,8 +147,6 @@
 <script lang="ts">
 import { defineComponent, ref, reactive, onMounted, watch } from "vue";
 import ApiService from "@/core/services/ApiService";
-import useToast from "@/composables/useToast";
-
 // Component
 import ListComponent from "@/components/students/visitor/ListAllActive.vue";
 import CardListComponent from "@/components/students/visitor/CardAllActive.vue";
@@ -163,7 +162,7 @@ import * as XLSX from "xlsx";
 import ExcelJS from "exceljs";
 
 export default defineComponent({
-  name: "staff-student",
+  name: "map-teacher",
   components: {
     ListComponent,
     CardListComponent,
@@ -174,8 +173,9 @@ export default defineComponent({
   },
   setup() {
     // UI Variable
+    const template = "/media/document/template_import_visitor.xlsx";
     const isLoading = ref<any>(false);
-    const sortKey = ref<any>("");
+    const sortKey = ref<any>("id");
     const sortOrder = ref<any>(-1);
     const current_active_status = ref<any>("total");
     const paginationData = reactive<any>({
@@ -205,11 +205,7 @@ export default defineComponent({
     const items = reactive<any>([]); // form items
     const item = reactive<any>({}); // form item
     const items_export = reactive<any[]>([]);
-    const items_status = ref<any>({
-      total: [],
-      wating: [],
-      success: [],
-    }); // form item
+    const items_wating_count = ref(0);
     const search = reactive<any>({
       semester_id: null,
       faculty_id: null,
@@ -217,6 +213,7 @@ export default defineComponent({
       company_id: null,
       student_code: "",
       search_name: "",
+      form_status_id: "10,11,12,13,14,15,16,17,18",
     });
 
     const selectOptions = ref({
@@ -228,7 +225,47 @@ export default defineComponent({
     };
     fetchAddress();
 
+    const checkStaffPermission = () => {
+      let check = {};
+      if (userData.group_id == 3) {
+        check = { faculty_id: userData.staff_profile.faculty_id };
+      } else if (userData.group_id == 4) {
+        check = {
+          faculty_id: userData.staff_profile.faculty_id,
+          department_id: userData.staff_profile.department_id,
+        };
+      } else if (userData.group_id == 5) {
+        check = {
+          faculty_id: userData.staff_profile.faculty_id,
+          department_id: userData.staff_profile.department_id,
+          division_id: userData.staff_profile.division_id,
+        };
+      } else {
+      }
+
+      return check;
+    };
+
     // Fetch Data
+    const fetchCountWatingItems = async () => {
+      isLoading.value = true;
+      const params = {
+        ...search,
+        is_active: true,
+        ...checkStaffPermission(),
+        form_status_id: "10,11,12,13,14,15,16,17,18",
+        visitor_id: "null",
+      };
+
+      const { data } = await ApiService.query("form/count-all", {
+        params: params,
+      });
+
+      items_wating_count.value = data.count;
+      isLoading.value = false;
+    };
+    fetchCountWatingItems();
+
     const fetchItems = async () => {
       isLoading.value = true;
       const params = {
@@ -238,11 +275,12 @@ export default defineComponent({
         division_id: search.division_id?.id,
         company_id: search.company_id?.id,
         advisor_id: search.advisor_id?.id,
-        visitor_id: search.visitor_id?.id,
-        orderBy: "id",
-        order: "desc",
+        // visitor_id: search.visitor_id?.id,
         is_active: true,
-        form_status_id: "2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18",
+        ...checkStaffPermission(),
+        ...paginationData,
+        orderBy: sortKey.value,
+        order: sortOrder.value == 1 ? "asc" : "desc",
       };
 
       const { data } = await ApiService.query("form", {
@@ -254,19 +292,6 @@ export default defineComponent({
       paginationData.totalPage = data.totalPage;
       paginationData.totalItems = data.totalData;
       paginationData.currentPage = data.currentPage;
-
-      items_status.value.total = [];
-      items_status.value.wating = [];
-      items_status.value.success = [];
-
-      items.forEach((x: any) => {
-        items_status.value.total.push(x);
-        if (x.visitor_id == null) {
-          items_status.value.wating.push(x);
-        } else {
-          items_status.value.success.push(x);
-        }
-      });
 
       isLoading.value = false;
     };
@@ -280,26 +305,35 @@ export default defineComponent({
 
     const onClear = () => {};
 
-    const onchangeCurrentStatus = (cas: string) => {
+    const onchangeCurrentStatus = async (cas: string) => {
       current_active_status.value = cas;
-      items.length = 0;
-      Object.assign(items, [...items_status.value[cas]]);
+      if (cas == "wating") {
+        search.form_status_id = "10,11,12,13,14,15,16,17,18";
+        search.visitor_id = "null";
+      } else if (cas == "success") {
+        search.form_status_id = "10,11,12,13,14,15,16,17,18";
+        search.visitor_id = "not_null";
+      } else {
+        search.form_status_id = "10,11,12,13,14,15,16,17,18";
+        search.visitor_id = undefined;
+      }
+      await fetchItems();
     };
 
     const fetchExportItems = async () => {
       isLoading.value = true;
       const params = {
         ...search,
-        semester_id: search.semester_id?.id,
         faculty_id: search.faculty_id?.id,
         division_id: search.division_id?.id,
         company_id: search.company_id?.id,
         advisor_id: search.advisor_id?.id,
-        visitor_id: search.visitor_id?.id,
-        orderBy: "id",
-        order: "desc",
+        semester_id: search.semester_id?.id,
+        // visitor_id: search.visitor_id?.id,
         is_active: true,
-        form_status_id: "2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18",
+        ...checkStaffPermission(),
+        orderBy: sortKey.value,
+        order: sortOrder.value == 1 ? "asc" : "desc",
       };
 
       const { data } = await ApiService.query("form", {
@@ -327,7 +361,6 @@ export default defineComponent({
         })
       );
 
-      console.log(items_export);
       isLoading.value = false;
     };
 
@@ -457,7 +490,6 @@ export default defineComponent({
 
     const onImportModal = () => {
       openImportVisitorModal.value = true;
-      console.log("FREEDOM");
     };
 
     // Mounted
@@ -475,9 +507,10 @@ export default defineComponent({
 
     return {
       // Variable
+      template,
       items,
       item,
-      items_status,
+      items_wating_count,
       search,
       paginationData,
       sortKey,
@@ -490,6 +523,7 @@ export default defineComponent({
       onFormDetailModal,
       onchangeCurrentStatus,
       fetchItems,
+      fetchCountWatingItems,
       onClear,
       onExport,
       onImportModal,

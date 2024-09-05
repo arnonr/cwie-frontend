@@ -25,8 +25,8 @@
             </h6>
 
             <div class="mb-2">
-              <span class="fw-bold">วันที่ส่งใบสมัคร : </span>
-              <span> {{ convertDate(it.send_at) }}</span>
+              <span class="fw-bold">วันที่ส่งแผน : </span>
+              <span> {{ convertDate(it.plan_send_at) }}</span>
             </div>
 
             <div class="mb-2">
@@ -47,11 +47,38 @@
               <span>{{ it.company_detail.name }}</span>
             </div>
             <div class="mb-2">
-              <span class="fw-bold">จังหวัดที่ตั้งสถานประกอบการ : </span>
+              <span class="fw-bold">สถานที่ปฏิบัติงาน : </span>
 
               <span>{{
                 convertAddress(it.company_detail.sub_district_id)
               }}</span>
+            </div>
+            <div class="mb-2">
+              <span class="fw-bold">Google Map : </span>
+
+              <span
+                ><a
+                  :href="it.workplace_googlemap_url"
+                  target="_blank"
+                  class="btn btn-primary btn-icon btn-sm"
+                >
+                  <i class="fa fa-map"></i> </a
+              ></span>
+            </div>
+            <div class="mb-2">
+              <span class="fw-bold">ไฟล์แผนการปฏิบัติงาน : </span>
+              <a
+                :href="it.plan_document_file ? it.plan_document_file : '#'"
+                target=" _blank"
+                class="btn btn-success btn-icon btn-sm"
+              >
+                <i class="fa fa-file"></i>
+              </a>
+            </div>
+            <div class="mb-2">
+              <span class="fw-bold">วันที่อนุมัติแผน : </span>
+
+              <span>{{ convertDate(it.plan_accept_at) }}</span>
             </div>
 
             <div class="mb-2">
@@ -83,53 +110,6 @@
                     "
                     >ดูรายละเอียดเพื่ออนุมัติ</a
                   >
-                </li>
-                <!-- <li v-if="it.form_status_id > 1">
-                  <a
-                    class="dropdown-item cursor-pointer"
-                    @click="
-                      handleHistoryDetail({
-                        id: it.id,
-                      })
-                    "
-                    >ประวัติการ Comment</a
-                  >
-                </li> -->
-                <li v-if="it.form_status_id == 1 || it.form_status_id == 2">
-                  <a
-                    class="dropdown-item cursor-pointer"
-                    v-if="
-                      (userData.group_id == 1 ||
-                        userData.group_id == 2 ||
-                        userData.group_id == 3 ||
-                        userData.group_id == 4) &&
-                      it.form_status_id != 99
-                    "
-                    @click="
-                      handleEdit({
-                        id: it.id,
-                      })
-                    "
-                    >แก้ไขใบสมัคร
-                  </a>
-                </li>
-                <li>
-                  <a
-                    class="dropdown-item cursor-pointer"
-                    v-if="
-                      (userData.group_id == 1 ||
-                        userData.group_id == 2 ||
-                        userData.group_id == 3 ||
-                        userData.group_id == 4) &&
-                      it.form_status_id != 99
-                    "
-                    @click="
-                      handleCancel({
-                        id: it.id,
-                      })
-                    "
-                    >ยกเลิกใบสมัคร
-                  </a>
                 </li>
               </ul>
             </div>
@@ -174,7 +154,7 @@ import useDateData from "@/composables/useDateData";
 import { fetchAddressAlls } from "@/composables/useFetchSelectionData";
 
 export default defineComponent({
-  name: "staff-card-list-form",
+  name: "plan-card-list-form",
   components: {
     BlogPagination,
   },

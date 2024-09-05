@@ -155,11 +155,10 @@
                       onApproveFormModal(student_profile_item.status_id, 5);
                     "
                     v-if="
-                      parantPage == 'visitos' &&
+                      parantPage == 'visitor' &&
                       student_profile_item.status_id == 12 &&
                       userData.group_id == 6 &&
-                      student_profile_item.visitor_id ==
-                        userData.teacher_profile.id
+                      item_active.visitor_id == userData.teacher_profile.id
                     "
                   >
                     <i class="bi bi-file-earmark-plus-fill fs-4"></i>
@@ -175,11 +174,10 @@
                       onApproveFormModal(student_profile_item.status_id, 6);
                     "
                     v-if="
-                      parantPage == 'visitos' &&
+                      parantPage == 'visitor' &&
                       student_profile_item.status_id == 15 &&
                       userData.group_id == 6 &&
-                      student_profile_item.visitor_id ==
-                        userData.teacher_profile.id
+                      item_active.visitor_id == userData.teacher_profile.id
                     "
                   >
                     <i class="bi bi-file-earmark-plus-fill fs-4"></i>
