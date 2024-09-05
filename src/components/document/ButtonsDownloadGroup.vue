@@ -23,7 +23,8 @@
         <li>
           <a
             class="dropdown-item cursor-pointer"
-            :class="{ disabled: student_profile_item.status_id < 7 }" n
+            :class="{ disabled: student_profile_item.status_id < 7 }"
+            n
             @click="student_profile_item.status_id > 6 && handleDownloadPDF2()"
             >หนังสือขอความอนุเคราะห์</a
           >
@@ -637,7 +638,8 @@ export default defineComponent({
 
       const link = document.createElement("a");
       link.href = objectPdf;
-      link.download = "request_book.pdf";
+      link.download =
+        "request_book_" + student_profile_item.value.student_code + ".pdf";
       link.click();
     };
 
@@ -835,7 +837,8 @@ export default defineComponent({
 
       const link = document.createElement("a");
       link.href = objectPdf;
-      link.download = "request_book.pdf";
+      link.download =
+        "sent_book_" + student_profile_item.value.student_code + ".pdf";
       link.click();
     };
 
