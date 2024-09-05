@@ -48,12 +48,12 @@ const MainMenuConfig: Array<MenuItem> = [
             route: "/staff/student/request-document",
           },
           {
-            heading: "หนังสือส่งตัว",
-            route: "/staff/student/send-document",
-          },
-          {
             heading: "รายการเอกสารตอบรับ",
             route: "/staff/student/response",
+          },
+          {
+            heading: "หนังสือส่งตัว",
+            route: "/staff/student/send-document",
           },
           {
             heading: "จับคู่อาจารย์นิเทศ",

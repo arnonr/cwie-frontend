@@ -1,6 +1,7 @@
 <template>
   <!--begin::Wrapper-->
   <div class="container mt-5">
+    
     <div class="card shadow-sm my-5">
       <div class="card-header bg-white">
         <h4 class="card-title">รายการอาจารย์</h4>
@@ -109,7 +110,6 @@
 import { defineComponent, ref, reactive, onMounted, watch } from "vue";
 import ApiService from "@/core/services/ApiService";
 import useToast from "@/composables/useToast";
-
 // Component
 import ListComponent from "@/components/teachers/ListAllActive.vue";
 import CardListComponent from "@/components/teachers/CardAllActive.vue";

@@ -35,7 +35,7 @@
           </td>
           <td>{{ it.student_detail.class_year }}</td>
           <td>{{ it.company_detail.name }}</td>
-          <td>{{ convertAddress(it.province_id) }}</td>
+          <td>{{ convertAddress(it.response_province_id) }}</td>
           <td class="text-center">
             {{ it.response_result == 1 ? "ตอบรับ" : "ปฏิเสธ" }}
           </td>
@@ -85,40 +85,6 @@
                     >ดูรายละเอียดเพื่ออนุมัติ</a
                   >
                 </li>
-                <!-- <li v-if="it.form_status_id > 1">
-                  <a
-                    class="dropdown-item cursor-pointer"
-                    @click="
-                      handleHistoryDetail({
-                        id: it.id,
-                      })
-                    "
-                    >ประวัติการ Comment</a
-                  >
-                </li> -->
-                <!-- <li v-if="it.form_status_id == 1 || it.form_status_id == 2">
-                  <a
-                    class="dropdown-item cursor-pointer"
-                    @click="
-                      handleEdit({
-                        id: it.id,
-                      })
-                    "
-                    >แก้ไขใบสมัคร
-                  </a>
-                </li>
-                <li>
-                  <a
-                    class="dropdown-item cursor-pointer"
-                    v-if="it.form_status_id < 8 && it.form_status_id != 99"
-                    @click="
-                      handleCancel({
-                        id: it.id,
-                      })
-                    "
-                    >ยกเลิกใบสมัคร
-                  </a>
-                </li> -->
               </ul>
             </div>
           </td>

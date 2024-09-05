@@ -56,6 +56,58 @@
         <span v-if="student_profile_item.status_id == 3">
           แก้ไขใบสมัคร โดยดู Comment ได้ที่ปุ่มจัดการ > ประวัติการ Comment<br />
         </span>
+
+        <span v-if="student_profile_item.status_id == 6">
+          สามารถดาวน์โหลดใบสมัครได้ที่ปุ่ม ดาวน์โหลดเอกสาร > ใบสมัครโครงการ<br />
+        </span>
+
+        <span v-if="student_profile_item.status_id == 7">
+          1. สามารถดาวน์โหลดใบสมัครได้ที่ปุ่ม ดาวน์โหลดเอกสาร >
+          หนังสือขอความอนุเคราะห์<br />
+          2. นักศึกษาสามารถอัพโหลดเอกสารตอบรับได้ที่ปุ่ม อัพโหลดเอกสาร >
+          เอกสารตอบรับ
+        </span>
+
+        <span v-if="student_profile_item.status_id == 8">
+          1. รออนุมัติเอกสารตอบรับ<br />
+        </span>
+
+        <span v-if="student_profile_item.status_id == 9">
+          ส่งเอกสารตอบรับใหม่ โดยดู Comment ได้ที่ปุ่มจัดการ > ประวัติการ
+          Comment<br />
+        </span>
+
+        <span v-if="student_profile_item.status_id == 10">
+          รอออกหนังสือส่งตัว<br />
+        </span>
+        <span v-if="student_profile_item.status_id == 11">
+          1. นักศึกษาสามารถอัพโหลดแผนการปฏิบัติงานได้ที่ปุ่ม อัพโหลดเอกสาร >
+          แผนการปฏิบัติงาน
+        </span>
+        <span v-if="student_profile_item.status_id == 12">
+          1. รออนุมัติแผนการปฏิบัติงาน<br />
+        </span>
+        <span v-if="student_profile_item.status_id == 13">
+          ส่งเอกสารแผนการปฏิบัติงานใหม่ โดยดู Comment ได้ที่ปุ่มจัดการ >
+          ประวัติการ Comment<br />
+        </span>
+        <span v-if="student_profile_item.status_id == 14">
+          1. นักศึกษาสามารถอัพโหลดรายงานผลการปฏิบัติงานได้ที่ปุ่ม อัพโหลดเอกสาร
+          > รายงานผลการปฏิบัติงาน
+        </span>
+        <span v-if="student_profile_item.status_id == 15">
+          1. รออนุมัติรายงานผลการปฏิบัติงาน<br />
+        </span>
+        <span v-if="student_profile_item.status_id == 16">
+          ส่งรายงานผลการปฏิบัติงานใหม่ โดยดู Comment ได้ที่ปุ่มจัดการ >
+          ประวัติการ Comment<br />
+        </span>
+        <span v-if="student_profile_item.status_id == 17">
+          อนุมัติรายงานผลการปฏิบัติงาน
+        </span>
+        <span v-if="student_profile_item.status_id == 18">
+          จบสหกิจศึกษา<br />
+        </span>
       </div>
     </div>
 

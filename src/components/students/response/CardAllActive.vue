@@ -25,8 +25,8 @@
             </h6>
 
             <div class="mb-2">
-              <span class="fw-bold">วันที่ส่งใบสมัคร : </span>
-              <span> {{ convertDate(it.send_at) }}</span>
+              <span class="fw-bold">วันที่ส่งหนังสือตอบกลับ : </span>
+              <span> {{ convertDate(it.response_send_at) }}</span>
             </div>
 
             <div class="mb-2">
@@ -49,12 +49,38 @@
             <div class="mb-2">
               <span class="fw-bold">จังหวัดที่ตั้งสถานประกอบการ : </span>
 
-              <span>{{
-                convertAddress(it.company_detail.sub_district_id)
-              }}</span>
+              <span>{{ convertAddress(it.response_province_id) }}</span>
             </div>
 
             <div class="mb-2">
+              <span class="fw-bold">ผลการตอบกลับ : </span>
+
+              <span>{{ it.response_result == 1 ? "ตอบรับ" : "ปฏิเสธ" }}</span>
+            </div>
+
+            <div class="mb-2">
+              <span class="fw-bold">ไฟล์หนังสือผลการตอบกลับ : </span>
+
+              <span>
+                <a
+                  :href="
+                    it.response_document_file ? it.response_document_file : '#'
+                  "
+                  target=" _blank"
+                  class="btn btn-success btn-icon btn-sm"
+                >
+                  <i class="fa fa-file"></i> </a
+              ></span>
+            </div>
+
+            <div class="mb-2">
+              <span class="fw-bold">วันที่รับทราบหนังสือ : </span>
+
+              <span>{{ convertDate(it.confirm_response_at) }}</span>
+            </div>
+
+            <div class="mb-2">
+              <span class="fw-bold">สถานะ : </span>
               <span
                 class="badge p-2 text-white"
                 :style="`background-color: ${it.form_status_detail.color};`"
@@ -266,9 +292,11 @@ export default defineComponent({
       });
     };
 
-    const convertAddress = (sub_district_id: any) => {
+    const convertAddress = (province_id: any) => {
+      if (province_id == null) return "";
+
       let ad = selectOptions.value.address_alls.find((x: any) => {
-        return x.sub_district_id == sub_district_id;
+        return x.province_id == province_id;
       });
       return ad?.province;
     };

@@ -199,20 +199,21 @@ export default defineComponent({
       let data_send = {};
 
       let api = "";
+
       if (props.book_type == "request_book") {
         api = "form/add-request-book/";
         data_send = {
-          request_book_date: dayjs(book_date).format("YYYY-MM-DD"),
+          request_document_date: dayjs(book_date).format("YYYY-MM-DD"),
           max_response_date: dayjs(book_max_response_date).format("YYYY-MM-DD"),
-          id: props.ids,
+          ids: props.ids.join(","),
         };
       }
 
       if (props.book_type == "send_book") {
         api = "form/add-send-book/";
         data_send = {
-          send_book_date: dayjs(book_date).format("YYYY-MM-DD"),
-          id: props.ids,
+          send_document_date: dayjs(book_date).format("YYYY-MM-DD"),
+          ids: props.ids.join(","),
         };
       }
 
@@ -225,7 +226,7 @@ export default defineComponent({
           }
           Swal.fire({
             title: "บันทึกข้อมูลเสร็จสิ้น",
-            text: "เลขที่หนังสือ " + document_number.value + data.number,
+            text: document_number.value + data.document_number,
             icon: "success",
             buttonsStyling: false,
             confirmButtonText: "ปิด",

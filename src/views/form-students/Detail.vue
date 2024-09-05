@@ -80,7 +80,13 @@
                       approve_at = 'advisor_verified_at';
                       onApproveFormModal(student_profile_item.status_id, 1);
                     "
-                    v-if="student_profile_item.status_id == 2"
+                    v-if="
+                      parantPage == 'advisor' &&
+                      student_profile_item.status_id == 2 &&
+                      userData.group_id == 6 &&
+                      student_profile_item.advisor_id ==
+                        userData.teacher_profile.id
+                    "
                   >
                     <i class="bi bi-file-earmark-plus-fill fs-4"></i>
                     <span class="d-none d-lg-inline-block ms-2"
@@ -94,7 +100,13 @@
                       approve_at = 'division_head_approved_at';
                       onApproveFormModal(student_profile_item.status_id, 2);
                     "
-                    v-if="student_profile_item.status_id == 4"
+                    v-if="
+                      parantPage == 'division-head' &&
+                      student_profile_item.status_id == 4 &&
+                      userData.group_id == 6 &&
+                      item_active.division_head_id ==
+                        userData.teacher_profile.id
+                    "
                   >
                     <i class="bi bi-file-earmark-plus-fill fs-4"></i>
                     <span class="d-none d-lg-inline-block ms-2"
@@ -108,7 +120,10 @@
                       approve_at = 'staff_confirmed_at';
                       onApproveFormModal(student_profile_item.status_id, 3);
                     "
-                    v-if="student_profile_item.status_id == 5"
+                    v-if="
+                      student_profile_item.status_id == 5 &&
+                      checkStaffPermission
+                    "
                   >
                     <i class="bi bi-file-earmark-plus-fill fs-4"></i>
                     <span class="d-none d-lg-inline-block ms-2"
@@ -122,7 +137,10 @@
                       approve_at = 'confirm_response_at';
                       onApproveFormModal(student_profile_item.status_id, 4);
                     "
-                    v-if="student_profile_item.status_id == 8"
+                    v-if="
+                      student_profile_item.status_id == 8 &&
+                      checkStaffPermission
+                    "
                   >
                     <i class="bi bi-file-earmark-plus-fill fs-4"></i>
                     <span class="d-none d-lg-inline-block ms-2"
@@ -136,7 +154,13 @@
                       approve_at = 'plan_accept_at';
                       onApproveFormModal(student_profile_item.status_id, 5);
                     "
-                    v-if="student_profile_item.status_id == 12"
+                    v-if="
+                      parantPage == 'visitos' &&
+                      student_profile_item.status_id == 12 &&
+                      userData.group_id == 6 &&
+                      student_profile_item.visitor_id ==
+                        userData.teacher_profile.id
+                    "
                   >
                     <i class="bi bi-file-earmark-plus-fill fs-4"></i>
                     <span class="d-none d-lg-inline-block ms-2"
@@ -150,7 +174,13 @@
                       approve_at = 'report_accept_at';
                       onApproveFormModal(student_profile_item.status_id, 6);
                     "
-                    v-if="student_profile_item.status_id == 15"
+                    v-if="
+                      parantPage == 'visitos' &&
+                      student_profile_item.status_id == 15 &&
+                      userData.group_id == 6 &&
+                      student_profile_item.visitor_id ==
+                        userData.teacher_profile.id
+                    "
                   >
                     <i class="bi bi-file-earmark-plus-fill fs-4"></i>
                     <span class="d-none d-lg-inline-block ms-2"
@@ -164,7 +194,10 @@
                       approve_at = 'closed_at';
                       onApproveFormModal(student_profile_item.status_id, 6);
                     "
-                    v-if="student_profile_item.status_id == 17"
+                    v-if="
+                      student_profile_item.status_id == 17 &&
+                      checkStaffPermission
+                    "
                   >
                     <i class="bi bi-file-earmark-plus-fill fs-4"></i>
                     <span class="d-none d-lg-inline-block ms-2"
@@ -417,6 +450,10 @@ export default defineComponent({
   props: {
     id: {
       type: Number,
+      required: true,
+    },
+    parantPage: {
+      type: String,
       required: true,
     },
   },
@@ -698,6 +735,23 @@ export default defineComponent({
       emit("close-modal");
     };
 
+    const checkStaffPermission = () => {
+      const check =
+        userData.group_id == 1 ||
+        userData.group_id == 2 ||
+        (userData.group_id == 3 &&
+          userData.staff_profile.faculty_id ==
+            student_profile_item.value.faculty_id) ||
+        (userData.group_id == 4 &&
+          userData.staff_profile.value.department_id ==
+            student_profile_item.value.department_id) ||
+        (userData.group_id == 5 &&
+          userData.staff_profile.division_id ==
+            student_profile_item.value.division_id);
+
+      return props.parantPage == "staff" && check;
+    };
+
     // Mounted
     onMounted(async () => {
       await fetchItem();
@@ -729,6 +783,7 @@ export default defineComponent({
 
     return {
       // Variable
+      userData,
       student_profile_item,
       items,
       item,
@@ -752,6 +807,7 @@ export default defineComponent({
       fetchStudentProfile,
       fetchItems,
       //   Event
+      checkStaffPermission,
       onEditStudentProfileModal,
       onHistoryRejectModal,
       onAddFormModal,

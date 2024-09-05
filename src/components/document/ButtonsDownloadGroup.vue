@@ -1,41 +1,81 @@
 <template>
   <div>
-    <button
-      class="btn btn-outline btn-outline-info me-2 pe-sm-3 ps-sm-5 dropdown-toggle"
-      type="button"
-      id="dropdownMenuButton"
-      data-bs-toggle="dropdown"
-      aria-expanded="false"
-    >
-      <i class="bi bi-file-earmark-plus-fill fs-4"></i>
-      <span class="d-none d-lg-inline-block">ดาวน์โหลดเอกสาร</span>
-    </button>
-    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-      <li>
-        <a
-          class="dropdown-item cursor-pointer"
-          :class="{ disabled: student_profile_item.status_id < 6 }"
-          @click="student_profile_item.status_id > 5 && handleDownloadPDF1()"
-          >ใบสมัครโครงการ</a
-        >
-      </li>
-      <li>
-        <a
-          class="dropdown-item cursor-pointer"
-          :class="{ disabled: student_profile_item.status_id < 7 }"
-          @click="student_profile_item.status_id > 6 && handleDownloadPDF2()"
-          >หนังสือขอความอนุเคราะห์</a
-        >
-      </li>
-      <li>
-        <a
-          class="dropdown-item cursor-pointer"
-          :class="{ disabled: student_profile_item.status_id < 10 }"
-          @click="student_profile_item.status_id > 9 && handleDownloadPDF3()"
-          >หนังสือส่งตัว
-        </a>
-      </li>
-    </ul>
+    <div v-if="userData.group_id == 7">
+      <button
+        class="btn btn-outline btn-outline-info me-2 pe-sm-3 ps-sm-5 dropdown-toggle"
+        type="button"
+        id="dropdownMenuButton"
+        data-bs-toggle="dropdown"
+        aria-expanded="false"
+      >
+        <i class="bi bi-file-earmark-plus-fill fs-4"></i>
+        <span class="d-none d-lg-inline-block">ดาวน์โหลดเอกสาร</span>
+      </button>
+      <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+        <li>
+          <a
+            class="dropdown-item cursor-pointer"
+            :class="{ disabled: student_profile_item.status_id < 5 }"
+            @click="student_profile_item.status_id > 5 && handleDownloadPDF1()"
+            >ใบสมัครโครงการ</a
+          >
+        </li>
+        <li>
+          <a
+            class="dropdown-item cursor-pointer"
+            :class="{ disabled: student_profile_item.status_id < 7 }" n
+            @click="student_profile_item.status_id > 6 && handleDownloadPDF2()"
+            >หนังสือขอความอนุเคราะห์</a
+          >
+        </li>
+        <li>
+          <a
+            class="dropdown-item cursor-pointer"
+            :class="{ disabled: student_profile_item.status_id < 11 }"
+            @click="student_profile_item.status_id > 10 && handleDownloadPDF3()"
+            >หนังสือส่งตัว
+          </a>
+        </li>
+      </ul>
+    </div>
+    <div v-if="userData.group_id != 7">
+      <button
+        class="btn btn-outline btn-outline-info me-2 pe-sm-3 ps-sm-5 dropdown-toggle"
+        type="button"
+        id="dropdownMenuButton"
+        data-bs-toggle="dropdown"
+        aria-expanded="false"
+      >
+        <i class="bi bi-file-earmark-plus-fill fs-4"></i>
+        <span class="d-none d-lg-inline-block">ดาวน์โหลดเอกสาร</span>
+      </button>
+      <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+        <li>
+          <a
+            class="dropdown-item cursor-pointer"
+            :class="{ disabled: student_profile_item.status_id < 2 }"
+            @click="student_profile_item.status_id > 1 && handleDownloadPDF1()"
+            >ใบสมัครโครงการ</a
+          >
+        </li>
+        <li>
+          <a
+            class="dropdown-item cursor-pointer"
+            :class="{ disabled: student_profile_item.status_id < 7 }"
+            @click="student_profile_item.status_id > 6 && handleDownloadPDF2()"
+            >หนังสือขอความอนุเคราะห์</a
+          >
+        </li>
+        <li>
+          <a
+            class="dropdown-item cursor-pointer"
+            :class="{ disabled: student_profile_item.status_id < 11 }"
+            @click="student_profile_item.status_id > 10 && handleDownloadPDF3()"
+            >หนังสือส่งตัว
+          </a>
+        </li>
+      </ul>
+    </div>
   </div>
 </template>
 

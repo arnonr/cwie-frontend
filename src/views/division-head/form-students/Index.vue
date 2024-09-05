@@ -18,25 +18,24 @@
       <div class="card-header bg-white">
         <h4 class="card-title">ใบสมัครโครงการ CWIE</h4>
         <div class="card-toolbar">
-          <!-- :class="['btn-primary': 'd']" -->
           <button
             class="btn btn-outline btn-outline-info btn-sm fs-7"
             @click="onchangeCurrentStatus('total')"
           >
-            ทั้งหมด ({{ items_status.total.length }})
+            ทั้งหมด
           </button>
 
           <button
             class="btn btn-outline btn-outline-warning btn-sm fs-7 ms-2"
             @click="onchangeCurrentStatus('wating')"
           >
-            รออนุมัติ ({{ items_status.wating.length }})
+            รออนุมัติ ({{ items_wating_count }})
           </button>
           <button
             class="btn btn-outline btn-outline-success btn-sm fs-7 ms-2"
             @click="onchangeCurrentStatus('success')"
           >
-            อนุมัติเสร็จสิ้น ({{ items_status.success.length }})
+            อนุมัติเสร็จสิ้น
           </button>
           <!-- buttons -->
         </div>
@@ -97,8 +96,10 @@
         <StudentDetailFormPage
           v-if="openDetailFormModal == true"
           :id="item.id"
+          parantPage="division-head"
           @close-modal="
             () => {
+              fetchCountWatingItems();
               fetchItems();
               openDetailFormModal = false;
             }
@@ -112,8 +113,6 @@
 <script lang="ts">
 import { defineComponent, ref, reactive, onMounted, watch } from "vue";
 import ApiService from "@/core/services/ApiService";
-import useToast from "@/composables/useToast";
-
 // Component
 import ListComponent from "@/components/students/form/ListAllActive.vue";
 import CardListComponent from "@/components/students/form/CardAllActive.vue";
@@ -128,7 +127,7 @@ import * as XLSX from "xlsx";
 import ExcelJS from "exceljs";
 
 export default defineComponent({
-  name: "division-student",
+  name: "division-head-student",
   components: {
     ListComponent,
     CardListComponent,
@@ -139,7 +138,7 @@ export default defineComponent({
   setup() {
     // UI Variable
     const isLoading = ref<any>(false);
-    const sortKey = ref<any>("");
+    const sortKey = ref<any>("id");
     const sortOrder = ref<any>(-1);
     const current_active_status = ref<any>("total");
     const paginationData = reactive<any>({
@@ -167,12 +166,8 @@ export default defineComponent({
     const userData = JSON.parse(localStorage.getItem("userData") || "{}");
     const items = reactive<any>([]); // form items
     const item = reactive<any>({}); // form item
+    const items_wating_count = ref(0);
     const items_export = reactive<any[]>([]);
-    const items_status = ref<any>({
-      total: [],
-      wating: [],
-      success: [],
-    }); // form item
     const search = reactive<any>({
       semester_id: null,
       faculty_id: null,
@@ -180,6 +175,7 @@ export default defineComponent({
       company_id: null,
       student_code: "",
       search_name: "",
+      form_status_id: "4,5,6,7,8,9,10,11,12,13,14,15,16,17,18",
     });
 
     const selectOptions = ref({
@@ -192,21 +188,40 @@ export default defineComponent({
     fetchAddress();
 
     // Fetch Data
+    const fetchCountWatingItems = async () => {
+      isLoading.value = true;
+      const params = {
+        ...search,
+        is_active: true,
+        division_head_id: userData.teacher_profile.id,
+        form_status_id: 4,
+      };
+
+      const { data } = await ApiService.query("form/count-all", {
+        params: params,
+      });
+
+      items_wating_count.value = data.count;
+      isLoading.value = false;
+    };
+    fetchCountWatingItems();
 
     const fetchItems = async () => {
       isLoading.value = true;
       const params = {
         ...search,
-        semester_id: search.semester_id?.id,
-        faculty_id: search.faculty_id?.id,
+        // faculty_id: userData.teacher_profile.faculty_id,
+        // department_id: userData.teacher_profile.department_id,
+        division_head_id: userData.teacher_profile.id,
         division_id: search.division_id?.id,
-        company_id: search.company_id?.id,
         advisor_id: search.advisor_id?.id,
+        semester_id: search.semester_id?.id,
+        company_id: search.company_id?.id,
         visitor_id: search.visitor_id?.id,
-        orderBy: "id",
-        order: "desc",
         is_active: true,
-        form_status_id: "2,3,4,5,6,7,8,9,10",
+        ...paginationData,
+        orderBy: sortKey.value,
+        order: sortOrder.value == 1 ? "asc" : "desc",
       };
 
       const { data } = await ApiService.query("form", {
@@ -218,19 +233,6 @@ export default defineComponent({
       paginationData.totalPage = data.totalPage;
       paginationData.totalItems = data.totalData;
       paginationData.currentPage = data.currentPage;
-
-      items_status.value.total = [];
-      items_status.value.wating = [];
-      items_status.value.success = [];
-
-      items.forEach((x: any) => {
-        items_status.value.total.push(x);
-        if (x.form_status_id == 4) {
-          items_status.value.wating.push(x);
-        } else {
-          items_status.value.success.push(x);
-        }
-      });
 
       isLoading.value = false;
     };
@@ -244,26 +246,32 @@ export default defineComponent({
 
     const onClear = () => {};
 
-    const onchangeCurrentStatus = (cas: string) => {
+    const onchangeCurrentStatus = async (cas: string) => {
       current_active_status.value = cas;
-      items.length = 0;
-      Object.assign(items, [...items_status.value[cas]]);
+      if (cas == "wating") {
+        search.form_status_id = 4;
+      } else if (cas == "success") {
+        search.form_status_id = "5,6,7,8,9,10,11,12,13,14,15,16,17,18";
+      } else {
+        search.form_status_id = "4,5,6,7,8,9,10,11,12,13,14,15,16,17,18";
+      }
+      await fetchItems();
     };
 
     const fetchExportItems = async () => {
       isLoading.value = true;
       const params = {
         ...search,
-        semester_id: search.semester_id?.id,
-        faculty_id: search.faculty_id?.id,
+        faculty_id: userData.teacher_profile.faculty_id,
+        department_id: userData.teacher_profile.department_id,
         division_id: search.division_id?.id,
-        company_id: search.company_id?.id,
         advisor_id: search.advisor_id?.id,
+        semester_id: search.semester_id?.id,
+        company_id: search.company_id?.id,
         visitor_id: search.visitor_id?.id,
-        orderBy: "id",
-        order: "desc",
         is_active: true,
-        form_status_id: "2,3,4,5,6,7,8,9,10",
+        orderBy: sortKey.value,
+        order: sortOrder.value == 1 ? "asc" : "desc",
       };
 
       const { data } = await ApiService.query("form", {
@@ -436,7 +444,7 @@ export default defineComponent({
       // Variable
       items,
       item,
-      items_status,
+      items_wating_count,
       search,
       paginationData,
       sortKey,
@@ -448,6 +456,7 @@ export default defineComponent({
       onFormDetailModal,
       onchangeCurrentStatus,
       fetchItems,
+      fetchCountWatingItems,
       onClear,
       onExport,
     };

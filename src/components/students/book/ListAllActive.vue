@@ -50,8 +50,8 @@
           <td>
             {{
               book_type == "request_book"
-                ? it["request_book_number"]
-                : it["send_book_number"]
+                ? document_number + it["request_document_number"]
+                : document_number + it["send_document_number"]
             }}
           </td>
           <td class="text-center">
@@ -172,6 +172,16 @@ export default defineComponent({
     const internalPerPage = ref(paginationData.value.perPage);
     const userData = JSON.parse(localStorage.getItem("userData") || "{}");
 
+    const document_number = ref("");
+
+    if (props.book_type == "request_book") {
+      document_number.value = "อว 7101(8)/สอ.";
+    }
+
+    if (props.book_type == "send_book") {
+      document_number.value = "อว 7101(8)/สส.";
+    }
+
     const headerColumn = [
       { column_name: "choose", title: "เลือก", sort: true },
       { column_name: "sended_at", title: "วันที่ส่งใบสมัคร", sort: true },
@@ -186,7 +196,7 @@ export default defineComponent({
       },
       { column_name: "province_id", title: "จังหวัด", sort: true },
       {
-        column_name: "request_book_number",
+        column_name: "request_document_number",
         title: "เลขที่หนังสือ",
         sort: true,
       },
@@ -276,6 +286,7 @@ export default defineComponent({
 
     return {
       items,
+      document_number,
       handleDetail,
       handleEdit,
       handleHistoryDetail,
