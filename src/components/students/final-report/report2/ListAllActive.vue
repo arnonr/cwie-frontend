@@ -98,7 +98,7 @@
       const headerColumn = [
         {
           column_name: "name",
-          title: "ชื่อสถานประกอบการ",
+          title: "สถานประกอบการ",
           sort: true,
         },
         { column_name: "province_id", title: "จังหวัด", sort: true },

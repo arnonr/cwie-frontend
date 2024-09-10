@@ -124,7 +124,7 @@
         { column_name: "class_year", title: "ชั้นปี", sort: true },
         {
           column_name: "company_detail.name",
-          title: "ชื่อสถานประกอบการ",
+          title: "สถานประกอบการ",
           sort: true,
         },
         { column_name: "province_id", title: "จังหวัด", sort: true },

@@ -301,7 +301,7 @@ export default defineComponent({
       Object.assign(
         items_export,
         data.data.map((x: any) => {
-          x.show_send_at = useDateData().convertDate(x.send_at);
+          x.show_response_at = useDateData().convertDate(x.response_at);
           x.show_semester =
             x.semester_detail.term + "/" + x.semester_detail.year;
           x.show_student_code = x.student_detail.student_code;
@@ -309,9 +309,20 @@ export default defineComponent({
             x.student_detail.firstname + " " + x.student_detail.surname;
           x.show_class_year = x.student_detail.class_year;
           x.show_company = x.company_detail.name;
+
           x.show_company_province = convertAddress(
             x.company_detail.sub_district_id
           );
+
+          x.response_result = x.response_result
+            ? x.response_result == 1
+              ? "ตอบรับ"
+              : "ปฏิเสธ"
+            : "";
+          x.confirm_response_at = useDateData().convertDate(
+            x.confirm_response_at
+          );
+
           x.show_status = x.form_status_detail.name;
           return x;
         })
@@ -341,8 +352,8 @@ export default defineComponent({
           //
           worksheet.columns = [
             {
-              header: "วันที่ส่งใบสมัคร",
-              key: "show_send_at",
+              header: "วันที่ส่งหนังสือตอบกลับ",
+              key: "show_response_at",
               width: 25,
               outlineLevel: 1,
             },
@@ -377,8 +388,27 @@ export default defineComponent({
               outlineLevel: 1,
             },
             {
-              header: "จังหวัด",
+              header: "สถานที่ปฏิบัติงาน",
               key: "show_company_province",
+              width: 25,
+              outlineLevel: 1,
+            },
+            {
+              header: "ไฟล์เอกสารตอบกลับ",
+              key: "response_document_file",
+              width: 25,
+              outlineLevel: 1,
+            },
+
+            {
+              header: "ผลการตอบกลับ",
+              key: "response_result",
+              width: 25,
+              outlineLevel: 1,
+            },
+            {
+              header: "วันที่รับทราบหนังสือ",
+              key: "confirm_response_at",
               width: 25,
               outlineLevel: 1,
             },
@@ -408,9 +438,9 @@ export default defineComponent({
           const row = worksheet.getRow(1);
           row.height = 20;
 
-          worksheet.insertRow(1, "รายการใบสมัคร");
+          worksheet.insertRow(1, "รายการเอกสารตอบกลับ");
           worksheet.mergeCells("A1:K1");
-          worksheet.getCell("A1").value = "รายการใบสมัคร";
+          worksheet.getCell("A1").value = "รายการเอกสารตอบกลับ";
           worksheet.getCell("A1").alignment = {
             vertical: "middle",
             horizontal: "center",
@@ -429,7 +459,7 @@ export default defineComponent({
           const href = URL.createObjectURL(blob);
           const link = document.createElement("a");
           link.href = href;
-          link.download = "รายการใบสมัคร.xlsx";
+          link.download = "รายการเอกสารตอบกลับ.xlsx";
           document.body.appendChild(link);
           link.click();
           document.body.removeChild(link);

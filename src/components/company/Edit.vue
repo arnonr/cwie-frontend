@@ -134,7 +134,7 @@ export default defineComponent({
     const fields = ref([
       {
         name: "name",
-        label: "ชื่อสถานประกอบการ โประระบุชื่อเต็ม (ใช้ในการออกหนังสือ)",
+        label: "ชื่อสถานประกอบการ โปรดระบุชื่อเต็ม (ใช้ในการออกหนังสือ)",
         model: "name",
         type: "text",
         options: [],

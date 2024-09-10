@@ -183,7 +183,7 @@ export default defineComponent({
       { column_name: "semester_id", title: "ปีการศึกษา", sort: true },
       {
         column_name: "company_detail.name",
-        title: "ชื่อสถานประกอบการ",
+        title: "สถานประกอบการ",
         sort: true,
       },
       { column_name: "province_id", title: "จังหวัด", sort: true },
