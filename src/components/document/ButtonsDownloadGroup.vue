@@ -151,14 +151,14 @@ export default defineComponent({
       const fontSize = 16;
 
       existingPage.drawText(item.value.semester_detail.term.toString(), {
-        x: 285, //คอลัมน์ ซ้ายไปขวา
-        y: 692, //แถว ยิ่งมากยิ่งอยู่ด้านบน
+        x: 325, //คอลัมน์ ซ้ายไปขวา
+        y: 666, //แถว ยิ่งมากยิ่งอยู่ด้านบน
         ...defaultSize,
       });
 
       existingPage.drawText(item.value.semester_detail.year.toString(), {
-        x: 315, //คอลัมน์ ซ้ายไปขวา
-        y: 692, //แถว ยิ่งมากยิ่งอยู่ด้านบน
+        x: 350, //คอลัมน์ ซ้ายไปขวา
+        y: 666, //แถว ยิ่งมากยิ่งอยู่ด้านบน
         ...defaultSize,
       });
 
@@ -194,7 +194,7 @@ export default defineComponent({
 
           existingPage.drawImage(photoImage, {
             x: 473,
-            y: 684,
+            y: 682,
             width: 70,
             height: 90,
           });
@@ -207,20 +207,20 @@ export default defineComponent({
           " " +
           student_profile_item.value.surname,
         {
-          x: 220,
-          y: 658,
+          x: 210,
+          y: 632,
           ...defaultSize,
         }
       );
       existingPage.drawText(student_profile_item.value.student_code, {
-        x: 200,
-        y: 638,
+        x: 180,
+        y: 612,
         ...defaultSize,
       });
 
       existingPage.drawText(student_profile_item.value.class_year.toString(), {
-        x: 470,
-        y: 638,
+        x: 430,
+        y: 612,
         ...defaultSize,
       });
 
@@ -231,58 +231,67 @@ export default defineComponent({
           student_profile_item.value.advisor_detail.surname,
         {
           x: 150,
-          y: 616,
+          y: 591,
           ...defaultSize,
         }
       );
 
-      existingPage.drawText(student_profile_item.value.faculty_detail.name, {
-        x: 102, //คอลัมน์ ซ้ายไปขวา
-        y: 597, //แถว ยิ่งมากยิ่งอยู่ด้านบน
+      existingPage.drawText(
+        student_profile_item.value.faculty_detail.name.replace("คณะ", ""),
+        {
+          x: 382, //คอลัมน์ ซ้ายไปขวา
+          y: 591,
+          ...defaultSize,
+        }
+      );
+
+      existingPage.drawText(student_profile_item.value.department_detail.name, {
+        x: 110,
+        y: 570, //แถว ยิ่งมากยิ่งอยู่ด้านบน
         ...defaultSize,
       });
 
       existingPage.drawText(student_profile_item.value.division_detail.name, {
-        x: 343, //คอลัมน์ ซ้ายไปขวา
-        y: 597, //แถว ยิ่งมากยิ่งอยู่ด้านบน
+        x: 370,
+        y: 570, //แถว ยิ่งมากยิ่งอยู่ด้านบน
         ...defaultSize,
       });
 
       existingPage.drawText(student_profile_item.value.phone, {
-        x: 105,
-        y: 576,
+        x: 140,
+        y: 549,
         ...defaultSize,
       });
 
       existingPage.drawText(student_profile_item.value.email, {
-        x: 257,
-        y: 576,
+        x: 282,
+        y: 549,
         ...defaultSize,
       });
 
       existingPage.drawText(student_profile_item.value.gpa.toString(), {
-        x: 515,
-        y: 576,
+        x: 502,
+        y: 549,
         ...defaultSize,
       });
 
       existingPage.drawText(item.value.semester_detail.term.toString(), {
-        x: 343,
-        y: 554,
+        x: 360,
+        y: 528,
         ...defaultSize,
       });
 
       existingPage.drawText(item.value.semester_detail.year.toString(), {
-        x: 370,
-        y: 554,
+        x: 382,
+        y: 528,
         ...defaultSize,
       });
 
       existingPage.drawText(
         useDateData().convertFullDate(item.value.start_date),
         {
-          x: 455,
-          y: 554,
+          x: 460,
+          y: 528,
           ...defaultSize,
         }
       );
@@ -290,29 +299,29 @@ export default defineComponent({
       existingPage.drawText(
         useDateData().convertFullDate(item.value.end_date),
         {
-          x: 115,
-          y: 533,
+          x: 105,
+          y: 507,
           ...defaultSize,
         }
       );
 
       existingPage.drawText(item.value.company_detail.name, {
-        x: 191,
-        y: 503,
+        x: 190,
+        y: 476,
         ...defaultSize,
       });
 
       existingPage.drawText(item.value.company_detail.address, {
-        x: 130,
-        y: 481,
+        x: 95,
+        y: 455,
         ...defaultSize,
       });
 
       existingPage.drawText(
         convertAddress(item.value.company_detail.sub_district_id),
         {
-          x: 257,
-          y: 459,
+          x: 170,
+          y: 414,
           ...defaultSize,
         }
       );
@@ -322,8 +331,8 @@ export default defineComponent({
           ? ""
           : item.value.company_detail.phone,
         {
-          x: 105,
-          y: 439,
+          x: 100,
+          y: 394,
           ...defaultSize,
         }
       );
@@ -333,39 +342,39 @@ export default defineComponent({
           ? ""
           : item.value.company_detail.email,
         {
-          x: 350,
-          y: 439,
+          x: 310,
+          y: 394,
           ...defaultSize,
         }
       );
 
       existingPage.drawText(student_profile_item.value.contact1_name, {
-        x: 270,
-        y: 406,
+        x: 250,
+        y: 359,
         ...defaultSize,
       });
 
       existingPage.drawText(student_profile_item.value.contact1_relation, {
-        x: 140,
-        y: 385,
+        x: 135,
+        y: 338,
         ...defaultSize,
       });
 
       existingPage.drawText(student_profile_item.value.contact1_phone, {
         x: 275,
-        y: 385,
+        y: 338,
         ...defaultSize,
       });
 
       existingPage.drawText(item.value.request_name, {
-        x: 130,
-        y: 330,
+        x: 120,
+        y: 283,
         ...defaultSize,
       });
 
       existingPage.drawText(item.value.request_position, {
-        x: 130,
-        y: 310,
+        x: 400,
+        y: 283,
         ...defaultSize,
       });
 
@@ -374,8 +383,8 @@ export default defineComponent({
           " " +
           student_profile_item.value.surname,
         {
-          x: 375,
-          y: 222,
+          x: 365,
+          y: 172,
           ...defaultSize,
         }
       );
@@ -383,8 +392,8 @@ export default defineComponent({
       existingPage.drawText(
         useDateData().convertFullDate(item.value.division_head_approved_at),
         {
-          x: 375,
-          y: 193,
+          x: 388,
+          y: 148,
           ...defaultSize,
         }
       );
@@ -397,8 +406,8 @@ export default defineComponent({
           " " +
           student_profile_item.value.advisor_detail.surname,
         {
-          x: 250,
-          y: 508,
+          x: 249,
+          y: 465,
           ...defaultSize,
         }
       );
@@ -406,8 +415,8 @@ export default defineComponent({
       existingPage2.drawText(
         useDateData().convertFullDate(item.value.advisor_verified_at),
         {
-          x: 250,
-          y: 482,
+          x: 260,
+          y: 443,
           ...defaultSize,
         }
       );
@@ -419,7 +428,7 @@ export default defineComponent({
           item.value.division_head_detail.surname,
         {
           x: 250,
-          y: 304,
+          y: 256,
           ...defaultSize,
         }
       );
@@ -427,8 +436,8 @@ export default defineComponent({
       existingPage2.drawText(
         useDateData().convertFullDate(item.value.division_head_approved_at),
         {
-          x: 250,
-          y: 278,
+          x: 260,
+          y: 235,
           ...defaultSize,
         }
       );
@@ -480,20 +489,20 @@ export default defineComponent({
       const { width, height } = existingPage.getSize();
       const fontSize = 16;
 
-      //   existingPage.drawText(item.value.request_document_number, {
-      //     x: 80, //คอลัมน์ ซ้ายไปขวา
-      //     y: 757, //แถว ยิ่งมากยิ่งอยู่ด้านบน
-      //     ...defaultSize,
-      //   });
+      existingPage.drawText(item.value.request_document_number.toString(), {
+        x: 150, //คอลัมน์ ซ้ายไปขวา
+        y: 757, //แถว ยิ่งมากยิ่งอยู่ด้านบน
+        ...defaultSize,
+      });
 
-      //   existingPage.drawText(
-      //     useDateData().convertFullDate(item.value.request_document_date),
-      //     {
-      //       x: 335,
-      //       y: 668,
-      //       ...defaultSize,
-      //     }
-      //   );
+      existingPage.drawText(
+        useDateData().convertFullDate(item.value.request_document_date),
+        {
+          x: 300,
+          y: 660,
+          ...defaultSize,
+        }
+      );
 
       let request_name = "";
       if (item.value.request_name == "-") {
@@ -505,45 +514,48 @@ export default defineComponent({
 
       existingPage.drawText(request_name, {
         x: 105,
-        y: 595,
+        y: 585,
         ...defaultSize,
       });
 
       existingPage.drawText(item.value.company_detail.name, {
         x: 105, //คอลัมน์ ซ้ายไปขวา
-        y: 565, //แถว ยิ่งมากยิ่งอยู่ด้านบน
-        ...defaultSize,
-      });
-
-      existingPage.drawText(student_profile_item.value.faculty_detail.name, {
-        x: 210, //คอลัมน์ ซ้ายไปขวา
-        y: 365, //แถว ยิ่งมากยิ่งอยู่ด้านบน
-        ...defaultSize,
-      });
-
-      existingPage.drawText(student_profile_item.value.division_detail.name, {
-        x: 210, //คอลัมน์ ซ้ายไปขวา
-        y: 365, //แถว ยิ่งมากยิ่งอยู่ด้านบน
-        ...defaultSize,
-      });
-
-      existingPage.drawText(item.value.semester_detail.term.toString(), {
-        x: 291,
-        y: 345,
-        ...defaultSize,
-      });
-
-      existingPage.drawText(item.value.semester_detail.year.toString(), {
-        x: 358,
-        y: 345,
+        y: 560, //แถว ยิ่งมากยิ่งอยู่ด้านบน
         ...defaultSize,
       });
 
       existingPage.drawText(
+        student_profile_item.value.faculty_detail.name.replace("คณะ", ""),
+        {
+          x: 250, //คอลัมน์ ซ้ายไปขวา
+          y: 403, //แถว ยิ่งมากยิ่งอยู่ด้านบน
+          ...defaultSize,
+        }
+      );
+
+      existingPage.drawText(student_profile_item.value.division_detail.name, {
+        x: 120, //คอลัมน์ ซ้ายไปขวา
+        y: 379, //แถว ยิ่งมากยิ่งอยู่ด้านบน
+        ...defaultSize,
+      });
+
+      //   existingPage.drawText(item.value.semester_detail.term.toString(), {
+      //     x: 291,
+      //     y: 345,
+      //     ...defaultSize,
+      //   });
+
+      //   existingPage.drawText(item.value.semester_detail.year.toString(), {
+      //     x: 358,
+      //     y: 345,
+      //     ...defaultSize,
+      //   });
+
+      existingPage.drawText(
         useDateData().convertFullDate(item.value.start_date),
         {
-          x: 434,
-          y: 345,
+          x: 210,
+          y: 355,
           ...defaultSize,
         }
       );
@@ -551,45 +563,45 @@ export default defineComponent({
       existingPage.drawText(
         useDateData().convertFullDate(item.value.end_date),
         {
-          x: 95,
-          y: 324,
+          x: 332,
+          y: 355,
           ...defaultSize,
         }
       );
 
       existingPage.drawText(student_profile_item.value.firstname, {
         x: 104,
-        y: 303,
+        y: 321,
         ...defaultSize,
       });
 
       existingPage.drawText(student_profile_item.value.surname, {
         x: 248,
-        y: 303,
+        y: 321,
         ...defaultSize,
       });
 
       existingPage.drawText(student_profile_item.value.class_year.toString(), {
         x: 390,
-        y: 303,
+        y: 321,
         ...defaultSize,
       });
 
       existingPage.drawText(student_profile_item.value.student_code, {
-        x: 460,
-        y: 303,
+        x: 465,
+        y: 321,
         ...defaultSize,
       });
 
       existingPage.drawText(student_profile_item.value.email, {
-        x: 170,
-        y: 283,
+        x: 160,
+        y: 300,
         ...defaultSize,
       });
 
       existingPage.drawText(student_profile_item.value.phone, {
         x: 410,
-        y: 283,
+        y: 300,
         ...defaultSize,
       });
 
@@ -679,20 +691,20 @@ export default defineComponent({
       const { width, height } = existingPage.getSize();
       const fontSize = 16;
 
-      //   existingPage.drawText(item.value.request_document_number, {
-      //     x: 80, //คอลัมน์ ซ้ายไปขวา
-      //     y: 757, //แถว ยิ่งมากยิ่งอยู่ด้านบน
-      //     ...defaultSize,
-      //   });
+      existingPage.drawText(item.value.send_document_number.toString(), {
+        x: 150, //คอลัมน์ ซ้ายไปขวา
+        y: 757, //แถว ยิ่งมากยิ่งอยู่ด้านบน
+        ...defaultSize,
+      });
 
-      //   existingPage.drawText(
-      //     useDateData().convertFullDate(item.value.request_document_date),
-      //     {
-      //       x: 335,
-      //       y: 668,
-      //       ...defaultSize,
-      //     }
-      //   );
+      existingPage.drawText(
+        useDateData().convertFullDate(item.value.send_document_date),
+        {
+          x: 300,
+          y: 660,
+          ...defaultSize,
+        }
+      );
 
       let request_name = "";
       if (item.value.request_name == "-") {
@@ -704,45 +716,36 @@ export default defineComponent({
 
       existingPage.drawText(request_name, {
         x: 105,
-        y: 595,
+        y: 585,
         ...defaultSize,
       });
 
       existingPage.drawText(item.value.company_detail.name, {
         x: 105, //คอลัมน์ ซ้ายไปขวา
-        y: 565, //แถว ยิ่งมากยิ่งอยู่ด้านบน
+        y: 560, //แถว ยิ่งมากยิ่งอยู่ด้านบน
         ...defaultSize,
       });
 
-      existingPage.drawText(student_profile_item.value.faculty_detail.name, {
-        x: 210, //คอลัมน์ ซ้ายไปขวา
-        y: 365, //แถว ยิ่งมากยิ่งอยู่ด้านบน
-        ...defaultSize,
-      });
+      existingPage.drawText(
+        student_profile_item.value.faculty_detail.name.replace("คณะ", ""),
+        {
+          x: 250, //คอลัมน์ ซ้ายไปขวา
+          y: 403, //แถว ยิ่งมากยิ่งอยู่ด้านบน
+          ...defaultSize,
+        }
+      );
 
       existingPage.drawText(student_profile_item.value.division_detail.name, {
-        x: 210, //คอลัมน์ ซ้ายไปขวา
-        y: 365, //แถว ยิ่งมากยิ่งอยู่ด้านบน
-        ...defaultSize,
-      });
-
-      existingPage.drawText(item.value.semester_detail.term.toString(), {
-        x: 291,
-        y: 345,
-        ...defaultSize,
-      });
-
-      existingPage.drawText(item.value.semester_detail.year.toString(), {
-        x: 358,
-        y: 345,
+        x: 120, //คอลัมน์ ซ้ายไปขวา
+        y: 379, //แถว ยิ่งมากยิ่งอยู่ด้านบน
         ...defaultSize,
       });
 
       existingPage.drawText(
         useDateData().convertFullDate(item.value.start_date),
         {
-          x: 434,
-          y: 345,
+          x: 210,
+          y: 355,
           ...defaultSize,
         }
       );
@@ -750,45 +753,46 @@ export default defineComponent({
       existingPage.drawText(
         useDateData().convertFullDate(item.value.end_date),
         {
-          x: 95,
-          y: 324,
+          x: 330,
+          y: 355,
           ...defaultSize,
         }
       );
 
+     
       existingPage.drawText(student_profile_item.value.firstname, {
         x: 104,
-        y: 303,
+        y: 320,
         ...defaultSize,
       });
 
       existingPage.drawText(student_profile_item.value.surname, {
         x: 248,
-        y: 303,
+        y: 320,
         ...defaultSize,
       });
 
       existingPage.drawText(student_profile_item.value.class_year.toString(), {
         x: 390,
-        y: 303,
+        y: 320,
         ...defaultSize,
       });
 
       existingPage.drawText(student_profile_item.value.student_code, {
         x: 460,
-        y: 303,
+        y: 320,
         ...defaultSize,
       });
 
       existingPage.drawText(student_profile_item.value.email, {
         x: 170,
-        y: 283,
+        y: 300,
         ...defaultSize,
       });
 
       existingPage.drawText(student_profile_item.value.phone, {
         x: 410,
-        y: 283,
+        y: 300,
         ...defaultSize,
       });
 

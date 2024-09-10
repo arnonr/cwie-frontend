@@ -94,7 +94,20 @@
                   v-if="f.model != 'separator'"
                 >
                   <span>{{ f.label }} : </span>
-                  <span>{{ item[f.model] }} </span>
+
+                  <a
+                    :href="item[f.model]"
+                    target="_blank"
+                    v-if="
+                      typeof item[f.model] === 'string' &&
+                      item[f.model].includes('/static/uploads/')
+                    "
+                  >
+                    คลิก
+                  </a>
+
+                  <span v-else>{{ item[f.model] }} </span>
+
                   <div
                     class="separator separator-dashed my-4 d-block d-md-none"
                   ></div>
@@ -175,6 +188,7 @@ import ApiService from "@/core/services/ApiService";
 // Import Modal Bootstrap
 import { Modal } from "bootstrap";
 import useDateData from "@/composables/useDateData";
+import { fetchAddressAlls } from "@/composables/useFetchSelectionData";
 
 export default defineComponent({
   name: "detail-form",
@@ -192,6 +206,16 @@ export default defineComponent({
     // Variable
     const isLoading = ref(true);
     const item = ref<any>({});
+
+    const selectOptions = ref({
+      address_alls: <any>[],
+    });
+
+    const fetchAddress = async () => {
+      selectOptions.value.address_alls = await fetchAddressAlls({});
+    };
+    fetchAddress();
+
     const fields = ref<any>([
       {
         label: "สถานะใบสมัคร",
@@ -209,7 +233,7 @@ export default defineComponent({
         colClass: "col-lg-4",
       },
       {
-        label: "ปีการศึกษา",
+        label: "ปีการศึกษาที่เริ่มปฏิบัติสหกิจศึกษา",
         model: "semester",
         colClass: "col-lg-4",
       },
@@ -327,11 +351,11 @@ export default defineComponent({
         model: "division_head_approved_at",
         colClass: "col-lg-4",
       },
-      {
-        label: "วันที่ประธานหลักสูตรสหกิจศึกษาอนุมัติ",
-        model: "faculty_head_approved_at",
-        colClass: "col-lg-4",
-      },
+      //   {
+      //     label: "วันที่ประธานหลักสูตรสหกิจศึกษาอนุมัติ",
+      //     model: "faculty_head_approved_at",
+      //     colClass: "col-lg-4",
+      //   },
       {
         label: "separator",
         model: "separator",
@@ -372,7 +396,7 @@ export default defineComponent({
       },
       {
         label: "ผลการตอบกลับ",
-        model: "response_result ",
+        model: "response_result",
         colClass: "col-lg-4",
       },
       {
@@ -541,7 +565,67 @@ export default defineComponent({
         " - " +
         useDateData().convertDate(data.data.end_date);
 
+      item.value.advisor_verified_at = useDateData().convertDate(
+        data.data.advisor_verified_at
+      );
+      item.value.division_head_approved_at = useDateData().convertDate(
+        data.data.division_head_approved_at
+      );
+      item.value.faculty_head_approved_at = useDateData().convertDate(
+        data.data.faculty_head_approved_at
+      );
+      item.value.staff_confirmed_at = useDateData().convertDate(
+        data.data.staff_confirmed_at
+      );
+
+      item.value.request_document_date = useDateData().convertDate(
+        data.data.request_document_date
+      );
+
+      item.value.send_document_date = useDateData().convertDate(
+        data.data.send_document_date
+      );
+
+      item.value.response_send_at = useDateData().convertDate(
+        data.data.response_send_at
+      );
+
+      item.value.confirm_response_at = useDateData().convertDate(
+        data.data.confirm_response_at
+      );
+
+      item.value.plan_send_at = useDateData().convertDate(
+        data.data.plan_send_at
+      );
+
+      item.value.report_send_at = useDateData().convertDate(
+        data.data.report_send_at
+      );
+
+      item.value.report_accept_at = useDateData().convertDate(
+        data.data.report_accept_at
+      );
+
+      item.value.response_result = data.data.response_result
+        ? data.data.response_result == 1
+          ? "ตอบรับ"
+          : "ปฏิเสธ"
+        : "-";
+
+      item.value.closed_at = useDateData().convertDate(data.data.closed_at);
+
+      item.value.response_province_id = data.data.response_province_id
+        ? convertAddress(data.data.response_province_id)
+        : "-";
+        
       isLoading.value = false;
+    };
+
+    const convertAddress = (province_id: any) => {
+      let ad = selectOptions.value.address_alls.find((x: any) => {
+        return x.province_id == province_id;
+      });
+      return ad?.province;
     };
 
     // Mounted

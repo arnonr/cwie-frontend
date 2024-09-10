@@ -252,7 +252,7 @@ export default defineComponent({
     const fields = ref([
       {
         name: "semester_id",
-        label: "ปีการศึกษา",
+        label: "ปีการศึกษาที่เริ่มปฏิบัติสหกิจศึกษา",
         model: "semester_id",
         type: "v-select",
         options: computed(() => selectOptions.value.semesters),
