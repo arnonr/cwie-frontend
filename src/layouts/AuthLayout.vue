@@ -65,7 +65,7 @@ export default defineComponent({
 
 <style>
 .bg-img-auth {
-  background-image: url("/media/auth/cwie-auth-bg-1.png");
+  /* background-image: url("/media/auth/cwie-auth-bg-1.png"); */
   background-size: cover;
   background-position: center;
 }
