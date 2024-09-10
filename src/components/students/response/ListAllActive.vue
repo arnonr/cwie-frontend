@@ -242,7 +242,6 @@ export default defineComponent({
 
     const convertAddress = (province_id: any) => {
       if (province_id == null) return "";
-
       let ad = selectOptions.value.address_alls.find((x: any) => {
         return x.province_id == province_id;
       });

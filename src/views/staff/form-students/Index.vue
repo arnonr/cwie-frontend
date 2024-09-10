@@ -24,8 +24,6 @@
             ทั้งหมด
           </button>
 
-
-
           <button
             class="btn btn-outline btn-outline-warning btn-sm fs-7 ms-2"
             @click="onchangeCurrentStatus('wating')"
@@ -439,6 +437,7 @@ export default defineComponent({
     };
 
     const convertAddress = (sub_district_id: any) => {
+      if (sub_district_id == null) return "";
       let ad = selectOptions.value.address_alls.find((x: any) => {
         return x.sub_district_id == sub_district_id;
       });

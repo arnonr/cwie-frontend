@@ -353,9 +353,8 @@ export default defineComponent({
             x.student_detail.firstname + " " + x.student_detail.surname;
           x.show_class_year = x.student_detail.class_year;
           x.show_company = x.company_detail.name;
-          x.show_company_province = convertAddress(
-            x.company_detail.sub_district_id
-          );
+          x.show_company_province = convertAddress(x.response_province_id);
+          x.show_visitor = x.visitor_detail ? x.visitor_detail.fullname : "";
           x.show_status = x.form_status_detail.name;
           return x;
         })
@@ -421,8 +420,14 @@ export default defineComponent({
               outlineLevel: 1,
             },
             {
-              header: "จังหวัด",
+              header: "จังหวัดที่ไปปฏิบัติงาน",
               key: "show_company_province",
+              width: 25,
+              outlineLevel: 1,
+            },
+            {
+              header: "อาจารย์นิเทศ",
+              key: "show_visitor",
               width: 25,
               outlineLevel: 1,
             },
@@ -481,7 +486,16 @@ export default defineComponent({
       });
     };
 
-    const convertAddress = (sub_district_id: any) => {
+    const convertAddress = (province_id: any) => {
+      if (province_id == null) return "";
+      let ad = selectOptions.value.address_alls.find((x: any) => {
+        return x.province_id == province_id;
+      });
+      return ad?.province;
+    };
+
+    const convertAddress2 = (sub_district_id: any) => {
+      if (sub_district_id == null) return "";
       let ad = selectOptions.value.address_alls.find((x: any) => {
         return x.sub_district_id == sub_district_id;
       });

@@ -650,6 +650,7 @@ export default defineComponent({
     };
 
     const convertAddress = (province_id: any) => {
+      if (province_id == null) return "";
       let ad = selectOptions.value.address_alls.find((x: any) => {
         return x.province_id == province_id;
       });
@@ -657,6 +658,7 @@ export default defineComponent({
     };
 
     const convertAddress2 = (sub_district_id: any) => {
+      if (sub_district_id == null) return "";
       let ad = selectOptions.value.address_alls.find((x: any) => {
         return x.sub_district_id == sub_district_id;
       });

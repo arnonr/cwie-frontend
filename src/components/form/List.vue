@@ -241,6 +241,7 @@ export default defineComponent({
     };
 
     const convertAddress = (sub_district_id: any) => {
+      if (sub_district_id == null) return "";
       let ad = selectOptions.value.address_alls.find((x: any) => {
         return x.sub_district_id == sub_district_id;
       });
