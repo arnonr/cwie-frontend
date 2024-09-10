@@ -164,10 +164,10 @@ export default defineComponent({
       { column_name: "class_year", title: "ชั้นปี", sort: true },
       {
         column_name: "company_detail.name",
-        title: "ชื่อสถานประกอบการ",
+        title: "สถานประกอบการ",
         sort: true,
       },
-      { column_name: "province_id", title: "จังหวัด", sort: true },
+      { column_name: "province_id", title: "จังหวัดที่ปฏิบัติงาน", sort: true },
       { column_name: "visitor_id", title: "อาจารย์นิเทศ", sort: true },
       { column_name: "form_status_id", title: "สถานะ", sort: true },
       { column_name: "manage", title: "จัดการข้อมูล", sort: false },

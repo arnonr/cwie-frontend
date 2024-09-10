@@ -131,7 +131,18 @@
                   v-if="f.model != 'separator'"
                 >
                   <span>{{ f.label }} : </span>
-                  <span>{{ item[f.model] }} </span>
+                  <a
+                    :href="item[f.model]"
+                    target="_blank"
+                    v-if="
+                      typeof item[f.model] === 'string' &&
+                      item[f.model].includes('/static/uploads/')
+                    "
+                  >
+                    คลิก
+                  </a>
+
+                  <span v-else>{{ item[f.model] }} </span>
                   <div
                     class="separator separator-dashed my-4 d-block d-md-none"
                   ></div>
@@ -617,7 +628,7 @@ export default defineComponent({
       item.value.response_province_id = data.data.response_province_id
         ? convertAddress(data.data.response_province_id)
         : "-";
-        
+
       isLoading.value = false;
     };
 
