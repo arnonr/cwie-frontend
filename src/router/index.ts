@@ -762,8 +762,8 @@ const routes: Array<RouteRecordRaw> = [
 ];
 
 const router = createRouter({
-  //   history: createWebHistory(import.meta.env.BASE_URL),
-  history: createWebHashHistory(),
+  history: createWebHistory(import.meta.env.BASE_URL),
+  //   history: createWebHashHistory(),
   routes,
   scrollBehavior(to) {
     // If the route has a hash, scroll to the section with the specified ID; otherwise, scroll toc the top of the page.
