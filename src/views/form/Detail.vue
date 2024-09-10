@@ -135,13 +135,13 @@
                     :href="item[f.model]"
                     target="_blank"
                     v-if="
-                      typeof item[f.model] === 'string' &&
-                      item[f.model].includes('/static/uploads/')
+                      (typeof item[f.model] === 'string' &&
+                        item[f.model].includes('/static/uploads/')) ||
+                      f.label == 'Google Map'
                     "
                   >
                     คลิก
                   </a>
-
                   <span v-else>{{ item[f.model] }} </span>
                   <div
                     class="separator separator-dashed my-4 d-block d-md-none"
@@ -166,7 +166,17 @@
                   v-if="f.model != 'separator'"
                 >
                   <span>{{ f.label }} : </span>
-                  <span>{{ item[f.model] }} </span>
+                  <a
+                    :href="item[f.model]"
+                    target="_blank"
+                    v-if="
+                      typeof item[f.model] === 'string' &&
+                      item[f.model].includes('/static/uploads/')
+                    "
+                  >
+                    คลิก
+                  </a>
+                  <span v-else>{{ item[f.model] }} </span>
                   <div
                     class="separator separator-dashed my-4 d-block d-md-none"
                   ></div>
@@ -488,7 +498,7 @@ export default defineComponent({
       },
       {
         label: "ไฟล์นำเสนอ PPT",
-        model: "ppt_report_file  ",
+        model: "ppt_report_file",
         colClass: "col-lg-4",
       },
       {
@@ -623,10 +633,17 @@ export default defineComponent({
           : "ปฏิเสธ"
         : "-";
 
-      item.value.closed_at = useDateData().convertDate(data.data.closed_at);
+      item.value.plan_accept_at = useDateData().convertDate(
+        data.data.plan_accept_at
+      );
 
+      item.value.closed_at = useDateData().convertDate(data.data.closed_at);
       item.value.response_province_id = data.data.response_province_id
         ? convertAddress(data.data.response_province_id)
+        : "-";
+
+      item.value.workplace_address_all = data.data.workplace_sub_district_id
+        ? convertAddress2(data.data.workplace_sub_district_id)
         : "-";
 
       isLoading.value = false;
@@ -637,6 +654,13 @@ export default defineComponent({
         return x.province_id == province_id;
       });
       return ad?.province;
+    };
+
+    const convertAddress2 = (sub_district_id: any) => {
+      let ad = selectOptions.value.address_alls.find((x: any) => {
+        return x.sub_district_id == sub_district_id;
+      });
+      return `${ad?.province} > ${ad?.district} > ${ad?.sub_district} > ${ad?.post_code}`;
     };
 
     // Mounted
