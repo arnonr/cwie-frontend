@@ -348,13 +348,24 @@ export default defineComponent({
           x.show_send_at = useDateData().convertDate(x.send_at);
           x.show_semester =
             x.semester_detail.term + "/" + x.semester_detail.year;
+          x.show_term = x.semester_detail.term;
+          x.show_year = x.semester_detail.year;
           x.show_student_code = x.student_detail.student_code;
           x.show_fullname =
             x.student_detail.firstname + " " + x.student_detail.surname;
+          x.show_firstname = x.student_detail.firstname;
+          x.show_surname = x.student_detail.surname;
           x.show_class_year = x.student_detail.class_year;
           x.show_company = x.company_detail.name;
           x.show_company_province = convertAddress(x.response_province_id);
-          x.show_visitor = x.visitor_detail ? x.visitor_detail.fullname : "";
+          x.show_start_date = useDateData().convertDate(x.start_date);
+          x.show_end_date = useDateData().convertDate(x.end_date);
+          x.show_visitor = x.visitor_detail
+            ? x.visitor_detail.prefix +
+              x.visitor_detail.firstname +
+              " " +
+              x.visitor_detail.surname
+            : "";
           x.show_status = x.form_status_detail.name;
           return x;
         })
@@ -371,27 +382,18 @@ export default defineComponent({
       exportExcel().then(() => {
         setTimeout(async () => {
           const workbook = new ExcelJS.Workbook();
-          const worksheet = workbook.addWorksheet(
-            "รายการใบสมัครโครงการสหกิจศึกษา",
-            {
-              pageSetup: { orientation: "landscape" },
-              headerFooter: {
-                firstHeader: "Hello Exceljs",
-                firstFooter: "Hello World",
-              },
-            }
-          );
+          const worksheet = workbook.addWorksheet("รายการจับคู่อาจารย์นิเทศ", {
+            pageSetup: { orientation: "landscape" },
+            headerFooter: {
+              firstHeader: "Hello Exceljs",
+              firstFooter: "Hello World",
+            },
+          });
           //
           worksheet.columns = [
             {
-              header: "วันที่ส่งใบสมัคร",
+              header: "ลำดับ",
               key: "show_send_at",
-              width: 25,
-              outlineLevel: 1,
-            },
-            {
-              header: "ปีการศึกษา",
-              key: "show_semester",
               width: 25,
               outlineLevel: 1,
             },
@@ -402,14 +404,32 @@ export default defineComponent({
               outlineLevel: 1,
             },
             {
-              header: "ชื่อ-นามสกุล",
-              key: "show_fullname",
+              header: "ชื่อ",
+              key: "show_firstname",
               width: 50,
               outlineLevel: 1,
             },
             {
-              header: "ชั้นปีที่",
-              key: "show_class_year",
+              header: "นามสกุล",
+              key: "show_surname",
+              width: 50,
+              outlineLevel: 1,
+            },
+            {
+              header: "วันที่ส่งใบสมัคร",
+              key: "show_send_at",
+              width: 25,
+              outlineLevel: 1,
+            },
+            {
+              header: "เทอม",
+              key: "show_term",
+              width: 25,
+              outlineLevel: 1,
+            },
+            {
+              header: "ปีการศึกษา",
+              key: "show_year",
               width: 25,
               outlineLevel: 1,
             },
@@ -426,14 +446,26 @@ export default defineComponent({
               outlineLevel: 1,
             },
             {
-              header: "อาจารย์นิเทศ",
-              key: "show_visitor",
+              header: "วันที่เริ่มปฏิบัติงาน",
+              key: "show_start_date",
+              width: 25,
+              outlineLevel: 1,
+            },
+            {
+              header: "วันปฏิบัติงานเสร็จสิ้น",
+              key: "show_end_date",
               width: 25,
               outlineLevel: 1,
             },
             {
               header: "สถานะ",
               key: "show_status",
+              width: 25,
+              outlineLevel: 1,
+            },
+            {
+              header: "อาจารย์นิเทศ",
+              key: "show_visitor",
               width: 25,
               outlineLevel: 1,
             },
@@ -457,9 +489,9 @@ export default defineComponent({
           const row = worksheet.getRow(1);
           row.height = 20;
 
-          worksheet.insertRow(1, "รายการใบสมัคร");
+          worksheet.insertRow(1, "รายการจับคู่อาจารย์นิเทศ");
           worksheet.mergeCells("A1:K1");
-          worksheet.getCell("A1").value = "รายการใบสมัคร";
+          worksheet.getCell("A1").value = "รายการจับคู่อาจารย์นิเทศ";
           worksheet.getCell("A1").alignment = {
             vertical: "middle",
             horizontal: "center",
@@ -478,7 +510,7 @@ export default defineComponent({
           const href = URL.createObjectURL(blob);
           const link = document.createElement("a");
           link.href = href;
-          link.download = "รายการใบสมัคร.xlsx";
+          link.download = "รายการจับคู่อาจารย์นิเทศ.xlsx";
           document.body.appendChild(link);
           link.click();
           document.body.removeChild(link);
