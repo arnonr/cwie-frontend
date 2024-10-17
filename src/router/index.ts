@@ -1,7 +1,7 @@
 import {
   createRouter,
   createWebHistory,
-  createWebHashHistory,
+  // createWebHashHistory,
   type RouteRecordRaw,
 } from "vue-router";
 import { useAuthStore } from "@/stores/auth";
@@ -56,7 +56,6 @@ const routes: Array<RouteRecordRaw> = [
         },
       },
       //
-
       {
         path: "/advisor/student",
         name: "advisor-student",

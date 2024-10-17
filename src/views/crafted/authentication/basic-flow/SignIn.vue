@@ -11,18 +11,25 @@
     >
       <!--begin::Heading-->
       <div class="text-center mb-10">
+        <img
+          alt="Logo"
+          :src="getAssetPath('media/logos/logo-tp.png')"
+          class="h-100px h-lg-100px app-sidebar-logo-default"
+        />
         <!--begin::Title-->
-        <h4 class="text-gray-900 mb-3">ระบบ CWIE <br />อุทยานเทคโนโลยี มจพ.</h4>
+        <h4 class="text-gray-900 mb-3">ระบบ CWIE</h4>
+        <!--begin::Title-->
+        <h4 class="text-gray-900 mb-3">อุทยานเทคโนโลยี มจพ.</h4>
         <!--end::Title-->
       </div>
       <!--begin::Heading-->
 
       <div class="mb-10 bg-light-warning p-4 rounded">
         <div class="text-dark">
-          โปรดลงทะเบียนก่อนการเข้าใช้งาน
-          <router-link to="/register" class="link-primary fs-6 fw-bold">
+          เข้าใช้งานด้วย ICIT Account ของมหาวิทยาลัย
+          <!-- <router-link to="/register" class="link-primary fs-6 fw-bold">
             ลงทะเบียน
-          </router-link>
+          </router-link> -->
         </div>
       </div>
 
@@ -118,9 +125,9 @@
         <router-link to="/home" class="link-primary fs-6 fw-bold">
           กลับหน้าหลัก
         </router-link>
-        <router-link to="/register" class="link-primary fs-6 fw-bold">
+        <!-- <router-link to="/register" class="link-primary fs-6 fw-bold">
           ลงทะเบียน
-        </router-link>
+        </router-link> -->
       </div>
     </VForm>
     <!--end::Form-->
@@ -129,11 +136,13 @@
 </template>
 
 <script lang="ts">
+import ApiService from "@/core/services/ApiService";
 import { getAssetPath } from "@/core/helpers/assets";
 import { defineComponent, ref } from "vue";
 import { ErrorMessage, Field, Form as VForm } from "vee-validate";
 import { useAuthStore, type User } from "@/stores/auth";
 import { useRouter } from "vue-router";
+import useToast from "@/composables/useToast";
 import Swal from "sweetalert2/dist/sweetalert2.js";
 import * as Yup from "yup";
 
@@ -147,6 +156,7 @@ export default defineComponent({
   setup() {
     const store = useAuthStore();
     const router = useRouter();
+    const isLoading = ref<any>(true);
 
     const submitButton = ref<HTMLButtonElement | null>(null);
 
@@ -205,18 +215,89 @@ export default defineComponent({
           }
         });
       } else {
-        Swal.fire({
-          text: error[0] as string,
-          icon: "error",
-          buttonsStyling: false,
-          confirmButtonText: "Try again!",
-          heightAuto: false,
-          customClass: {
-            confirmButton: "btn fw-semibold btn-light-danger",
-          },
-        }).then(() => {
-          store.errors = {};
-        });
+        if (error[0] == "ไม่พบข้อมูลผู้ใช้งาน") {
+          let data_item: any = {
+            ...values,
+            type_id: values.group_id,
+          };
+
+          await ApiService.post("auth/register", data_item)
+            .then(async ({ data }) => {
+              if (data.msg != "success") {
+                throw new Error("ERROR");
+              }
+
+              await store.login(values);
+              isLoading.value = false;
+
+              Swal.fire({
+                text: "You have successfully logged in!",
+                icon: "success",
+                buttonsStyling: false,
+                confirmButtonText: "Ok, got it!",
+                heightAuto: false,
+                customClass: {
+                  confirmButton: "btn fw-semibold btn-light-primary",
+                },
+              }).then((res: any) => {
+                // Go to page after successfully login
+                const userData = JSON.parse(
+                  localStorage.getItem("userData") || "{}"
+                );
+                if (userData.group_id == 7) {
+                  router.push({ name: "student" });
+                } else if (userData.group_id == 1) {
+                  router.push({ name: "staff-student" });
+                } else if (userData.group_id == 2) {
+                  router.push({ name: "staff-student" });
+                } else if (userData.group_id == 3) {
+                  router.push({ name: "staff-student" });
+                } else if (userData.group_id == 4) {
+                  router.push({ name: "staff-student" });
+                } else if (userData.group_id == 5) {
+                  router.push({ name: "staff-student" });
+                } else if (userData.group_id == 6) {
+                  router.push({ name: "advisor-student" });
+                } else {
+                  router.push({ name: "sign-in" });
+                }
+              });
+
+              //   if (data.group_id != 7) {
+              //     Swal.fire({
+              //       text: "ได้รับข้อมูลของท่านแล้ว โปรดรอการอนุมัติการเข้าใช้งาน",
+              //       icon: "success",
+              //       buttonsStyling: false,
+              //       confirmButtonText: "Ok, got it!",
+              //       heightAuto: false,
+              //       customClass: {
+              //         confirmButton: "btn fw-semibold btn-light-primary",
+              //       },
+              //     }).then(() => {
+
+              //     });
+              //   } else {
+
+              //   }
+            })
+            .catch(({ response }) => {
+              isLoading.value = false;
+              console.log(response);
+            });
+        } else {
+          Swal.fire({
+            text: error[0] as string,
+            icon: "error",
+            buttonsStyling: false,
+            confirmButtonText: "Try again!",
+            heightAuto: false,
+            customClass: {
+              confirmButton: "btn fw-semibold btn-light-danger",
+            },
+          }).then(() => {
+            store.errors = {};
+          });
+        }
       }
 
       //Deactivate indicator
